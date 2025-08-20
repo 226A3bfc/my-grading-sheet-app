@@ -157,7 +157,83 @@
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8">
-    
+    <!-- How to Use Modal -->
+    <div id="how-to-use-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
+        <div class="p-6 rounded-lg shadow-xl max-w-2xl w-full h-[90vh] flex flex-col card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold">How to Use Grading Sheet</h3>
+                <button onclick="hideHowToUseModal()" class="text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
+            <div class="flex-grow overflow-y-auto text-slate-300 space-y-4">
+                <p>Welcome to the Grading Sheet application! Follow these steps to set up your courses, manage students, enter scores, and view reports.</p>
+                
+                <h4 class="text-xl font-semibold text-indigo-400">Step-by-Step Guide:</h4>
+                
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>
+                        <p class="font-medium text-white"><strong>1. Select Academic Period:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Choose the **Academic Year** (current year + 10 years ahead) and **Semester** (Term 1, Term 2, Term 3).</li>
+                            <li><span class="text-red-400">This is mandatory.</span> The rest of the app will be disabled until both are selected.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>2. Select Course:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Select the **Subject**, **Grade Level**, and **Room** for your course.</li>
+                            <li>If it's a new combination, a new course will be created. If it exists, it will be loaded.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>3. Teacher Info:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Enter your **Full Name** (required) and **Teacher ID**.</li>
+                            <li>Click **"Save Info"**. Once saved, the form will hide, and "Edit Info" / "Delete Info" buttons will appear.</li>
+                            <li>You can also set a **School Logo URL** in the Settings modal (top right gear icon).</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>4. Setup Grading Components:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight (e.g., 30%, 70%). The total weight for all components must be 100%.</li>
+                            <li><strong>Select Assessment Component to Manage Categories:</strong> Choose one of your main components to define its sub-categories.</li>
+                            <li><strong>Manage Categories within [Selected Component]:</strong> Add **Categories** (e.g., "Quizzes", "Homework") within the selected component. Each category also has a weight. The total weight of categories within a component must be 100%.</li>
+                            <li>You can add **Sub-items** (e.g., "Quiz 1", "HW 2") to each category, each with its own max score.</li>
+                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight` (e.g., `Participation,10`).</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>5. Student Management:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Add new students manually by filling in their details.</li>
+                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber` (e.g., `S001,John Doe,Johnny,1`).</li>
+                            <li>You can **Edit** or **Delete** students from the list. Deleting requires confirmation.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>Score Entry & Summary:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Switch between **"Score Entry"** tab to input scores for each student in the detailed table. Press `Enter` to move to the next input field.</li>
+                            <li>Go to **"Summary & Reports"** tab to see overall scores, grades, and performance breakdowns (Excellent, Average, Needs Improvement).</li>
+                            <li>The **Admin Dashboard** (shield icon in header) provides an overview of all courses and teacher progress.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>Reset Course:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>The **"Reset Course"** button (trash icon) will clear all data for the currently selected course. This requires a password for confirmation.</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <p>All your data is saved in real-time to the cloud! Enjoy using the Grading Sheet!</p>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button onclick="hideHowToUseModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">Got it!</button>
+            </div>
+        </div>
+    </div>
+
     <header class="max-w-7xl mx-auto mb-8 flex justify-between items-center print:hidden">
         <div class="flex items-center gap-4">
             <img id="school-logo" src="https://placehold.co/64x64/1e293b/e2e8f0?text=Logo" alt="School Logo" class="w-16 h-16 rounded-lg object-cover shadow-md" onerror="this.onerror=null;this.src='https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';">
@@ -342,7 +418,7 @@
                         </div>
                         <div class="flex flex-col sm:flex-row gap-4 mt-4">
                             <input type="file" id="category-csv-file-input" accept=".csv" class="hidden" onchange="handleCategoryCsvImport(event)">
-                            <button onclick="document.getElementById('category-csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
+                            <button onclick="document.getElementById('category-csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-content-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                                 Import Categories (CSV)
                             </button>
@@ -543,83 +619,6 @@
             <div class="flex justify-end gap-2">
                 <button onclick="hideConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
                 <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- How to Use Modal -->
-    <div id="how-to-use-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
-        <div class="p-6 rounded-lg shadow-xl max-w-2xl w-full h-[90vh] flex flex-col card">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">How to Use Grading Sheet</h3>
-                <button onclick="hideHowToUseModal()" class="text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
-            </div>
-            <div class="flex-grow overflow-y-auto text-slate-300 space-y-4">
-                <p>Welcome to the Grading Sheet application! Follow these steps to set up your courses, manage students, enter scores, and view reports.</p>
-                
-                <h4 class="text-xl font-semibold text-indigo-400">Step-by-Step Guide:</h4>
-                
-                <ol class="list-decimal list-inside space-y-3">
-                    <li>
-                        <p class="font-medium text-white"><strong>1. Select Academic Period:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Choose the **Academic Year** (current year + 10 years ahead) and **Semester** (Term 1, Term 2, Term 3).</li>
-                            <li><span class="text-red-400">This is mandatory.</span> The rest of the app will be disabled until both are selected.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>2. Select Course:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Select the **Subject**, **Grade Level**, and **Room** for your course.</li>
-                            <li>If it's a new combination, a new course will be created. If it exists, it will be loaded.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>3. Teacher Info:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Enter your **Full Name** (required) and **Teacher ID**.</li>
-                            <li>Click **"Save Info"**. Once saved, the form will hide, and "Edit Info" / "Delete Info" buttons will appear.</li>
-                            <li>You can also set a **School Logo URL** in the Settings modal (top right gear icon).</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>4. Setup Grading Components:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight (e.g., 30%, 70%). The total weight for all components must be 100%.</li>
-                            <li><strong>Select Assessment Component to Manage Categories:</strong> Choose one of your main components to define its sub-categories.</li>
-                            <li><strong>Manage Categories within [Selected Component]:</strong> Add **Categories** (e.g., "Quizzes", "Homework") within the selected component. Each category also has a weight. The total weight of categories within a component must be 100%.</li>
-                            <li>You can add **Sub-items** (e.g., "Quiz 1", "HW 2") to each category, each with its own max score.</li>
-                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight` (e.g., `Participation,10`).</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>5. Student Management:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Add new students manually by filling in their details.</li>
-                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber` (e.g., `S001,John Doe,Johnny,1`).</li>
-                            <li>You can **Edit** or **Delete** students from the list. Deleting requires confirmation.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>Score Entry & Summary:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Switch between **"Score Entry"** tab to input scores for each student in the detailed table. Press `Enter` to move to the next input field.</li>
-                            <li>Go to **"Summary & Reports"** tab to see overall scores, grades, and performance breakdowns (Excellent, Average, Needs Improvement).</li>
-                            <li>The **Admin Dashboard** (shield icon in header) provides an overview of all courses and teacher progress.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>Reset Course:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>The **"Reset Course"** button (trash icon) will clear all data for the currently selected course. This requires a password for confirmation.</li>
-                        </ul>
-                    </li>
-                </ol>
-                
-                <p>All your data is saved in real-time to the cloud! Enjoy using the Grading Sheet!</p>
-            </div>
-            <div class="flex justify-end mt-4">
-                <button onclick="hideHowToUseModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">Got it!</button>
             </div>
         </div>
     </div>
@@ -885,26 +884,45 @@
         const currentAcademicYear = academicYearSelect.value; // New
         const currentSemester = semesterSelect.value; // New
 
-        subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
-        gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
+        // Debugging logs to check if elements are found
+        console.log("DEBUG populateDropdowns: academicYearSelect element:", academicYearSelect);
+        console.log("DEBUG populateDropdowns: semesterSelect element:", semesterSelect);
+
+        // Populate Subject and Grade Level
+        if (subjectSelect) {
+            subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
+            subjectSelect.value = currentSubject;
+        }
+        if (gradeLevelSelect) {
+            gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
+            gradeLevelSelect.value = currentGrade;
+        }
 
         // Populate Academic Year (current year and next 10 years)
-        const currentYear = new Date().getFullYear();
-        const academicYears = [];
-        for (let i = 0; i <= 10; i++) { 
-            academicYears.push(currentYear + i);
+        if (academicYearSelect) {
+            const currentYear = new Date().getFullYear();
+            const academicYears = [];
+            for (let i = 0; i <= 10; i++) { 
+                academicYears.push(currentYear + i);
+            }
+            console.log("DEBUG populateDropdowns: Generated academicYears:", academicYears);
+            academicYearSelect.innerHTML = '<option value="">Select Academic Year</option>' + academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
+            academicYearSelect.value = currentAcademicYear; // Restore previous selection
+            console.log("DEBUG populateDropdowns: Academic Year dropdown populated. Current value:", academicYearSelect.value);
+        } else {
+            console.error("ERROR populateDropdowns: academicYearSelect element not found!");
         }
-        academicYearSelect.innerHTML = '<option value="">Select Academic Year</option>' + academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
 
         // Populate Semesters (e.g., Term 1, Term 2, Term 3)
-        const semesters = ['Term 1', 'Term 2', 'Term 3'];
-        semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
-        
-        // Restore previous selections
-        subjectSelect.value = currentSubject;
-        gradeLevelSelect.value = currentGrade;
-        academicYearSelect.value = currentAcademicYear; // New
-        semesterSelect.value = currentSemester; // New
+        if (semesterSelect) {
+            const semesters = ['Term 1', 'Term 2', 'Term 3'];
+            console.log("DEBUG populateDropdowns: Generated semesters:", semesters);
+            semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
+            semesterSelect.value = currentSemester; // Restore previous selection
+            console.log("DEBUG populateDropdowns: Semester dropdown populated. Current value:", semesterSelect.value);
+        } else {
+            console.error("ERROR populateDropdowns: semesterSelect element not found!");
+        }
     }
     
     // --- UI STATE MANAGEMENT ---
@@ -956,12 +974,24 @@
     
     // --- COURSE & TEACHER LOGIC ---
     function updateAcademicYearSelection() {
-        selectedAcademicYear = document.getElementById('select-academic-year').value;
+        // Ensure elements exist before accessing their value
+        const academicYearSelect = document.getElementById('select-academic-year');
+        if (academicYearSelect) {
+            selectedAcademicYear = academicYearSelect.value;
+        } else {
+            selectedAcademicYear = '';
+        }
         updateCourseSelection(); // Trigger full course selection update
     }
 
     function updateSemesterSelection() {
-        selectedSemester = document.getElementById('select-semester').value;
+        // Ensure elements exist before accessing their value
+        const semesterSelect = document.getElementById('select-semester');
+        if (semesterSelect) {
+            selectedSemester = semesterSelect.value;
+        } else {
+            selectedSemester = '';
+        }
         updateCourseSelection(); // Trigger full course selection update
     }
 
@@ -1289,7 +1319,7 @@
             selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === componentId); // Renamed period to component
             statusDiv.textContent = `Managing categories for: ${selectedAssessmentComponent.name}`;
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
-            currentComponentNameSpan.textContent = selectedAssessmentComponent.name;
+            currentComponentNameSpan.textContent = selectedAssessmentComponent.name; // Updated text
         } else {
             selectedAssessmentComponent = null;
             statusDiv.textContent = 'No Assessment Component selected.'; // Updated text
@@ -1636,7 +1666,7 @@
         // Check for duplicate roll number (excluding the student being edited)
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
         if (studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === newRollNumber)) {
-            showToast('Roll Number already exists for another student in this class.', 'error');
+            showToast('Roll Number already exists in this class.', 'error');
             return;
         }
 
@@ -2112,7 +2142,7 @@
                 detailsButtonClass = 'bg-red-800 hover:bg-red-700';
             }
 
-            tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 font-medium">
+            tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 text-left font-medium">
                 <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
                 <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
                 <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
@@ -2449,12 +2479,13 @@
 
     // --- PAGE LOAD ---
     // Executes when the window finishes loading
-    window.onload = async function() { 
+    document.addEventListener('DOMContentLoaded', async function() { // Changed to DOMContentLoaded
+        console.log("DEBUG: DOMContentLoaded fired.");
         setupEventListeners(); // Set up all initial event listeners
         // Ensure Firebase initialization and authentication completes before proceeding
         await window.firebaseReadyPromise; // Wait for Firebase to be ready and authenticated
         setupFirestoreListener(); // Initialize Firestore listener now that auth is complete
-    };
+    });
     </script>
 </body>
 </html>
