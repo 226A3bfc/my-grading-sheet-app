@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Firebase v9 Modular SDK -->
     <script type="module">
         // Import the functions you need from the SDKs need
@@ -23,7 +23,7 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         // Correctly reference __initial_auth_token
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null; 
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // Initialize Firebase app and services immediately
         // These are now outside the async function, ensuring they are set synchronously
@@ -70,12 +70,12 @@
             background-color: #020617; /* slate-950 */
             color: #e2e8f0; /* slate-200 */
         }
-        .card { 
+        .card {
             background-color: #0f172a; /* slate-900 */
             border: 1px solid #1e293b; /* slate-800 */
             box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         }
-        input, select { 
+        input, select {
             background-color: #1e293b; /* slate-800 */
             border: 1px solid #334155; /* slate-700 */
             color: #e2e8f0; /* slate-200 */
@@ -92,15 +92,15 @@
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
-        
+
         .tab-button.active { background-color: #4f46e5; color: white; }
         .tab-button:not(.active) { background-color: #1e293b; color: #94a3b8; }
-        
+
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
         details > summary .summary-arrow { transition: transform 0.2s; display: inline-block; }
         details[open] > summary .summary-arrow { transform: rotate(90deg); }
-        
+
         .table-container::-webkit-scrollbar { height: 8px; }
         .table-container::-webkit-scrollbar-track { background: #1e293b; }
         .table-container::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
@@ -116,7 +116,7 @@
             border-collapse: collapse; /* Ensure borders collapse */
         }
         #score-input-table thead th.sticky-col { z-index: 30; background-color: #1e293b;}
-        
+
         .disabled-section { pointer-events: none; opacity: 0.5; position: relative; }
         .disabled-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -125,7 +125,7 @@
             font-weight: bold; font-size: 1.1rem; color: #94a3b8;
             text-align: center; border-radius: 0.5rem; z-index: 40;
         }
-        
+
         /* Toast Notification */
         #toast {
             position: fixed;
@@ -152,87 +152,11 @@
             #printable-area, #printable-area * { visibility: visible; }
             #printable-area { position: absolute; left: 0; top: 0; width: 100%; color: black; }
             .table-container { overflow: visible; }
-            .print-bg-white { background-color: white !important; } 
+            .print-bg-white { background-color: white !important; }
         }
     </style>
 </head>
-<body class="p-4 sm:p-6 lg:p-8">
-    <!-- How to Use Modal -->
-    <div id="how-to-use-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
-        <div class="p-6 rounded-lg shadow-xl max-w-2xl w-full h-[90vh] flex flex-col card">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">How to Use Grading Sheet</h3>
-                <button onclick="hideHowToUseModal()" class="text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
-            </div>
-            <div class="flex-grow overflow-y-auto text-slate-300 space-y-4">
-                <p>Welcome to the Grading Sheet application! Follow these steps to set up your courses, manage students, enter scores, and view reports.</p>
-                
-                <h4 class="text-xl font-semibold text-indigo-400">Step-by-Step Guide:</h4>
-                
-                <ol class="list-decimal list-inside space-y-3">
-                    <li>
-                        <p class="font-medium text-white"><strong>1. Select Academic Period:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Choose the **Academic Year** (current year + 10 years ahead) and **Semester** (Term 1, Term 2, Term 3).</li>
-                            <li><span class="text-red-400">This is mandatory.</span> The rest of the app will be disabled until both are selected.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>2. Select Course:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Select the **Subject**, **Grade Level**, and **Room** for your course.</li>
-                            <li>If it's a new combination, a new course will be created. If it exists, it will be loaded.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>3. Teacher Info:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Enter your **Full Name** (required) and **Teacher ID**.</li>
-                            <li>Click **"Save Info"**. Once saved, the form will hide, and "Edit Info" / "Delete Info" buttons will appear.</li>
-                            <li>You can also set a **School Logo URL** in the Settings modal (top right gear icon).</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>4. Setup Grading Components:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight (e.g., 30%, 70%). The total weight for all components must be 100%.</li>
-                            <li><strong>Select Assessment Component to Manage Categories:</strong> Choose one of your main components to define its sub-categories.</li>
-                            <li><strong>Manage Categories within [Selected Component]:</strong> Add **Categories** (e.g., "Quizzes", "Homework") within the selected component. Each category also has a weight. The total weight of categories within a component must be 100%.</li>
-                            <li>You can add **Sub-items** (e.g., "Quiz 1", "HW 2") to each category, each with its own max score.</li>
-                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight` (e.g., `Participation,10`).</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>5. Student Management:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Add new students manually by filling in their details.</li>
-                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber` (e.g., `S001,John Doe,Johnny,1`).</li>
-                            <li>You can **Edit** or **Delete** students from the list. Deleting requires confirmation.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>Score Entry & Summary:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Switch between **"Score Entry"** tab to input scores for each student in the detailed table. Press `Enter` to move to the next input field.</li>
-                            <li>Go to **"Summary & Reports"** tab to see overall scores, grades, and performance breakdowns (Excellent, Average, Needs Improvement).</li>
-                            <li>The **Admin Dashboard** (shield icon in header) provides an overview of all courses and teacher progress.</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p class="font-medium text-white"><strong>Reset Course:</strong></p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>The **"Reset Course"** button (trash icon) will clear all data for the currently selected course. This requires a password for confirmation.</li>
-                        </ul>
-                    </li>
-                </ol>
-                
-                <p>All your data is saved in real-time to the cloud! Enjoy using the Grading Sheet!</p>
-            </div>
-            <div class="flex justify-end mt-4">
-                <button onclick="hideHowToUseModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">Got it!</button>
-            </div>
-        </div>
-    </div>
+<body>
 
     <header class="max-w-7xl mx-auto mb-8 flex justify-between items-center print:hidden">
         <div class="flex items-center gap-4">
@@ -330,7 +254,7 @@
                         <p class="text-sm text-slate-400" id="display-teacher-id"></p>
                         <div class="flex gap-2 mt-3">
                             <button id="edit-teacher-info-button" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2" onclick="editTeacherInfo()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 = 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                 Edit Info
                             </button>
                             <button id="delete-teacher-info-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center justify-center gap-2" onclick="showDeleteTeacherConfirmation()">
@@ -355,6 +279,9 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                             Save Info
                         </button>
+                        <p id="save-teacher-hint" class="text-sm text-yellow-400 mt-2 hidden text-center">
+                            Click 'Save Info' to apply changes and unlock other sections.
+                        </p>
                     </div>
                 </div>
             </details>
@@ -418,7 +345,7 @@
                         </div>
                         <div class="flex flex-col sm:flex-row gap-4 mt-4">
                             <input type="file" id="category-csv-file-input" accept=".csv" class="hidden" onchange="handleCategoryCsvImport(event)">
-                            <button onclick="document.getElementById('category-csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-content-center gap-2">
+                            <button onclick="document.getElementById('category-csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                                 Import Categories (CSV)
                             </button>
@@ -433,7 +360,7 @@
             </details>
 
             <!-- Student Management -->
-            <details class="p-6 rounded-lg card print:hidden" open>
+            <details class="p-6 rounded-lg card" open>
                 <summary class="text-xl font-semibold cursor-pointer flex items-center gap-2">
                     <span class="summary-arrow">▶</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -444,14 +371,14 @@
                     <div class="p-4 rounded-md border space-y-3 card">
                         <h3 class="font-semibold text-lg">Add New Student</h3>
                         <div class="grid grid-cols-2 gap-3">
-                             <input type="text" id="new-student-real-name" placeholder="Full Name" class="p-2 col-span-2 new-student-input" oninput="checkAddStudentFormValidity()">
-                             <input type="text" id="new-student-nickname" placeholder="Nickname" class="p-2 col-span-2 new-student-input">
-                             <input type="text" id="new-student-id" placeholder="Student ID" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
-                             <input type="number" id="new-student-roll-number" placeholder="Roll Number" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
+                            <input type="text" id="new-student-real-name" placeholder="Full Name" class="p-2 col-span-2 new-student-input" oninput="checkAddStudentFormValidity()">
+                            <input type="text" id="new-student-nickname" placeholder="Nickname" class="p-2 col-span-2 new-student-input">
+                            <input type="text" id="new-student-id" placeholder="Student ID" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
+                            <input type="number" id="new-student-roll-number" placeholder="Roll Number" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
                         </div>
                         <button id="add-student-button" onclick="addStudent()" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:bg-green-800 disabled:text-slate-400 transition-colors flex items-center justify-center gap-2" disabled>Add Student</button>
                     </div>
-                     <!-- CSV Import -->
+                    <!-- CSV Import -->
                     <div class="p-4 rounded-md border flex flex-col items-center justify-center text-center card">
                         <h3 class="font-semibold text-lg">Import from CSV</h3>
                         <p class="text-sm text-slate-400 my-2">Format: `studentId,realName,nickname,rollNumber`</p>
@@ -488,17 +415,17 @@
 
                 <!-- Summary Section -->
                 <div id="summary-section" class="hidden">
-                     <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+                    <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
                         <h2 class="text-2xl font-semibold">Score Summary & Analysis</h2>
                         <div class="flex items-center gap-2">
-                             <button onclick="exportScoresToCsv()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors print:hidden flex items-center gap-2">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                 Export CSV
-                             </button>
-                             <button onclick="window.print()" class="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600 transition-colors print:hidden flex items-center gap-2">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                                 Print Summary
-                             </button>
+                            <button onclick="exportScoresToCsv()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors print:hidden flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                Export CSV
+                            </button>
+                            <button onclick="window.print()" class="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600 transition-colors print:hidden flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                                Print Summary
+                            </button>
                         </div>
                     </div>
                     <div id="advanced-dashboard" class="mb-8 p-6 rounded-lg shadow-inner border card print:hidden">
@@ -538,7 +465,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-md w-full card">
             <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -557,7 +484,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="admin-password-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
             <h3 class="text-xl font-semibold mb-4">Admin Access</h3>
@@ -572,7 +499,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="reset-confirmation-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
             <h3 class="text-xl font-semibold mb-4 text-red-400">Confirm Reset</h3>
@@ -623,6 +550,83 @@
         </div>
     </div>
 
+    <!-- How to Use Modal -->
+    <div id="how-to-use-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
+        <div class="p-6 rounded-lg shadow-xl max-w-2xl w-full h-[90vh] flex flex-col card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold">How to Use Grading Sheet</h3>
+                <button onclick="hideHowToUseModal()" class="text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
+            </div>
+            <div class="flex-grow overflow-y-auto text-slate-300 space-y-4">
+                <p>Welcome to the Grading Sheet application! Follow these steps to set up your courses, manage students, enter scores, and view reports.</p>
+
+                <h4 class="text-xl font-semibold text-indigo-400">Step-by-Step Guide:</h4>
+
+                <ol class="list-decimal list-inside space-y-3">
+                    <li>
+                        <p class="font-medium text-white"><strong>1. Select Academic Period:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Choose the **Academic Year** (current year + 10 years ahead) and **Semester** (Term 1, Term 2, Term 3).</li>
+                            <li><span class="text-red-400">This is mandatory.</span> The rest of the app will be disabled until both are selected.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>2. Select Course:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Select the **Subject**, **Grade Level**, and **Room** for your course.</li>
+                            <li>If it's a new combination, a new course will be created. If it exists, it will be loaded.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>3. Teacher Info:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Enter your **Full Name** (required) and **Teacher ID**.</li>
+                            <li>Click **"Save Info"**. Once saved, the form will hide, and "Edit Info" / "Delete Info" buttons will appear.</li>
+                            <li>You can also set a **School Logo URL** in the Settings modal (top right gear icon).</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>4. Setup Grading Components:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight (e.g., 30%, 70%). The total weight for all components must be 100%.</li>
+                            <li><strong>Select Assessment Component to Manage Categories:</strong> Choose one of your main components to define its sub-categories.</li>
+                            <li><strong>Manage Categories within [Selected Component]:</strong> Add **Categories** (e.g., "Quizzes", "Homework") within the selected component. Each category also has a weight. The total weight of categories within a component must be 100%.</li>
+                            <li>You can add **Sub-items** (e.g., "Quiz 1", "HW 2") to each category, each with its own max score.</li>
+                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight` (e.g., `Participation,10`).</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>5. Student Management:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Add new students manually by filling in their details.</li>
+                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber` (e.g., `S001,John Doe,Johnny,1`).</li>
+                            <li>You can **Edit** or **Delete** students from the list. Deleting requires confirmation.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>Score Entry & Summary:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>Switch between **"Score Entry"** tab to input scores for each student in the detailed table. Press `Enter` to move to the next input field.</li>
+                            <li>Go to **"Summary & Reports"** tab to see overall scores, grades, and performance breakdowns (Excellent, Average, Needs Improvement).</li>
+                            <li>The **Admin Dashboard** (shield icon in header) provides an overview of all courses and teacher progress.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p class="font-medium text-white"><strong>Reset Course:</strong></p>
+                        <ul class="list-disc list-inside ml-4 text-sm">
+                            <li>The **"Reset Course"** button (trash icon) will clear all data for the currently selected course. This requires a password for confirmation.</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <p>All your data is saved in real-time to the cloud! Enjoy using the Grading Sheet!</p>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button onclick="hideHowToUseModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">Got it!</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Element -->
     <div id="toast" class=""></div>
 
@@ -632,12 +636,14 @@
     let courses = []; // Stores all course data
     let students = []; // Stores all student data
     let activeCourse = null; // Currently selected course
-    let selectedAssessmentComponent = null; // New: Currently selected main assessment component for category management
+    let selectedAcademicYear = ''; // Global variable for academic year
+    let selectedSemester = ''; // Global variable for semester
+    let selectedAssessmentComponent = null; // Currently selected main assessment component for category management
     let studentGroupChartInstance = null; // Chart.js instance for student performance
     let editingCategoryIndex = -1; // Index of category being edited, -1 if none
     let originalCategoryState = null; // Backup of category state during editing
-    let editingAssessmentComponentIndex = -1; // New: Index of assessment component being edited
-    let originalAssessmentComponentState = null; // New: Backup of assessment component state during editing
+    let editingAssessmentComponentIndex = -1; // Index of assessment component being edited
+    let originalAssessmentComponentState = null; // Backup of assessment component state during editing
     let editingStudentId = null; // ID of student being edited, null if none
     let originalStudentState = null; // Backup of student state during editing
     let currentConfirmCallback = null; // Callback for generic confirmation modal
@@ -675,14 +681,19 @@
                 if (activeCourse) {
                     // If a course was active, try to find and re-activate it to refresh UI
                     const courseId = activeCourse.id;
+                    // Re-find the active course object from the new 'courses' array to ensure it's up-to-date
                     activeCourse = courses.find(c => c.id === courseId) || null;
                     if (activeCourse) {
                         // Resync UI elements with potentially updated activeCourse data
                         document.getElementById('select-subject').value = activeCourse.subject;
                         document.getElementById('select-grade-level').value = activeCourse.gradeLevel;
                         document.getElementById('select-room').value = activeCourse.room;
-                        document.getElementById('select-academic-year').value = activeCourse.academicYear || ''; // New
-                        document.getElementById('select-semester').value = activeCourse.semester || ''; // New
+                        document.getElementById('select-academic-year').value = activeCourse.academicYear || '';
+                        document.getElementById('select-semester').value = activeCourse.semester || '';
+                        // Resync selectedAcademicYear and selectedSemester global variables
+                        selectedAcademicYear = activeCourse.academicYear || '';
+                        selectedSemester = activeCourse.semester || '';
+
                         // New: Resync selectedAssessmentComponent if it exists in the updated activeCourse
                         if (selectedAssessmentComponent) {
                             const componentId = selectedAssessmentComponent.id;
@@ -709,7 +720,7 @@
         const mainDocRef = getFirestoreDocRef("mainDocument");
         try {
             // Log the data being saved for debugging
-            console.log("Data being saved:", JSON.parse(JSON.stringify({ courses: courses, students: students }))); 
+            console.log("Data being saved:", JSON.parse(JSON.stringify({ courses: courses, students: students })));
             await setDoc(mainDocRef, {
                 courses: courses,
                 students: students
@@ -788,13 +799,13 @@
             document.getElementById('reset-password-input').value = '';
         }
     }
-    
+
     function showAdminPasswordModal() { document.getElementById('admin-password-modal').classList.remove('hidden'); }
     function hideAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); }
-    function showSettingsModal() { 
+    function showSettingsModal() {
         // Pre-fill logo URL if available for the active course
         document.getElementById('settings-logo-url').value = activeCourse?.teacher?.logoUrl || '';
-        document.getElementById('settings-modal').classList.remove('hidden'); 
+        document.getElementById('settings-modal').classList.remove('hidden');
     }
     function hideSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
 
@@ -805,7 +816,7 @@
     function hideHowToUseModal() {
         document.getElementById('how-to-use-modal').classList.add('hidden');
     }
-    
+
     function showScoreBreakdownModal(studentId) {
         const student = students.find(s => s.studentId === studentId);
         if (!student || !activeCourse) return;
@@ -814,7 +825,7 @@
         const contentDiv = document.getElementById('score-breakdown-content');
         contentDiv.innerHTML = activeCourse.assessmentComponents.map(component => { // Iterate through assessment components
             let componentHtml = `<div class="p-2 border rounded-md bg-slate-700 border-slate-500 mb-2">
-                <p class="font-bold text-indigo-300">${component.name} (${component.weight}%)</p>`;
+                    <p class="font-bold text-indigo-300">${component.name} (${component.weight}%)</p>`;
             if (component.categories && component.categories.length > 0) {
                 componentHtml += `<ul class="list-disc list-inside ml-4 text-sm space-y-1">`;
                 component.categories.forEach(cat => {
@@ -852,6 +863,7 @@
             document.getElementById('admin-dashboard-modal').classList.remove('hidden');
         } else {
             showAlert("Access Denied", "Incorrect password.");
+            document.getElementById('admin-password-input').value = '';
         }
     }
 
@@ -871,65 +883,56 @@
         hideSettingsModal();
         showToast("Settings saved successfully!");
     }
-    
+
     // --- INITIALIZATION ---
     function populateDropdowns() {
+        console.log("populateDropdowns called.");
         const subjectSelect = document.getElementById('select-subject');
         const gradeLevelSelect = document.getElementById('select-grade-level');
-        const academicYearSelect = document.getElementById('select-academic-year'); // New
-        const semesterSelect = document.getElementById('select-semester'); // New
-        
+        const academicYearSelect = document.getElementById('select-academic-year');
+        const semesterSelect = document.getElementById('select-semester');
+
         const currentSubject = subjectSelect.value;
         const currentGrade = gradeLevelSelect.value;
-        const currentAcademicYear = academicYearSelect.value; // New
-        const currentSemester = semesterSelect.value; // New
+        // Capture current values before overwriting innerHTML
+        const currentAcademicYearSelection = academicYearSelect.value;
+        const currentSemesterSelection = semesterSelect.value;
 
-        // Debugging logs to check if elements are found
-        console.log("DEBUG populateDropdowns: academicYearSelect element:", academicYearSelect);
-        console.log("DEBUG populateDropdowns: semesterSelect element:", semesterSelect);
+        subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
+        gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
 
-        // Populate Subject and Grade Level
-        if (subjectSelect) {
-            subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
-            subjectSelect.value = currentSubject;
+        const currentYear = new Date().getFullYear();
+        const academicYears = [];
+        for (let i = 0; i <= 10; i++) {
+            academicYears.push(currentYear + i);
         }
-        if (gradeLevelSelect) {
-            gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
-            gradeLevelSelect.value = currentGrade;
-        }
+        academicYearSelect.innerHTML = '<option value="">Select Academic Year</option>' + academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
+        console.log("Academic Year options added:", academicYearSelect.innerHTML);
 
-        // Populate Academic Year (current year and next 10 years)
-        if (academicYearSelect) {
-            const currentYear = new Date().getFullYear();
-            const academicYears = [];
-            for (let i = 0; i <= 10; i++) { 
-                academicYears.push(currentYear + i);
-            }
-            console.log("DEBUG populateDropdowns: Generated academicYears:", academicYears);
-            academicYearSelect.innerHTML = '<option value="">Select Academic Year</option>' + academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
-            academicYearSelect.value = currentAcademicYear; // Restore previous selection
-            console.log("DEBUG populateDropdowns: Academic Year dropdown populated. Current value:", academicYearSelect.value);
-        } else {
-            console.error("ERROR populateDropdowns: academicYearSelect element not found!");
-        }
+        const semesters = ['Term 1', 'Term 2', 'Term 3'];
+        semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
+        console.log("Semester options added:", semesterSelect.innerHTML);
 
-        // Populate Semesters (e.g., Term 1, Term 2, Term 3)
-        if (semesterSelect) {
-            const semesters = ['Term 1', 'Term 2', 'Term 3'];
-            console.log("DEBUG populateDropdowns: Generated semesters:", semesters);
-            semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
-            semesterSelect.value = currentSemester; // Restore previous selection
-            console.log("DEBUG populateDropdowns: Semester dropdown populated. Current value:", semesterSelect.value);
-        } else {
-            console.error("ERROR populateDropdowns: semesterSelect element not found!");
-        }
+        // Restore previous selections or set defaults
+        subjectSelect.value = currentSubject;
+        gradeLevelSelect.value = currentGrade;
+
+        // Set Academic Year and Semester values, prioritizing existing selection, then activeCourse, then default
+        academicYearSelect.value = currentAcademicYearSelection || (activeCourse ? activeCourse.academicYear : '') || currentYear;
+        semesterSelect.value = currentSemesterSelection || (activeCourse ? activeCourse.semester : '') || 'Term 1';
+
+        // Update global variables to reflect the current UI selection/default
+        selectedAcademicYear = academicYearSelect.value;
+        selectedSemester = semesterSelect.value;
     }
-    
+
     // --- UI STATE MANAGEMENT ---
     // Updates the state of the main content area (enabled/disabled)
     function updateMainContentState() {
-        // New: Check if Academic Year and Semester are selected
+        console.log("updateMainContentState called.");
         const isAcademicPeriodSelected = document.getElementById('select-academic-year').value && document.getElementById('select-semester').value;
+        console.log("isAcademicPeriodSelected:", isAcademicPeriodSelected);
+
         const academicPeriodStatusDiv = document.getElementById('academic-period-status');
         const courseSelectionSection = document.getElementById('course-selection-section');
         const courseSelectionOverlay = document.getElementById('course-selection-overlay');
@@ -938,6 +941,7 @@
 
         if (isAcademicPeriodSelected) {
             academicPeriodStatusDiv.classList.add('hidden');
+            academicPeriodStatusDiv.className = 'p-3 rounded-md text-center font-medium mt-4 hidden'; // Reset class
             courseSelectionSection.classList.remove('disabled-section');
             courseSelectionOverlay.classList.add('hidden');
         } else {
@@ -948,8 +952,13 @@
             courseSelectionOverlay.classList.remove('hidden');
         }
 
-        // Check if course and teacher info are ready for main content area
+        console.log("activeCourse:", activeCourse);
+        console.log("activeCourse.teacher:", activeCourse ? activeCourse.teacher : 'N/A');
+        console.log("activeCourse.teacher.realName:", activeCourse && activeCourse.teacher ? activeCourse.teacher.realName : 'N/A');
+
         const isReadyForMainContent = activeCourse && activeCourse.teacher && activeCourse.teacher.realName && isAcademicPeriodSelected;
+        console.log("isReadyForMainContent (final check):", isReadyForMainContent);
+
         const mainContent = document.getElementById('main-content-area');
         const mainContentOverlay = document.getElementById('main-content-overlay');
 
@@ -971,33 +980,21 @@
 
         renderAll(); // Re-render all UI components
     }
-    
+
     // --- COURSE & TEACHER LOGIC ---
     function updateAcademicYearSelection() {
-        // Ensure elements exist before accessing their value
-        const academicYearSelect = document.getElementById('select-academic-year');
-        if (academicYearSelect) {
-            selectedAcademicYear = academicYearSelect.value;
-        } else {
-            selectedAcademicYear = '';
-        }
+        selectedAcademicYear = document.getElementById('select-academic-year').value;
         updateCourseSelection(); // Trigger full course selection update
     }
 
     function updateSemesterSelection() {
-        // Ensure elements exist before accessing their value
-        const semesterSelect = document.getElementById('select-semester');
-        if (semesterSelect) {
-            selectedSemester = semesterSelect.value;
-        } else {
-            selectedSemester = '';
-        }
+        selectedSemester = document.getElementById('select-semester').value;
         updateCourseSelection(); // Trigger full course selection update
     }
 
     function updateCourseSelection() {
-        const academicYear = document.getElementById('select-academic-year').value; // New
-        const semester = document.getElementById('select-semester').value; // New
+        const academicYear = document.getElementById('select-academic-year').value;
+        const semester = document.getElementById('select-semester').value;
         const subject = document.getElementById('select-subject').value;
         const grade = document.getElementById('select-grade-level').value;
         const room = document.getElementById('select-room').value;
@@ -1015,21 +1012,21 @@
         }
 
         if (subject && grade && room) {
-            const courseId = `${subject}-${grade}-${room}-${academicYear}-${semester}`; // Updated courseId
+            const courseId = `${subject}-${grade}-${room}-${academicYear}-${semester}`;
             let course = courses.find(c => c.id === courseId);
             if (!course) {
                 // Initialize new course with assessmentComponents array
-                course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} }; // Added academicYear, semester, assessmentComponents
+                course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} };
                 courses.push(course);
                 saveData();
-                statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`; // Updated status text
+                statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
             } else {
-                statusDiv.textContent = `Loaded course: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`; // Updated status text
+                statusDiv.textContent = `Loaded course: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-green-900/50 text-green-300';
             }
             activeCourse = course;
-            
+
             // Populate teacher info fields based on active course
             document.getElementById('teacher-real-name').value = activeCourse.teacher.realName || '';
             document.getElementById('teacher-id').value = activeCourse.teacher.id || '';
@@ -1041,7 +1038,7 @@
         } else {
             activeCourse = null;
             document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-            statusDiv.textContent = 'Please complete all Course selections.'; // Updated text
+            statusDiv.textContent = 'Please complete all Course selections.';
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
             renderTeacherInfoSection(); // Clear teacher info display
         }
@@ -1050,10 +1047,20 @@
         renderAssessmentComponents(); // New: Render assessment components dropdown
         updateCategoryManagementSectionState(); // New: Update state of category management section
     }
-    
+
     function checkTeacherFormValidity() {
         const realName = document.getElementById('teacher-real-name').value.trim();
-        document.getElementById('save-teacher-info-button').disabled = !activeCourse || !realName;
+        const saveButton = document.getElementById('save-teacher-info-button');
+        const hint = document.getElementById('save-teacher-hint');
+
+        saveButton.disabled = !activeCourse || !realName;
+
+        // Only show hint if button is enabled and teacher info is NOT yet saved (or name is empty)
+        if (!saveButton.disabled && (!activeCourse.teacher || !activeCourse.teacher.realName)) {
+            hint.classList.remove('hidden');
+        } else {
+            hint.classList.add('hidden');
+        }
     }
 
     function saveTeacherInfo() {
@@ -1063,7 +1070,7 @@
         saveData();
         showToast('Teacher information saved!', 'success');
         renderTeacherInfoSection(); // Update UI after saving
-        updateMainContentState();
+        updateMainContentState(); // <--- This call is crucial for unlocking main content
     }
 
     // New function to render teacher info section (display or edit form)
@@ -1072,6 +1079,8 @@
         const editFormDiv = document.getElementById('teacher-info-edit-form');
         const teacherNameInput = document.getElementById('teacher-real-name');
         const teacherIdInput = document.getElementById('teacher-id');
+        const saveTeacherHint = document.getElementById('save-teacher-hint');
+
 
         if (activeCourse && activeCourse.teacher && activeCourse.teacher.realName) {
             // Show display mode
@@ -1079,6 +1088,7 @@
             editFormDiv.classList.add('hidden');
             document.getElementById('display-teacher-name').textContent = activeCourse.teacher.realName;
             document.getElementById('display-teacher-id').textContent = `ID: ${activeCourse.teacher.id || 'N/A'}`;
+            saveTeacherHint.classList.add('hidden'); // Hide hint when info is displayed
         } else {
             // Show edit form mode
             displayDiv.classList.add('hidden');
@@ -1088,7 +1098,7 @@
                 teacherNameInput.value = '';
                 teacherIdInput.value = '';
             }
-            checkTeacherFormValidity(); // Ensure save button state is correct
+            checkTeacherFormValidity(); // Ensure save button state and hint state are correct
         }
     }
 
@@ -1101,7 +1111,7 @@
 
         displayDiv.classList.add('hidden');
         editFormDiv.classList.remove('hidden');
-        
+
         // Pre-fill form with current activeCourse teacher data
         teacherNameInput.value = activeCourse.teacher.realName || '';
         teacherIdInput.value = activeCourse.teacher.id || '';
@@ -1129,17 +1139,17 @@
 
     function resetCourseData() {
         if (!activeCourse) return;
-        const courseIdentifier = `${activeCourse.subject} (${activeCourse.gradeLevel}/${activeCourse.room}) - ${activeCourse.academicYear} ${activeCourse.semester}`; // Updated identifier
-        // New: Clear assessment components instead of categories directly
-        activeCourse.assessmentComponents = []; 
-        activeCourse.teacher = {}; 
+        const courseIdentifier = `${activeCourse.subject} (${activeCourse.gradeLevel}/${activeCourse.room}) - ${activeCourse.academicYear} ${activeCourse.semester}`;
+        // Clear assessment components instead of categories directly
+        activeCourse.assessmentComponents = [];
+        activeCourse.teacher = {};
         // Remove scores related to this course from all students
         students.forEach(s => {
             if (s.scores && s.scores[activeCourse.id]) {
                 delete s.scores[activeCourse.id];
             }
         });
-        saveData(); 
+        saveData();
         // Clear UI fields
         document.getElementById('teacher-real-name').value = '';
         document.getElementById('teacher-id').value = '';
@@ -1149,16 +1159,18 @@
 
         // Reset course selection dropdowns and status
         activeCourse = null;
-        selectedAssessmentComponent = null; // New: Reset selected component
+        selectedAssessmentComponent = null;
         document.getElementById('select-subject').value = '';
         document.getElementById('select-grade-level').value = '';
         document.getElementById('select-room').value = '';
-        document.getElementById('select-academic-year').value = ''; // New
-        document.getElementById('select-semester').value = ''; // New
+        document.getElementById('select-academic-year').value = '';
+        document.getElementById('select-semester').value = '';
+        selectedAcademicYear = ''; // Reset global variable
+        selectedSemester = ''; // Reset global variable
         document.getElementById('course-selection-status').classList.add('hidden');
         renderTeacherInfoSection(); // Ensure teacher info section is reset
-        renderAssessmentComponents(); // New: Re-render components dropdown
-        updateCategoryManagementSectionState(); // New: Update state of category management section
+        renderAssessmentComponents();
+        updateCategoryManagementSectionState();
     }
 
     // --- NEW: ASSESSMENT COMPONENT LOGIC ---
@@ -1173,47 +1185,47 @@
         document.getElementById('grading-period-weight-warning').classList.toggle('hidden', totalWeight === 100 || activeCourse.assessmentComponents.length === 0);
     }
 
-    function renderAssessmentComponents() { // Renamed from renderGradingPeriods
-        const container = document.getElementById('grading-period-list'); // Keep ID for now, but conceptually it's assessment component list
-        const selectDropdown = document.getElementById('select-grading-period'); // Keep ID for now, but conceptually it's assessment component select
-        if (!activeCourse) { 
-            container.innerHTML = ''; 
-            selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>'; // Updated text
-            return; 
+    function renderAssessmentComponents() {
+        const container = document.getElementById('grading-period-list');
+        const selectDropdown = document.getElementById('select-grading-period');
+        if (!activeCourse) {
+            container.innerHTML = '';
+            selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>';
+            return;
         }
 
-        container.innerHTML = activeCourse.assessmentComponents.map((component, index) => { // Renamed period to component
-            const isEditing = editingAssessmentComponentIndex === index; // Renamed editingGradingPeriodIndex
+        container.innerHTML = activeCourse.assessmentComponents.map((component, index) => {
+            const isEditing = editingAssessmentComponentIndex === index;
             if (isEditing) {
                 return `
-                <div class="p-3 rounded-md shadow-sm border border-indigo-500 card flex items-center gap-2">
-                    <input type="text" value="${component.name}" class="grading-period-name-input flex-grow p-2">
-                    <input type="number" value="${component.weight}" class="grading-period-weight-input w-20 p-2 text-center">
-                    <span class="text-slate-400">%</span>
-                    <button onclick="saveAssessmentComponentChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
-                    <button onclick="cancelEditAssessmentComponent()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
-                </div>`;
+                    <div class="p-3 rounded-md shadow-sm border border-indigo-500 card flex items-center gap-2">
+                        <input type="text" value="${component.name}" class="grading-period-name-input flex-grow p-2">
+                        <input type="number" value="${component.weight}" class="grading-period-weight-input w-20 p-2 text-center">
+                        <span class="text-slate-400">%</span>
+                        <button onclick="saveAssessmentComponentChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
+                        <button onclick="cancelEditAssessmentComponent()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
+                    </div>`;
             } else {
                 return `
-                <div class="flex items-center gap-2 p-2 rounded-md border card">
-                    <span class="flex-grow font-medium">${component.name} (${component.weight}%)</span>
-                    <button onclick="startEditAssessmentComponent(${index})" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
-                    <button onclick="showDeleteAssessmentComponentConfirmation(${index})" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
-                </div>`;
+                    <div class="flex items-center gap-2 p-2 rounded-md border card">
+                        <span class="flex-grow font-medium">${component.name} (${component.weight}%)</span>
+                        <button onclick="startEditAssessmentComponent(${index})" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
+                        <button onclick="showDeleteAssessmentComponentConfirmation(${index})" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
+                    </div>`;
             }
         }).join('');
 
         // Populate the select dropdown for assessment components
-        const currentSelectedComponentId = selectedAssessmentComponent ? selectedAssessmentComponent.id : ''; // Renamed
-        selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>' + activeCourse.assessmentComponents.map(component => // Renamed
+        const currentSelectedComponentId = selectedAssessmentComponent ? selectedAssessmentComponent.id : '';
+        selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>' + activeCourse.assessmentComponents.map(component =>
             `<option value="${component.id}" ${component.id === currentSelectedComponentId ? 'selected' : ''}>${component.name}</option>`
         ).join('');
-        
-        updateTotalAssessmentComponentWeightDisplay(); // Renamed
+
+        updateTotalAssessmentComponentWeightDisplay();
         updateCategoryManagementSectionState(); // Ensure state is updated after rendering components
     }
 
-    function addGradingPeriod() { // Renamed to addAssessmentComponent, but keeping original name for now due to HTML onclick
+    function addGradingPeriod() { // Function name from HTML remains, but it adds an "Assessment Component"
         if (!activeCourse) return;
         const nameInput = document.getElementById('new-grading-period-name');
         const weightInput = document.getElementById('new-grading-period-weight');
@@ -1224,36 +1236,36 @@
         if (activeCourse.assessmentComponents.some(p => p.name.toLowerCase() === name.toLowerCase())) { showToast('Assessment component name already exists.', 'error'); return; }
         const totalWeight = activeCourse.assessmentComponents.reduce((sum, p) => sum + p.weight, 0);
         if (totalWeight + weight > 100) { showToast('Total component weight cannot exceed 100%.', 'error'); return; }
-        
-        activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] }); // New component has an empty categories array
+
+        activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] });
         nameInput.value = '';
         weightInput.value = '';
         saveData();
     }
 
-    function startEditAssessmentComponent(index) { // Renamed
+    function startEditAssessmentComponent(index) {
         if (editingAssessmentComponentIndex !== -1) { showToast('Please save or cancel the current component edit first.', 'error'); return; }
         editingAssessmentComponentIndex = index;
-        originalAssessmentComponentState = JSON.parse(JSON.stringify(activeCourse.assessmentComponents[index])); // Renamed
-        renderAssessmentComponents(); // Renamed
+        originalAssessmentComponentState = JSON.parse(JSON.stringify(activeCourse.assessmentComponents[index]));
+        renderAssessmentComponents();
     }
 
-    function cancelEditAssessmentComponent() { // Renamed
+    function cancelEditAssessmentComponent() {
         if (originalAssessmentComponentState) {
-            activeCourse.assessmentComponents[editingAssessmentComponentIndex] = originalAssessmentComponentState; // Renamed
+            activeCourse.assessmentComponents[editingAssessmentComponentIndex] = originalAssessmentComponentState;
         }
-        editingAssessmentComponentIndex = -1; // Renamed
+        editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
-        renderAssessmentComponents(); // Renamed
+        renderAssessmentComponents();
     }
 
-    function saveAssessmentComponentChanges(index) { // Renamed
-        const componentElement = document.querySelector(`#grading-period-list > div:nth-child(${index + 1})`); // Keep ID for now
-        const newName = componentElement.querySelector('.grading-period-name-input').value.trim(); // Keep class for now
-        const newWeight = parseFloat(componentElement.querySelector('.grading-period-weight-input').value); // Keep class for now
+    function saveAssessmentComponentChanges(index) {
+        const componentElement = document.querySelector(`#grading-period-list > div:nth-child(${index + 1})`);
+        const newName = componentElement.querySelector('.grading-period-name-input').value.trim();
+        const newWeight = parseFloat(componentElement.querySelector('.grading-period-weight-input').value);
 
         if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid component name or weight.', 'error'); return; }
-        if (activeCourse.assessmentComponents.some((p, i) => i !== index && p.name === newName)) { showToast('Assessment component name already exists.', 'error'); return; }
+        if (activeCourse.assessmentComponents.some((p, i) => i !== index && p.name.toLowerCase() === newName.toLowerCase())) { showToast('Assessment component name already exists.', 'error'); return; }
         const totalWeight = activeCourse.assessmentComponents.reduce((sum, p, i) => sum + (i === index ? newWeight : p.weight), 0);
         if (totalWeight > 100) { showToast('Total component weight exceeds 100%.', 'error'); return; }
 
@@ -1267,27 +1279,27 @@
             });
         }
 
-        activeCourse.assessmentComponents[index].name = newName; // Renamed
-        activeCourse.assessmentComponents[index].weight = newWeight; // Renamed
-        editingAssessmentComponentIndex = -1; // Renamed
+        activeCourse.assessmentComponents[index].name = newName;
+        activeCourse.assessmentComponents[index].weight = newWeight;
+        editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
         saveData();
         showToast('Assessment component changes saved!', 'success');
     }
 
-    function showDeleteAssessmentComponentConfirmation(index) { // Renamed
-        const componentName = activeCourse.assessmentComponents[index].name; // Renamed
+    function showDeleteAssessmentComponentConfirmation(index) {
+        const componentName = activeCourse.assessmentComponents[index].name;
         showConfirmationModal(
             'Confirm Delete Assessment Component',
             `Are you sure you want to delete the assessment component "${componentName}"? All categories and associated scores within this component will be removed. This action cannot be undone.`,
-            () => deleteAssessmentComponent(index) // Renamed
+            () => deleteAssessmentComponent(index)
         );
     }
 
-    function deleteAssessmentComponent(index) { // Renamed
+    function deleteAssessmentComponent(index) {
         if (!activeCourse) return;
-        const componentIdToDelete = activeCourse.assessmentComponents[index].id; // Renamed
-        const componentName = activeCourse.assessmentComponents[index].name; // Renamed
+        const componentIdToDelete = activeCourse.assessmentComponents[index].id;
+        const componentName = activeCourse.assessmentComponents[index].name;
 
         // Remove scores associated with this component from all students
         students.forEach(s => {
@@ -1296,35 +1308,35 @@
             }
         });
 
-        activeCourse.assessmentComponents.splice(index, 1); // Renamed
+        activeCourse.assessmentComponents.splice(index, 1);
         saveData();
         showToast(`Assessment component "${componentName}" removed.`, 'success');
 
         // If the deleted component was the currently selected one, clear selection
         if (selectedAssessmentComponent && selectedAssessmentComponent.id === componentIdToDelete) {
             selectedAssessmentComponent = null;
-            document.getElementById('select-grading-period').value = ''; // Keep ID for now
+            document.getElementById('select-grading-period').value = '';
         }
-        renderAssessmentComponents(); // Renamed
-        updateCategoryManagementSectionState(); // Ensure state is updated
+        renderAssessmentComponents();
+        updateCategoryManagementSectionState();
     }
 
-    function selectGradingPeriod() { // Renamed to selectAssessmentComponent, but keeping original name for now due to HTML onchange
-        const selectElement = document.getElementById('select-grading-period'); // Keep ID for now
-        const componentId = selectElement.value; // Renamed
-        const statusDiv = document.getElementById('selected-grading-period-status'); // Keep ID for now
-        const currentComponentNameSpan = document.getElementById('current-period-name'); // Keep ID for now
+    function selectGradingPeriod() { // Function name from HTML remains, but it selects an "Assessment Component"
+        const selectElement = document.getElementById('select-grading-period');
+        const componentId = selectElement.value;
+        const statusDiv = document.getElementById('selected-grading-period-status');
+        const currentComponentNameSpan = document.getElementById('current-period-name');
 
         if (componentId) {
-            selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === componentId); // Renamed period to component
+            selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === componentId);
             statusDiv.textContent = `Managing categories for: ${selectedAssessmentComponent.name}`;
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
-            currentComponentNameSpan.textContent = selectedAssessmentComponent.name; // Updated text
+            currentComponentNameSpan.textContent = selectedAssessmentComponent.name;
         } else {
             selectedAssessmentComponent = null;
-            statusDiv.textContent = 'No Assessment Component selected.'; // Updated text
+            statusDiv.textContent = 'No Assessment Component selected.';
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
-            currentComponentNameSpan.textContent = 'Selected Assessment Component'; // Updated text
+            currentComponentNameSpan.textContent = 'Selected Assessment Component';
         }
         statusDiv.classList.remove('hidden');
         updateCategoryManagementSectionState();
@@ -1334,7 +1346,7 @@
     function updateCategoryManagementSectionState() {
         const categoryManagementSection = document.getElementById('category-management-section');
         const categoryManagementOverlay = document.getElementById('category-management-overlay');
-        if (selectedAssessmentComponent) { // Renamed
+        if (selectedAssessmentComponent) {
             categoryManagementSection.classList.remove('disabled-section');
             categoryManagementOverlay.classList.add('hidden');
         } else {
@@ -1346,83 +1358,83 @@
 
     // --- CATEGORY LOGIC (now nested under selectedAssessmentComponent) ---
     function updateTotalCategoryWeightDisplay() {
-        if (!selectedAssessmentComponent) { // Renamed
+        if (!selectedAssessmentComponent) {
             document.getElementById('current-total-category-weight').textContent = '0';
             document.getElementById('category-weight-warning').classList.add('hidden');
             return;
         }
-        const totalWeight = selectedAssessmentComponent.categories.reduce((sum, cat) => sum + Number(cat.weight), 0); // Renamed
+        const totalWeight = selectedAssessmentComponent.categories.reduce((sum, cat) => sum + Number(cat.weight), 0);
         document.getElementById('current-total-category-weight').textContent = totalWeight;
-        document.getElementById('category-weight-warning').classList.toggle('hidden', totalWeight === 100 || selectedAssessmentComponent.categories.length === 0); // Renamed
+        document.getElementById('category-weight-warning').classList.toggle('hidden', totalWeight === 100 || selectedAssessmentComponent.categories.length === 0);
     }
-    
+
     function renderCategories() {
         const container = document.getElementById('category-settings');
-        if (!selectedAssessmentComponent) { container.innerHTML = ''; return; } // Clear if no component selected
-        
-        container.innerHTML = selectedAssessmentComponent.categories.map((cat, index) => { // Renamed
+        if (!selectedAssessmentComponent) { container.innerHTML = ''; return; }
+
+        container.innerHTML = selectedAssessmentComponent.categories.map((cat, index) => {
             const isEditing = editingCategoryIndex === index;
             if (isEditing) {
                 return `
-                <details class="p-3 rounded-md shadow-sm border border-indigo-500 card" open>
-                    <summary class="flex items-center gap-4 cursor-pointer font-medium text-lg">
-                        <input type="text" value="${cat.name}" class="category-name-input flex-grow p-2">
-                        <input type="number" value="${cat.weight}" class="category-weight-input w-20 p-2 text-center">
-                        <span class="text-slate-400">%</span>
-                        <button onclick="saveCategoryChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md">Save</button>
-                        <button onclick="cancelEditCategory()" class="bg-slate-400 text-white px-3 py-2 rounded-md">Cancel</button>
-                    </summary>
-                    <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
-                        <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
-                        <div id="sub-items-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="new-sub-item-name-${index}" placeholder="Sub-item name" class="flex-grow p-2">
-                            <input type="number" id="new-sub-item-max-score-${index}" placeholder="Max Score" class="w-24 p-2">
-                            <button onclick="addSubItem(${index})" class="bg-blue-500 text-white px-3 py-2 rounded-md">Add</button>
+                    <details class="p-3 rounded-md shadow-sm border border-indigo-500 card" open>
+                        <summary class="flex items-center gap-4 cursor-pointer font-medium text-lg">
+                            <input type="text" value="${cat.name}" class="category-name-input flex-grow p-2">
+                            <input type="number" value="${cat.weight}" class="category-weight-input w-20 p-2 text-center">
+                            <span class="text-slate-400">%</span>
+                            <button onclick="saveCategoryChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
+                            <button onclick="cancelEditCategory()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
+                        </summary>
+                        <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
+                            <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
+                            <div id="sub-items-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="new-sub-item-name-${index}" placeholder="Sub-item name" class="flex-grow p-2">
+                                <input type="number" id="new-sub-item-max-score-${index}" placeholder="Max Score" class="w-24 p-2">
+                                <button onclick="addSubItem(${index})" class="bg-blue-500 text-white px-3 py-2 rounded-md">Add</button>
+                            </div>
                         </div>
-                    </div>
-                </details>`;
+                    </details>`;
             } else {
                 return `
-                <details class="p-3 rounded-md shadow-sm border card">
-                    <summary class="flex items-center gap-4 cursor-pointer font-medium text-lg">
-                        <span class="flex-grow">${cat.name} (${cat.weight}%)</span>
-                        <button onclick="startEditCategory(${index})" class="bg-yellow-500 text-white px-3 py-2 rounded-md">Edit</button>
-                        <button onclick="showDeleteCategoryConfirmation(${index})" class="bg-red-500 text-white px-3 py-2 rounded-md">Delete</button>
-                    </summary>
-                    <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
-                        <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
-                        <div id="sub-items-readonly-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
-                    </div>
-                </details>`;
+                    <details class="p-3 rounded-md shadow-sm border card">
+                        <summary class="flex items-center gap-4 cursor-pointer font-medium text-lg">
+                            <span class="flex-grow">${cat.name} (${cat.weight}%)</span>
+                            <button onclick="startEditCategory(${index})" class="bg-yellow-500 text-white px-3 py-2 rounded-md text-sm">Edit</button>
+                            <button onclick="showDeleteCategoryConfirmation(${index})" class="bg-red-500 text-white px-3 py-2 rounded-md text-sm">Delete</button>
+                        </summary>
+                        <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
+                            <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
+                            <div id="sub-items-readonly-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
+                        </div>
+                    </details>`;
             }
         }).join('');
         updateTotalCategoryWeightDisplay(); // Update total weight display after rendering
     }
 
     function renderSubItems(catIndex) {
-        const cat = selectedAssessmentComponent.categories[catIndex]; // Use selectedAssessmentComponent
+        const cat = selectedAssessmentComponent.categories[catIndex];
         const isEditing = editingCategoryIndex === catIndex;
         if (!cat.subItems || cat.subItems.length === 0) return '<p class="text-slate-400 text-sm">No sub-items for this category.</p>';
-        
+
         return cat.subItems.map((sub, subIndex) => {
             if (isEditing) {
                 return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
-                    <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
-                    <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
-                    <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
-                </div>`;
+                        <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
+                        <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
+                        <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
+                    </div>`;
             } else {
                 return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
-                    <span class="flex-grow text-sm">${sub.name}</span>
-                    <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} pts</span>
-                </div>`;
+                        <span class="flex-grow text-sm">${sub.name}</span>
+                        <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} pts</span>
+                    </div>`;
             }
         }).join('');
     }
 
     function addCategory() {
-        if (!selectedAssessmentComponent) return; // Must have a component selected
+        if (!selectedAssessmentComponent) return;
         const nameInput = document.getElementById('new-category-name');
         const weightInput = document.getElementById('new-category-weight');
         const name = nameInput.value.trim();
@@ -1432,26 +1444,25 @@
         if (selectedAssessmentComponent.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
         const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c) => sum + c.weight, 0);
         if (totalWeight + weight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
-        
+
         selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name, weight, subItems: [] });
         nameInput.value = '';
         weightInput.value = '';
         saveData();
     }
-    
+
     function handleCategoryCsvImport(event) {
-        if (!selectedAssessmentComponent) { // Renamed
-            showToast("Please select an Assessment Component first to import categories.", "error"); // Updated text
+        if (!selectedAssessmentComponent) {
+            showToast("Please select an Assessment Component first to import categories.", "error");
             return;
         }
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = e => {
-            const lines = e.target.result.split(/\r\n|\n/).slice(1); // Skip header line
+            const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1); // Filter empty lines and skip header
             let added = 0, updated = 0, skipped = 0;
             lines.forEach(line => {
-                if (!line.trim()) return;
                 const [categoryName, weight] = line.split(',').map(f => f.trim());
                 const parsedWeight = parseFloat(weight);
 
@@ -1460,19 +1471,25 @@
                     return; // Skip invalid rows
                 }
 
-                const existingIndex = selectedAssessmentComponent.categories.findIndex(c => c.name.toLowerCase() === categoryName.toLowerCase()); // Renamed
-                const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c) => sum + c.weight, 0); // Renamed
+                const existingIndex = selectedAssessmentComponent.categories.findIndex(c => c.name.toLowerCase() === categoryName.toLowerCase());
+                const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c) => sum + c.weight, 0);
 
                 if (existingIndex !== -1) {
                     // Update existing category
-                    selectedAssessmentComponent.categories[existingIndex].weight = parsedWeight; // Renamed
+                    const currentCategoryWeight = selectedAssessmentComponent.categories[existingIndex].weight;
+                    if ((totalWeight - currentCategoryWeight + parsedWeight) > 100) {
+                        showToast(`Cannot update "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
+                        skipped++;
+                        return;
+                    }
+                    selectedAssessmentComponent.categories[existingIndex].weight = parsedWeight;
                     updated++;
                 } else if (totalWeight + parsedWeight > 100) {
-                    showToast(`Cannot add "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000); // Updated text
+                    showToast(`Cannot add "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
                     skipped++;
                 } else {
                     // Add new category
-                    selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name: categoryName, weight: parsedWeight, subItems: [] }); // Renamed
+                    selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name: categoryName, weight: parsedWeight, subItems: [] });
                     added++;
                 }
             });
@@ -1485,7 +1502,7 @@
 
     // Function to show confirmation for deleting a category
     function showDeleteCategoryConfirmation(index) {
-        const categoryName = selectedAssessmentComponent.categories[index].name; // Use selectedAssessmentComponent
+        const categoryName = selectedAssessmentComponent.categories[index].name;
         showConfirmationModal(
             'Confirm Delete Category',
             `Are you sure you want to delete the category "${categoryName}"? All associated scores for this category will be removed from all students. This action cannot be undone.`,
@@ -1494,29 +1511,29 @@
     }
 
     function removeCategory(index) {
-        if (!selectedAssessmentComponent) return; // Must have a component selected
-        const catName = selectedAssessmentComponent.categories[index].name; // Use selectedAssessmentComponent
+        if (!selectedAssessmentComponent) return;
+        const catName = selectedAssessmentComponent.categories[index].name;
         selectedAssessmentComponent.categories.splice(index, 1); // Remove category
         // Remove scores associated with this category from all students
         students.forEach(s => {
-            if (s.scores[activeCourse.id] && s.scores[activeCourse.id][selectedAssessmentComponent.name]) { // Renamed
-                delete s.scores[activeCourse.id][selectedAssessmentComponent.name][catName]; // Renamed
+            if (s.scores[activeCourse.id] && s.scores[activeCourse.id][selectedAssessmentComponent.name] && s.scores[activeCourse.id][selectedAssessmentComponent.name][catName]) {
+                delete s.scores[activeCourse.id][selectedAssessmentComponent.name][catName];
             }
         });
         saveData(); // Save changes
         showToast(`Category "${catName}" removed.`, 'success');
     }
-    
+
     function startEditCategory(index) {
         if (editingCategoryIndex !== -1) { showToast('Please save or cancel the current edit first.', 'error'); return; }
         editingCategoryIndex = index;
-        originalCategoryState = JSON.parse(JSON.stringify(selectedAssessmentComponent.categories[index])); // Use selectedAssessmentComponent
+        originalCategoryState = JSON.parse(JSON.stringify(selectedAssessmentComponent.categories[index]));
         renderCategories(); // Re-render to show editing UI
     }
 
     function cancelEditCategory() {
         if (originalCategoryState) {
-            selectedAssessmentComponent.categories[editingCategoryIndex] = originalCategoryState; // Use selectedAssessmentComponent
+            selectedAssessmentComponent.categories[editingCategoryIndex] = originalCategoryState;
         }
         editingCategoryIndex = -1;
         originalCategoryState = null;
@@ -1527,35 +1544,41 @@
         const catElement = document.querySelector(`#category-settings details:nth-child(${index + 1})`);
         const newName = catElement.querySelector('.category-name-input').value.trim();
         const newWeight = parseFloat(catElement.querySelector('.category-weight-input').value);
-        
+
         if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid name or weight.', 'error'); return; }
         // Check for duplicate category names (excluding the current category being edited)
-        if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name === newName)) { showToast('Category name already exists in this component.', 'error'); return; } // Updated text
+        if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name.toLowerCase() === newName.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
         // Check total weight limit
-        const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c, i) => sum + (i === index ? newWeight : c.weight), 0); // Renamed
-        if (totalWeight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; } // Updated text
+        const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c, i) => sum + (i === index ? newWeight : c.weight), 0);
+        if (totalWeight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
 
         const newSubItems = [];
-        const subItemElements = catElement.querySelectorAll('#sub-items-' + index + ' > div');
+        const subItemElements = catElement.querySelectorAll(`#sub-items-${index} > div`);
         subItemElements.forEach(el => {
             const subName = el.querySelector('.sub-item-name-input')?.value.trim();
             const maxScore = parseFloat(el.querySelector('.sub-item-max-score-input')?.value);
-            if(subName && !isNaN(maxScore)) {
-                newSubItems.push({ id: crypto.randomUUID(), name: subName, maxScore }); // Preserve ID or generate new
+            // Only push valid sub-items
+            if (subName && !isNaN(maxScore) && maxScore >= 0) { // Max score can be 0 (e.g., participation)
+                // Re-use ID if it exists (for existing sub-items), otherwise generate new
+                // Find existing sub-item by name and if found, use its ID.
+                const existingSubItem = originalCategoryState.subItems?.find(sub => sub.name.toLowerCase() === subName.toLowerCase());
+                newSubItems.push({ id: existingSubItem ? existingSubItem.id : crypto.randomUUID(), name: subName, maxScore });
+            } else if (subName && (isNaN(maxScore) || maxScore < 0)) {
+                showToast(`Invalid max score for sub-item "${subName}". Must be a number >= 0.`, 'error', 5000);
             }
         });
 
         // If category name changed, update student scores to reflect new name
         if (newName !== originalCategoryState.name) {
             students.forEach(s => {
-                if (s.scores[activeCourse.id] && s.scores[activeCourse.id][selectedAssessmentComponent.name] && s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name]) { // Renamed
-                    s.scores[activeCourse.id][selectedAssessmentComponent.name][newName] = s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name]; // Renamed
-                    delete s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name]; // Renamed
+                if (s.scores[activeCourse.id] && s.scores[activeCourse.id][selectedAssessmentComponent.name] && s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name]) {
+                    s.scores[activeCourse.id][selectedAssessmentComponent.name][newName] = s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name];
+                    delete s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name];
                 }
             });
         }
-        
-        selectedAssessmentComponent.categories[index] = { ...originalCategoryState, name: newName, weight: newWeight, subItems: newSubItems }; // Renamed
+
+        selectedAssessmentComponent.categories[index] = { ...originalCategoryState, name: newName, weight: newWeight, subItems: newSubItems };
         editingCategoryIndex = -1; // Exit editing mode
         originalCategoryState = null;
         saveData(); // Save changes
@@ -1565,20 +1588,30 @@
     function addSubItem(catIndex) {
         const name = document.getElementById(`new-sub-item-name-${catIndex}`).value.trim();
         const maxScore = parseFloat(document.getElementById(`new-sub-item-max-score-${catIndex}`).value);
-        if (!name || isNaN(maxScore) || maxScore <= 0) { showToast('Invalid sub-item name or max score.', 'error'); return; }
-        
-        const cat = selectedAssessmentComponent.categories[catIndex]; // Use selectedAssessmentComponent
+        if (!name || isNaN(maxScore) || maxScore < 0) { showToast('Invalid sub-item name or max score (must be >= 0).', 'error'); return; }
+
+        const cat = selectedAssessmentComponent.categories[catIndex];
         if (!cat.subItems) cat.subItems = [];
-        cat.subItems.push({ id: crypto.randomUUID(), name, maxScore }); // Add with unique ID
-        
+        // Check for duplicate sub-item name within the category
+        if (cat.subItems.some(sub => sub.name.toLowerCase() === name.toLowerCase())) {
+            showToast('Sub-item name already exists in this category.', 'error');
+            return;
+        }
+
+        cat.subItems.push({ id: crypto.randomUUID(), name, maxScore });
+
+        // Update the rendered sub-items dynamically for the current category in edit mode
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
         document.getElementById(`new-sub-item-name-${catIndex}`).value = ''; // Clear input fields
         document.getElementById(`new-sub-item-max-score-${catIndex}`).value = '';
+        // No saveData() call here, it will be saved when "Save Category" is clicked
     }
 
     function removeSubItem(catIndex, subIndex) {
-        selectedAssessmentComponent.categories[catIndex].subItems.splice(subIndex, 1); // Use selectedAssessmentComponent
-        document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex); // Re-render sub-items
+        selectedAssessmentComponent.categories[catIndex].subItems.splice(subIndex, 1);
+        // Update the rendered sub-items dynamically for the current category in edit mode
+        document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
+        // No saveData() call here, it will be saved when "Save Category" is clicked
     }
 
 
@@ -1589,22 +1622,22 @@
         const roll = document.getElementById('new-student-roll-number').value.trim();
         document.getElementById('add-student-button').disabled = !name || !id || !roll;
     }
-    
+
     function addStudent() {
         if (!activeCourse) return;
         const realName = document.getElementById('new-student-real-name').value.trim();
         const nickname = document.getElementById('new-student-nickname').value.trim();
         const studentId = document.getElementById('new-student-id').value.trim();
         const rollNumber = document.getElementById('new-student-roll-number').value.trim();
-        
-        // Check for duplicate student ID
-        if (students.some(s => s.studentId === studentId)) { showToast('Student ID already exists.', 'error'); return; }
+
+        // Check for duplicate student ID globally
+        if (students.some(s => s.studentId === studentId)) { showToast('Student ID already exists in the system. Please use a unique ID.', 'error'); return; }
         // Check for duplicate roll number within the same class (grade and room)
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
-        if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { showToast('Roll Number already exists in this class.', 'error'); return; }
+        if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { showToast('Roll Number already exists for another student in this class.', 'error'); return; }
 
         students.push({ realName, nickname, studentId, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room, scores: {} });
-        
+
         // Clear form fields
         ['new-student-real-name', 'new-student-nickname', 'new-student-id', 'new-student-roll-number'].forEach(id => document.getElementById(id).value = '');
         checkAddStudentFormValidity(); // Re-check validity after clearing
@@ -1624,11 +1657,12 @@
     }
 
     function removeStudent(studentId) {
-        students = students.filter(s => s.studentId !== studentId); // Filter out the student
+        // Filter out the student
+        students = students.filter(s => s.studentId !== studentId);
         saveData(); // Save changes
         showToast('Student removed.', 'success');
     }
-    
+
     function startEditStudent(studentId) {
         if (editingStudentId) {
             showToast('Please save or cancel the current student edit first.', 'error');
@@ -1663,10 +1697,10 @@
             return;
         }
 
-        // Check for duplicate roll number (excluding the student being edited)
+        // Check for duplicate roll number (excluding the student being edited, and ensuring it's in the *current* class)
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
         if (studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === newRollNumber)) {
-            showToast('Roll Number already exists in this class.', 'error');
+            showToast('Roll Number already exists for another student in this class.', 'error');
             return;
         }
 
@@ -1685,7 +1719,7 @@
         if (!activeCourse) { container.innerHTML = ''; return; }
         // Filter students for the active course's grade level and room
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
-        
+
         if (studentsInClass.length === 0) {
             container.innerHTML = '<p class="text-slate-400 text-center p-4">No students in this class yet.</p>';
             return;
@@ -1700,34 +1734,35 @@
             if (editingStudentId === s.studentId) {
                 // EDITING VIEW
                 return `
-                <div id="student-${s.studentId}" class="p-2 rounded-md border-2 border-indigo-500 card space-y-2">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="text" value="${s.realName}" class="edit-student-real-name p-1 col-span-2" placeholder="Full Name">
-                        <input type="text" value="${s.nickname || ''}" class="edit-student-nickname p-1" placeholder="Nickname">
-                        <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="Roll No.">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">Save</button>
-                        <button onclick="cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">Cancel</button>
-                    </div>
-                </div>`;
+                    <div id="student-${s.studentId}" class="p-2 rounded-md border-2 border-indigo-500 card space-y-2">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" value="${s.realName}" class="edit-student-real-name p-1 col-span-2" placeholder="Full Name">
+                            <input type="text" value="${s.nickname || ''}" class="edit-student-nickname p-1 col-span-2" placeholder="Nickname">
+                            <input type="text" value="${s.studentId}" class="edit-student-id p-1" placeholder="Student ID" disabled> <!-- Student ID is not editable -->
+                            <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="Roll No.">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">Save</button>
+                            <button onclick="cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">Cancel</button>
+                        </div>
+                    </div>`;
             } else {
                 // NORMAL VIEW
                 return `
-                <div id="student-${s.studentId}" class="flex items-center gap-2 p-2 rounded-md border card hover:bg-slate-800">
-                    <div class="flex-grow">
-                        <p class="font-medium">${s.rollNumber}. ${s.realName} <span class="text-slate-400">(${s.nickname || 'No Nickname'})</span></p>
-                        <p class="text-sm text-slate-500">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="startEditStudent('${s.studentId}')" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
-                        <button onclick="showDeleteStudentConfirmation('${s.studentId}')" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
-                    </div>
-                </div>`;
+                    <div id="student-${s.studentId}" class="flex items-center gap-2 p-2 rounded-md border card hover:bg-slate-800">
+                        <div class="flex-grow">
+                            <p class="font-medium">${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></p>
+                            <p class="text-sm text-slate-500">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="startEditStudent('${s.studentId}')" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
+                            <button onclick="showDeleteStudentConfirmation('${s.studentId}')" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
+                        </div>
+                    </div>`;
             }
         }).join('');
     }
-    
+
     function handleCsvImport(event) {
         if (!activeCourse) {
             showToast("Please select a course first to import students.", "error");
@@ -1737,29 +1772,35 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = e => {
-            const lines = e.target.result.split(/\r\n|\n/).slice(1); // Skip header line
+            const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1); // Filter empty lines and skip header
             let added = 0, updated = 0, skipped = 0;
             lines.forEach(line => {
-                if (!line.trim()) return;
                 const [studentId, realName, nickname, rollNumber] = line.split(',').map(f => f.trim());
                 if (!studentId || !realName || !rollNumber) {
                     skipped++;
+                    console.warn(`Skipping invalid student CSV row: ${line}`);
                     return; // Skip invalid rows
                 }
 
                 const existingIndex = students.findIndex(s => s.studentId === studentId);
                 const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
-                const rollNumberExistsInClass = studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === rollNumber);
+                const rollNumberExistsInCurrentClass = studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === rollNumber);
+                // check if the studentId already exists but with a different roll number AND in the same class
+                const studentIdExistsWithDifferentRollInSameClass = students.some(s => s.studentId === studentId && s.rollNumber !== rollNumber && s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
+
 
                 if (existingIndex !== -1) {
                     // Update existing student
+                    if (rollNumberExistsInCurrentClass && students[existingIndex].rollNumber !== rollNumber) {
+                         showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping update for ${realName} (ID: ${studentId}).`, 'error', 5000);
+                         skipped++;
+                         return;
+                    }
                     const existingStudent = students[existingIndex];
-                    // Only update if the student is meant for this class, or if it's not assigned to a class yet
-                    // Or if they are moving classes (current grade/room will be updated)
                     Object.assign(existingStudent, { realName, nickname, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room });
                     updated++;
-                } else if (rollNumberExistsInClass) {
-                    showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping import for ${realName}.`, 'error', 5000);
+                } else if (rollNumberExistsInCurrentClass || studentIdExistsWithDifferentRollInSameClass) {
+                    showToast(`Conflict: Student with Roll Number ${rollNumber} or Student ID ${studentId} already exists in this class with a different entry. Skipping import for ${realName}.`, 'error', 7000);
                     skipped++;
                 }
                 else {
@@ -1784,19 +1825,19 @@
         }
 
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room)
-                                         .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)); // Sort numerically
-        
+                                       .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)); // Sort numerically
+
         let csvContent = "data:text/csv;charset=utf-8,";
-        
+
         // Define CSV headers
         const headers = ["Roll Number", "Student ID", "Full Name", "Nickname"];
         // Iterate through assessment components and then categories for headers
-        activeCourse.assessmentComponents.forEach(component => { // Renamed
+        activeCourse.assessmentComponents.forEach(component => {
             component.categories.forEach(cat => {
                 if (cat.subItems && cat.subItems.length > 0) {
-                    cat.subItems.forEach(sub => headers.push(`"${component.name} - ${cat.name} - ${sub.name}"`));
+                    cat.subItems.forEach(sub => headers.push(`"${component.name.replace(/"/g, '""')} - ${cat.name.replace(/"/g, '""')} - ${sub.name.replace(/"/g, '""')}"`));
                 } else {
-                    headers.push(`"${component.name} - ${cat.name}"`);
+                    headers.push(`"${component.name.replace(/"/g, '""')} - ${cat.name.replace(/"/g, '""')}"`);
                 }
             });
         });
@@ -1808,10 +1849,10 @@
             const row = [
                 student.rollNumber,
                 student.studentId,
-                `"${student.realName}"`, // Quote names to handle commas
-                `"${student.nickname || ''}"`
+                `"${student.realName.replace(/"/g, '""')}"`, // Quote names and escape existing quotes
+                `"${(student.nickname || '').replace(/"/g, '""')}"`
             ];
-            activeCourse.assessmentComponents.forEach(component => { // Renamed
+            activeCourse.assessmentComponents.forEach(component => {
                 component.categories.forEach(cat => {
                     if (cat.subItems && cat.subItems.length > 0) {
                         cat.subItems.forEach(sub => {
@@ -1825,14 +1866,14 @@
                 });
             });
             const { finalScore, grade } = calculateFinalScoreAndGrade(student, activeCourse);
-            row.push(finalScore, grade);
+            row.push(finalScore, `"${grade}"`);
             csvContent += row.join(",") + "\r\n";
         });
 
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `${activeCourse.id}_scores.csv`);
+        link.setAttribute("download", `${activeCourse.subject}_${activeCourse.gradeLevel}_${activeCourse.room}_${activeCourse.academicYear}_${activeCourse.semester}_scores.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1842,70 +1883,70 @@
     // --- SCORE CALCULATION & RENDERING ---
     // Calculates current and max scores for a given category for a student
     // Now accepts componentName to correctly access nested scores
-    function getCategoryScores(student, componentName, category, courseToUse) { // Renamed periodName to componentName
+    function getCategoryScores(student, componentName, category, courseToUse) {
         let current = 0;
         let max = 0;
         // Ensure courseToUse, student scores, and course ID are valid
-        if (!courseToUse || !student.scores || !student.scores[courseToUse.id] || !student.scores[courseToUse.id][componentName]) { // Renamed periodName
-            console.log(`getCategoryScores: Missing data for student ${student.studentId}, component ${componentName} or course ${courseToUse?.id}`); // Updated text
-            return { current, max }; 
+        if (!courseToUse || !student.scores || !student.scores[courseToUse.id] || !student.scores[courseToUse.id][componentName]) {
+            console.log(`getCategoryScores: Missing data for student ${student.studentId}, component ${componentName} or course ${courseToUse?.id}. Returning 0 scores.`);
+            return { current: 0, max: 0 };
         }
 
-        const catScores = student.scores[courseToUse.id][componentName][category.name] || {}; // Renamed periodName
-        console.log(`getCategoryScores: student=${student.realName}, component=${componentName}, category=${category.name}, catScores=`, catScores); // Updated text
+        const catScores = student.scores[courseToUse.id][componentName][category.name] || {};
+        // console.log(`getCategoryScores: student=${student.realName}, component=${componentName}, category=${category.name}, catScores=`, catScores);
 
         if (category.subItems && category.subItems.length > 0) {
             category.subItems.forEach(sub => {
                 max += Number(sub.maxScore);
                 const subScoreValue = parseFloat(catScores[sub.id] || 0); // Get score for sub-item
                 current += subScoreValue;
-                console.log(`  Sub-item: ${sub.name} (ID: ${sub.id}), maxScore=${sub.maxScore}, scoreFromData=${catScores[sub.id]}, parsedScore=${subScoreValue}, currentTotal=${current}, maxTotal=${max}`);
+                // console.log(`  Sub-item: ${sub.name} (ID: ${sub.id}), maxScore=${sub.maxScore}, scoreFromData=${catScores[sub.id]}, parsedScore=${subScoreValue}, currentTotal=${current}, maxTotal=${max}`);
             });
         } else {
             max = 100; // Default for simple categories within a component
             current = parseFloat(catScores || 0);
-            console.log(`  Simple category: current=${current}, max=${max}`);
+            // console.log(`  Simple category: current=${current}, max=${max}`);
         }
-        console.log(`getCategoryScores: Final for ${componentName} - ${category.name}: current=${current}, max=${max}`); // Updated text
+        // console.log(`getCategoryScores: Final for ${componentName} - ${category.name}: current=${current}, max=${max}`);
         return { current, max };
     }
-    
+
     // Calculates the final score and grade for a student in a specific course
     function calculateFinalScoreAndGrade(student, course) {
         let totalWeightedCourseScore = 0;
         // Return default if course or student scores are not available or no components defined
-        if (!course || !student.scores[course.id] || !course.assessmentComponents || course.assessmentComponents.length === 0) return { finalScore: '0.00', grade: 'N/A' }; // Renamed
+        if (!course || !student.scores[course.id] || !course.assessmentComponents || course.assessmentComponents.length === 0) return { finalScore: '0.00', grade: 'N/A' };
 
-        course.assessmentComponents.forEach(component => { // Renamed period to component
-            let totalComponentScore = 0; // Renamed
-            let totalComponentMaxWeight = 0; // Renamed
-            
+        course.assessmentComponents.forEach(component => {
+            let totalComponentScore = 0;
+            let totalComponentMaxWeight = 0;
+
             // Ensure component.categories is an array before iterating
-            if (!Array.isArray(component.categories)) { // Renamed
-                console.warn(`Assessment component "${component.name}" has no categories array.`); // Updated text
+            if (!Array.isArray(component.categories)) {
+                console.warn(`Assessment component "${component.name}" has no categories array. Skipping component in score calculation.`);
                 return; // Skip this component if categories are missing
             }
 
-            component.categories.forEach(cat => { // Renamed
+            component.categories.forEach(cat => {
                 // Pass component.name to getCategoryScores
-                const { current, max } = getCategoryScores(student, component.name, cat, course); // Renamed
+                const { current, max } = getCategoryScores(student, component.name, cat, course);
                 if (max > 0) {
                     // Calculate percentage for this category within its component
-                    const categoryPercentage = (current / max); 
+                    const categoryPercentage = (current / max);
                     // Add weighted category score to component total
-                    totalComponentScore += categoryPercentage * cat.weight; // Renamed
+                    totalComponentScore += categoryPercentage * cat.weight;
                 }
-                totalComponentMaxWeight += cat.weight; // Renamed // Sum up category weights for this component
+                totalComponentMaxWeight += cat.weight; // Sum up category weights for this component
             });
 
             // If component has categories and their total weight is > 0, calculate component's weighted score
-            if (totalComponentMaxWeight > 0) { // Renamed
+            if (totalComponentMaxWeight > 0) {
                 // Normalize component score to 100% of its own categories, then apply component's weight
-                const normalizedComponentScore = (totalComponentScore / totalComponentMaxWeight) * 100; // Renamed
-                totalWeightedCourseScore += (normalizedComponentScore / 100) * component.weight; // Renamed
+                const normalizedComponentScore = (totalComponentScore / totalComponentMaxWeight) * 100;
+                totalWeightedCourseScore += (normalizedComponentScore / 100) * component.weight;
             }
         });
-        
+
         const score = Math.min(totalWeightedCourseScore, 100); // Cap score at 100%
         let grade = 'N/A';
         // Assign grade based on score thresholds
@@ -1921,49 +1962,63 @@
         else if (score >= 50) grade = 'C-';
         else if (score >= 45) grade = 'D';
         else grade = 'F';
-        
+
         return { finalScore: score.toFixed(2), grade };
     }
 
     // Updates a student's score for a specific category or sub-item
-    // Now accepts componentName to correctly store scores
-    function updateSubScore(studentId, componentName, catName, subId, value) { // Renamed periodName to componentName
-        console.log(`updateSubScore called: studentId=${studentId}, componentName=${componentName}, catName=${catName}, subId=${subId}, value=${value}`); // Updated text
+    function updateSubScore(studentId, componentName, catName, subId, value) {
+        // console.log(`updateSubScore called: studentId=${studentId}, componentName=${componentName}, catName=${catName}, subId=${subId}, value=${value}`);
         const student = students.find(s => s.studentId === studentId);
         if (!student || !activeCourse) {
             console.log("updateSubScore: Student or activeCourse not found.");
             return;
         }
-        
+
         const score = parseFloat(value);
-        const component = activeCourse.assessmentComponents.find(p => p.name === componentName); // Renamed period to component
+        const component = activeCourse.assessmentComponents.find(p => p.name === componentName);
+        if (!component) {
+            console.error(`updateSubScore: Component "${componentName}" not found.`);
+            return;
+        }
         const category = component.categories.find(c => c.name === catName);
-        
+        if (!category) {
+            console.error(`updateSubScore: Category "${catName}" not found within component "${componentName}".`);
+            return;
+        }
+
         let maxScore = 100; // Default max score for simple categories
         if (subId) {
             const subItem = category.subItems.find(s => s.id === subId);
-            if(subItem) maxScore = subItem.maxScore;
+            if (subItem) maxScore = subItem.maxScore;
+            else {
+                console.error(`updateSubScore: Sub-item with ID "${subId}" not found in category "${catName}".`);
+                return;
+            }
         }
 
         if (isNaN(score) || score < 0 || score > maxScore) {
-            console.warn(`updateSubScore: Invalid score input: ${value}. Max: ${maxScore}. Resetting input.`);
+            console.warn(`updateSubScore: Invalid score input: ${value}. Max: ${maxScore}.`);
             showToast(`Score must be between 0 and ${formatNumber(maxScore)}.`, 'error');
-            // Re-render the table to revert the invalid input field to its last valid state or empty
-            renderScoresTable(); 
+            // Do NOT re-render the entire table immediately on invalid input.
+            // Let the user correct it. The correct value will be picked up on next render.
+            // Optionally, reset the specific input field if desired, but for now,
+            // we'll rely on the user correcting it and `renderScoresTable` will fix
+            // it on next full data load/render. For immediate feedback, we show a toast.
             return;
         }
 
         // Ensure the nested score objects exist
         if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
-        if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {}; // Renamed periodName
-        if (!student.scores[activeCourse.id][componentName][catName]) student.scores[activeCourse.id][componentName][catName] = {}; // Renamed periodName
-        
+        if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
+        if (!student.scores[activeCourse.id][componentName][catName]) student.scores[activeCourse.id][componentName][catName] = {};
+
         if (subId) {
-            student.scores[activeCourse.id][componentName][catName][subId] = score; // Renamed periodName
-            console.log(`Updated sub-item score in student data: student.scores[${activeCourse.id}][${componentName}][${catName}][${subId}] = ${score}`); // Updated text
+            student.scores[activeCourse.id][componentName][catName][subId] = score;
+            // console.log(`Updated sub-item score in student data: student.scores[${activeCourse.id}][${componentName}][${catName}][${sub.id}] = ${score}`);
         } else {
-            student.scores[activeCourse.id][componentName][catName] = score; // Renamed periodName
-            console.log(`Updated category score in student data: student.scores[${activeCourse.id}][${componentName}][${catName}] = ${score}`); // Updated text
+            student.scores[activeCourse.id][componentName][catName] = score;
+            // console.log(`Updated category score in student data: student.scores[${activeCourse.id}][${componentName}][${catName}] = ${score}`);
         }
 
         saveData();
@@ -1973,15 +2028,15 @@
     function renderScoresTable() {
         const container = document.getElementById('score-input-table');
         const info = document.getElementById('score-entry-info');
-        if (!activeCourse || !activeCourse.assessmentComponents || activeCourse.assessmentComponents.length === 0) { // Renamed
-            info.textContent = 'Please add Assessment Components and Categories to begin.'; // Updated text
+        if (!activeCourse || !activeCourse.assessmentComponents || activeCourse.assessmentComponents.length === 0) {
+            info.textContent = 'Please add Assessment Components and Categories to begin.';
             info.classList.remove('hidden');
             container.innerHTML = '';
             return;
         }
 
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
-        
+
         if (studentsInClass.length === 0) {
             info.textContent = 'Please add students to begin.';
             info.classList.remove('hidden');
@@ -1990,9 +2045,9 @@
         }
 
         // Check if there are any categories defined within any component
-        const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0); // Renamed
+        const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0);
         if (!hasCategories) {
-            info.textContent = 'Please add Categories within your Assessment Components to begin.'; // Updated text
+            info.textContent = 'Please add Categories within your Assessment Components to begin.';
             info.classList.remove('hidden');
             container.innerHTML = '';
             return;
@@ -2004,19 +2059,19 @@
         tableHTML += `<th rowspan="3" class="sticky-col p-2 border border-slate-600 text-left">Student</th>`; // Rowspan 3 for student column
 
         // First row: Assessment Component headers
-        activeCourse.assessmentComponents.forEach((component, componentIndex) => { // Renamed period to component
+        activeCourse.assessmentComponents.forEach((component, componentIndex) => {
             // Calculate colspan for this component: sum of colspans of its categories
             const totalCategoriesInComponent = component.categories.reduce((sum, cat) => sum + (cat.subItems && cat.subItems.length > 0 ? cat.subItems.length + 1 : 2), 0);
             if (totalCategoriesInComponent > 0) { // Only render if component has categories
-                tableHTML += `<th colspan="${totalCategoriesInComponent}" class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${component.name} (${component.weight}%)</th>`; // Renamed period to component
+                tableHTML += `<th colspan="${totalCategoriesInComponent}" class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${component.name} (${component.weight}%)</th>`;
             }
         });
         tableHTML += `<th rowspan="3" class="p-2 border border-slate-600">Final Score</th><th rowspan="3" class="p-2 border border-slate-600">Final Grade</th></tr>`; // Final Score and Grade span all rows
 
         // Second row: Category headers
         tableHTML += `<tr class="sticky-header">`;
-        activeCourse.assessmentComponents.forEach((component, componentIndex) => { // Renamed period to component
-            component.categories.forEach((cat, catIndex) => { // Renamed
+        activeCourse.assessmentComponents.forEach((component, componentIndex) => {
+            component.categories.forEach((cat, catIndex) => {
                 const colspan = (cat.subItems && cat.subItems.length > 0) ? cat.subItems.length + 1 : 2;
                 tableHTML += `<th colspan="${colspan}" class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${cat.name} (${cat.weight}%)</th>`;
             });
@@ -2025,14 +2080,14 @@
 
         // Third row: Sub-item headers and Category Total headers
         tableHTML += `<tr class="sticky-header">`;
-        activeCourse.assessmentComponents.forEach((component, componentIndex) => { // Renamed period to component
-            component.categories.forEach((cat, catIndex) => { // Renamed
+        activeCourse.assessmentComponents.forEach((component, componentIndex) => {
+            component.categories.forEach((cat, catIndex) => {
                 if (cat.subItems && cat.subItems.length > 0) {
                     cat.subItems.forEach(sub => tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${sub.name} (${formatNumber(sub.maxScore)})</th>`);
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Category Total</th>`;
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
                 } else {
                     tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Score (${formatNumber(100)})</th>`;
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Category Total</th>`;
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
                 }
             });
         });
@@ -2042,39 +2097,37 @@
         studentsInClass.sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)).forEach(s => {
             const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
             tableHTML += `<tr class="hover:bg-slate-800"><td class="sticky-col p-2 border border-slate-600 text-left font-medium">
-                <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
-            </td>`;
-            activeCourse.assessmentComponents.forEach(component => { // Renamed period to component
-                component.categories.forEach(cat => { // Renamed
-                    const catScores = getCategoryScores(s, component.name, cat, activeCourse); 
-                    // Calculate weighted percentage of category within its component
-                    const weightedPercentage = (catScores.max > 0 ? (catScores.current / catScores.max) * cat.weight : 0);
+                    <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
+                    <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
+                </td>`;
+            activeCourse.assessmentComponents.forEach(component => {
+                component.categories.forEach(cat => {
+                    const catScores = getCategoryScores(s, component.name, cat, activeCourse);
+                    // Calculate percentage of category within its component (not weighted yet for this display)
+                    const categoryPercentage = (catScores.max > 0 ? (catScores.current / catScores.max) * 100 : 0);
 
                     if (cat.subItems && cat.subItems.length > 0) {
                         cat.subItems.forEach(sub => {
-                            const subScore = s.scores[activeCourse.id]?.[component.name]?.[cat.name]?.[sub.id] || ''; // Renamed period.name
-                            tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${subScore}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', '${sub.id}', this.value)" min="0" max="${sub.maxScore}"></td>`; // Renamed period.name
+                            const subScore = s.scores[activeCourse.id]?.[component.name]?.[cat.name]?.[sub.id] || '';
+                            tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${subScore}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', '${sub.id}', this.value)" min="0" max="${sub.maxScore}"></td>`;
                         });
                         tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium">
-                            ${formatNumber(catScores.current)} (${formatNumber(weightedPercentage)}%)
-                        </td>`;
+                                ${formatNumber(catScores.current)}<br>(${formatNumber(categoryPercentage)}%)
+                            </td>`;
                     } else {
-                        const score = s.scores[activeCourse.id]?.[component.name]?.[cat.name] || ''; // Renamed period.name
+                        const score = s.scores[activeCourse.id]?.[component.name]?.[cat.name] || '';
                         const currentScore = parseFloat(score || 0);
-                        const maxScore = 100;
-                        const singleWeightedPercentage = (maxScore > 0 ? (currentScore / maxScore) * cat.weight : 0);
-
-                        tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${score}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', null, this.value)" min="0" max="100"></td>`; // Renamed period.name
+                        const singleCategoryPercentage = (100 > 0 ? (currentScore / 100) * 100 : 0); // Always based on 100 max for simple category
+                        tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${score}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', null, this.value)" min="0" max="100"></td>`;
                         tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium">
-                            ${formatNumber(currentScore)} (${formatNumber(singleWeightedPercentage)}%)
-                        </td>`;
+                                ${formatNumber(currentScore)}<br>(${formatNumber(singleCategoryPercentage)}%)
+                            </td>`;
                     }
                 });
             });
             tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold">${grade}</td></tr>`;
         });
-        
+
         tableHTML += `</tbody></table>`;
         container.innerHTML = tableHTML;
     }
@@ -2083,7 +2136,7 @@
     function renderSummary() {
         const container = document.getElementById('summary-table');
         const info = document.getElementById('summary-info');
-        if (!activeCourse || !activeCourse.assessmentComponents || activeCourse.assessmentComponents.length === 0) { // Renamed
+        if (!activeCourse || !activeCourse.assessmentComponents || activeCourse.assessmentComponents.length === 0) {
             info.textContent = 'Enter scores to see the summary.';
             info.classList.remove('hidden');
             container.innerHTML = '';
@@ -2101,9 +2154,9 @@
             return;
         }
 
-        const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0); // Renamed
+        const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0);
         if (!hasCategories) {
-            info.textContent = 'Please add Categories within your Assessment Components to see the summary.'; // Updated text
+            info.textContent = 'Please add Categories within your Assessment Components to see the summary.';
             info.classList.remove('hidden');
             container.innerHTML = '';
             document.getElementById('advanced-dashboard').classList.add('hidden');
@@ -2114,10 +2167,10 @@
         document.getElementById('advanced-dashboard').classList.remove('hidden');
 
         let tableHTML = `<table class="min-w-full"><thead><tr>
-            <th class="p-2 border border-slate-600 text-left">Student</th>`;
+                <th class="p-2 border border-slate-600 text-left">Student</th>`;
         // Headers for each assessment component percentage
-        activeCourse.assessmentComponents.forEach((component, i) => { // Renamed period to component
-            tableHTML += `<th class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[i % tableHeaderColors.length]}">${component.name} (%)</th>`; // Renamed period to component
+        activeCourse.assessmentComponents.forEach((component, i) => {
+            tableHTML += `<th class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[i % tableHeaderColors.length]}">${component.name} (%)</th>`;
         });
         tableHTML += `<th class="p-2 border border-slate-600">Final Score</th><th class="p-2 border border-slate-600">Final Grade</th></tr></thead><tbody>`;
 
@@ -2128,11 +2181,11 @@
             let detailsButtonText = 'View Details';
             let detailsButtonClass = 'bg-indigo-700 hover:bg-indigo-600';
 
-            if (parseFloat(finalScore) >= 70) { 
+            if (parseFloat(finalScore) >= 70) {
                 rowBgClass = 'bg-green-900/20';
                 detailsButtonText = 'Details (Excellent)';
                 detailsButtonClass = 'bg-green-800 hover:bg-green-700';
-            } else if (parseFloat(finalScore) >= 50) { 
+            } else if (parseFloat(finalScore) >= 50) {
                 rowBgClass = 'bg-yellow-900/20';
                 detailsButtonText = 'Details (Average)';
                 detailsButtonClass = 'bg-yellow-800 hover:bg-yellow-700';
@@ -2142,36 +2195,36 @@
                 detailsButtonClass = 'bg-red-800 hover:bg-red-700';
             }
 
-            tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 text-left font-medium">
-                <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
-                <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
-            </td>`;
+            tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 font-medium">
+                    <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
+                    <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
+                    <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
+                </td>`;
             // Display percentage for each assessment component
-            activeCourse.assessmentComponents.forEach(component => { // Renamed period to component
-                let componentCurrentScore = 0; // Renamed
-                let componentMaxWeight = 0; // Renamed
+            activeCourse.assessmentComponents.forEach(component => {
+                let componentCurrentScore = 0;
+                let componentMaxWeight = 0;
                 // Ensure component.categories is an array before iterating
-                if (!Array.isArray(component.categories)) { // Renamed
-                    console.warn(`Assessment component "${component.name}" has no categories array in summary.`); // Updated text
+                if (!Array.isArray(component.categories)) {
+                    console.warn(`Assessment component "${component.name}" has no categories array in summary. Skipping component percentage display.`);
                     tableHTML += `<td class="p-2 border border-slate-600 text-center">N/A</td>`; // Display N/A if categories are missing
                     return; // Skip to next component
                 }
-                component.categories.forEach(cat => { // Renamed
-                    const { current, max } = getCategoryScores(s, component.name, cat, activeCourse); // Renamed period.name
+                component.categories.forEach(cat => {
+                    const { current, max } = getCategoryScores(s, component.name, cat, activeCourse);
                     if (max > 0) {
-                        componentCurrentScore += (current / max) * cat.weight; // Renamed
+                        componentCurrentScore += (current / max) * cat.weight;
                     }
-                    componentMaxWeight += cat.weight; // Renamed
+                    componentMaxWeight += cat.weight;
                 });
-                const componentPercentage = componentMaxWeight > 0 ? (componentCurrentScore / componentMaxWeight) * 100 : 0; // Renamed
-                tableHTML += `<td class="p-2 border border-slate-600 text-center">${formatNumber(componentPercentage)}%</td>`; // Renamed
+                const componentPercentage = componentMaxWeight > 0 ? (componentCurrentScore / componentMaxWeight) * 100 : 0;
+                tableHTML += `<td class="p-2 border border-slate-600 text-center">${formatNumber(componentPercentage)}%</td>`;
             });
             tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold">${grade}</td></tr>`;
         });
         tableHTML += `</tbody></table>`;
         container.innerHTML = tableHTML;
-        
+
         renderAdvancedDashboard(studentsInClass);
     }
 
@@ -2212,8 +2265,8 @@
                     backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], // Colors for each segment
                 }]
             },
-            options: { 
-                responsive: true, 
+            options: {
+                responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
@@ -2229,7 +2282,7 @@
     // Renders the admin dashboard with overall course statistics
     function renderAdminDashboard() {
         const dashboardContent = document.getElementById('admin-dashboard-content');
-        dashboardContent.innerHTML = ''; // Clear previous content 
+        dashboardContent.innerHTML = ''; // Clear previous content
 
         if (courses.length === 0) {
             dashboardContent.innerHTML = '<p class="text-slate-400 text-center text-lg mt-8">No course data available.</p>';
@@ -2241,9 +2294,9 @@
             <div class="mb-8 p-6 rounded-lg border card">
                 <h4 class="text-xl font-semibold mb-4 text-indigo-300">Overall School Overview</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-slate-400">Total Courses</p><p class="text-2xl font-bold text-white">${courses.length}</p></div>
-                    <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-slate-400">Total Students</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
-                    <div class="p-3 bg-slate-800 rounded-lg"><p class="text-sm text-slate-400">Active Teachers</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
+                    <div><p class="text-sm text-slate-400">Total Courses</p><p class="text-2xl font-bold text-white">${courses.length}</p></div>
+                    <div><p class="text-sm text-slate-400">Total Students</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
+                    <div><p class="text-sm text-slate-400">Active Teachers</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
                 </div>
             </div>
         `;
@@ -2252,7 +2305,7 @@
         // Details for each course
         courses.forEach(course => {
             const studentsInThisCourse = students.filter(s => s.gradeLevel === course.gradeLevel && s.room === course.room);
-            const courseName = `${course.subject} (${course.gradeLevel}/${course.room}) - ${course.academicYear} ${course.semester}`; // Updated identifier
+            const courseName = `${course.subject} (${course.gradeLevel}/${course.room}) - ${course.academicYear} ${course.semester}`;
             const teacherName = course.teacher.realName || 'N/A';
             let totalCourseScore = 0, gradedStudentsCount = 0, highestScoreInClass = 0, lowestScoreInClass = 100;
             let gradeCounts = { 'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': 0, 'C+': 0, 'C': 0, 'C-': 0, 'D': 0, 'F': 0, 'N/A': 0 };
@@ -2319,7 +2372,7 @@
                     <div class="mt-4 space-y-2">
                         <details class="p-2 bg-green-900/50 rounded-lg">
                             <summary class="font-bold text-green-300 cursor-pointer flex justify-between items-center">
-                                Excellent Students (${gradeCounts.Excellent}) <span class="summary-arrow">▶</span>
+                                Excellent Students (${gradeCounts['A+'] + gradeCounts['A'] + gradeCounts['A-'] + gradeCounts['B+'] + gradeCounts['B']}) <span class="summary-arrow">▶</span>
                             </summary>
                             <ul class="mt-2 text-sm text-green-400 list-disc list-inside">
                                 ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) >= 70).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
@@ -2327,7 +2380,7 @@
                         </details>
                         <details class="p-2 bg-yellow-900/50 rounded-lg">
                             <summary class="font-bold text-yellow-300 cursor-pointer flex justify-between items-center">
-                                Average Students (${gradeCounts.Average}) <span class="summary-arrow">▶</span>
+                                Average Students (${gradeCounts['C+'] + gradeCounts['C'] + gradeCounts['C-'] + gradeCounts['B-']}) <span class="summary-arrow">▶</span>
                             </summary>
                             <ul class="mt-2 text-sm text-yellow-400 list-disc list-inside">
                                 ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) >= 50 && parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 70).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
@@ -2335,10 +2388,10 @@
                         </details>
                         <details class="p-2 bg-red-900/50 rounded-lg">
                             <summary class="font-bold text-red-300 cursor-pointer flex justify-between items-center">
-                                Needs Improvement Students (${gradeCounts.NeedsImprovement}) <span class="summary-arrow">▶</span>
+                                Needs Improvement Students (${gradeCounts['D'] + gradeCounts['F'] + gradeCounts['N/A']}) <span class="summary-arrow">▶</span>
                             </summary>
                             <ul class="mt-2 text-sm text-red-400 list-disc list-inside">
-                                ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 50).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
+                                ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 50 || isNaN(parseFloat(calculateFinalScoreAndGrade(s, course).finalScore))).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
                             </ul>
                         </details>
                     </div>
@@ -2361,36 +2414,36 @@
     function renderAll() {
         // If no active course, clear sections and display info messages
         if (!activeCourse) {
-            // New: Clear assessment components list and dropdown
-            document.getElementById('grading-period-list').innerHTML = ''; // Keep ID for now
-            document.getElementById('select-grading-period').innerHTML = '<option value="">Select Assessment Component</option>'; // Updated text
-            document.getElementById('selected-grading-period-status').classList.add('hidden'); // Keep ID for now
-            document.getElementById('current-period-name').textContent = 'Selected Assessment Component'; // Updated text
+            // Clear assessment components list and dropdown
+            document.getElementById('grading-period-list').innerHTML = '';
+            document.getElementById('select-grading-period').innerHTML = '<option value="">Select Assessment Component</option>';
+            document.getElementById('selected-grading-period-status').classList.add('hidden');
+            document.getElementById('current-period-name').textContent = 'Selected Assessment Component';
             selectedAssessmentComponent = null; // Ensure selected component is cleared
 
             document.getElementById('category-settings').innerHTML = '';
             document.getElementById('student-list').innerHTML = '';
             document.getElementById('score-input-table').innerHTML = '';
             document.getElementById('summary-table').innerHTML = '';
-            document.getElementById('score-entry-info').textContent = 'Please select an Academic Year, Semester, Course, and save Teacher Info to begin.'; // Updated text
+            document.getElementById('score-entry-info').textContent = 'Please select an Academic Year, Semester, Course, and save Teacher Info to begin.';
             document.getElementById('summary-info').textContent = 'No data to display.';
             document.getElementById('score-entry-info').classList.remove('hidden');
             document.getElementById('summary-info').classList.remove('hidden');
             if (studentGroupChartInstance) studentGroupChartInstance.destroy(); // Destroy chart if no data
             document.getElementById('advanced-dashboard').classList.add('hidden');
-            updateTotalAssessmentComponentWeightDisplay(); // New: Update component weight display
-            updateTotalCategoryWeightDisplay(); // New: Update category weight display
+            updateTotalAssessmentComponentWeightDisplay();
+            updateTotalCategoryWeightDisplay();
             renderTeacherInfoSection(); // Ensure teacher info section is reset
-            updateCategoryManagementSectionState(); // New: Update category management section state
+            updateCategoryManagementSectionState();
             return;
         }
-        
+
         renderCategories(); // Render category settings
         renderStudents(); // Render student list
         renderTeacherInfoSection(); // Render teacher info section (display or edit form)
-        renderAssessmentComponents(); // New: Render assessment components
-        updateCategoryManagementSectionState(); // New: Update category management section state
-        
+        renderAssessmentComponents();
+        updateCategoryManagementSectionState();
+
         // Render either score table or summary based on active tab
         const activeTab = document.querySelector('.tab-button.active').id;
         if (activeTab === 'summary-tab') {
@@ -2399,7 +2452,7 @@
             renderScoresTable();
         }
     }
-    
+
     // --- EVENT LISTENERS & SETUP ---
     // Sets up various event listeners for input fields
     function setupEventListeners() {
@@ -2408,21 +2461,32 @@
         document.getElementById('select-semester').addEventListener('change', updateSemesterSelection);
 
         // Assessment Component inputs: Enter to add component
-        document.getElementById('new-grading-period-name').addEventListener('keydown', (e) => { // Keep ID for now
-            if (e.key === 'Enter') addGradingPeriod(); // Keep function name for now
+        document.getElementById('new-grading-period-name').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addGradingPeriod();
         });
-        document.getElementById('new-grading-period-weight').addEventListener('keydown', (e) => { // Keep ID for now
-            if (e.key === 'Enter') addGradingPeriod(); // Keep function name for now
+        document.getElementById('new-grading-period-weight').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addGradingPeriod();
         });
 
         // Category inputs: Enter to add category
-        document.getElementById('new-category-name').addEventListener('keydown', (e) => { 
-            if(e.key === 'Enter') addCategory(); 
+        document.getElementById('new-category-name').addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') addCategory();
         });
-        document.getElementById('new-category-weight').addEventListener('keydown', (e) => { 
-            if(e.key === 'Enter') addCategory(); 
+        document.getElementById('new-category-weight').addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') addCategory();
         });
-        
+
+        // New sub-item inputs: Enter to add sub-item (delegated)
+        document.getElementById('category-settings').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.id.startsWith('new-sub-item-name-')) {
+                const catIndex = parseInt(e.target.id.replace('new-sub-item-name-', ''));
+                addSubItem(catIndex);
+            } else if (e.key === 'Enter' && e.target.id.startsWith('new-sub-item-max-score-')) {
+                const catIndex = parseInt(e.target.id.replace('new-sub-item-max-score-', ''));
+                addSubItem(catIndex);
+            }
+        });
+
         // New student inputs: Enter to add student
         document.querySelectorAll('.new-student-input').forEach(input => {
             input.addEventListener('keydown', (e) => {
@@ -2479,13 +2543,14 @@
 
     // --- PAGE LOAD ---
     // Executes when the window finishes loading
-    document.addEventListener('DOMContentLoaded', async function() { // Changed to DOMContentLoaded
-        console.log("DEBUG: DOMContentLoaded fired.");
-        setupEventListeners(); // Set up all initial event listeners
-        // Ensure Firebase initialization and authentication completes before proceeding
-        await window.firebaseReadyPromise; // Wait for Firebase to be ready and authenticated
-        setupFirestoreListener(); // Initialize Firestore listener now that auth is complete
-    });
+    window.onload = async function() {
+        setupEventListeners();
+        populateDropdowns(); // Populate dropdowns immediately when DOM is ready
+        updateMainContentState(); // Update UI state based on initial selections
+
+        await window.firebaseReadyPromise; // Wait for Firebase auth
+        setupFirestoreListener(); // Then set up Firestore listener
+    };
     </script>
 </body>
 </html>
