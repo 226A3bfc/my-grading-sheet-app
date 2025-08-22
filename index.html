@@ -14,17 +14,17 @@
     <!-- Firebase v9 Modular SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; // Removed signInWithCustomToken
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"; // Import getAnalytics
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
         // Global Firebase variables (will be initialized in window.onload)
         window.firebaseApp = null;
         window.db = null;
         window.auth = null;
-        window.userId = null; // userId will now represent the anonymous user for public data
-        window.isAuthReady = false; // Flag to indicate if auth is ready
-        window.analytics = null; // Global variable for analytics
+        window.userId = null;
+        window.isAuthReady = false;
+        window.analytics = null;
 
         // MANDATORY global variables provided by the Canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -37,36 +37,33 @@
             appId: "1:176819621092:web:049c38a2690542930b30f1",
             measurementId: "G-8MZW3RSJ8W"
         };
-        // Removed initialAuthToken as we are explicitly using anonymous sign-in for no-login scenario
-        // const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
+        
         window.addEventListener('load', async () => {
             try {
                 if (Object.keys(firebaseConfig).length > 0) {
                     window.firebaseApp = initializeApp(firebaseConfig);
                     window.auth = getAuth(window.firebaseApp);
                     window.db = getFirestore(window.firebaseApp);
-                    window.analytics = getAnalytics(window.firebaseApp); // Initialize Analytics
+                    window.analytics = getAnalytics(window.firebaseApp);
 
                     onAuthStateChanged(window.auth, async (user) => {
                         if (user) {
-                            window.userId = user.uid; // Still get UID, but it's for the anonymous user
+                            window.userId = user.uid;
                             console.log("Firebase Auth Ready. User ID:", window.userId);
                             window.isAuthReady = true;
-                            // Call loadData and then populateDropdowns and updateCourseSelection AFTER auth is ready
                             await loadData(); 
                             populateDropdowns(); 
                             updateCourseSelection(); 
                         } else {
                             console.log("No user signed in. Attempting anonymous sign-in.");
-                            await signInAnonymously(window.auth); // Always sign in anonymously for public access
+                            await signInAnonymously(window.auth);
                             console.log("Signed in anonymously.");
                         }
                     });
                 } else {
                     console.warn("Firebase config is missing. Running without Firebase features.");
                     window.isAuthReady = true; 
-                    await loadData(); // Ensure data is loaded even without Firebase
+                    await loadData();
                     populateDropdowns(); 
                     updateCourseSelection();
                 }
@@ -74,7 +71,7 @@
                 console.error("Error initializing Firebase:", e);
                 showToast('Failed to initialize Firebase. Data persistence may not work.', 'error');
                 window.isAuthReady = true; 
-                await loadData(); // Ensure data is loaded even if Firebase init fails
+                await loadData();
                 populateDropdowns(); 
                 updateCourseSelection();
             }
