@@ -11,11 +11,74 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Firebase v9 Modular SDK - REMOVED -->
+    <!-- Firebase v9 Modular SDK -->
     <script type="module">
-        // All Firebase related imports and initialization have been removed.
-        // Data persistence is no longer handled by Firestore.
-        // Data will be stored locally in memory and will reset on page refresh.
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; // Removed signInWithCustomToken
+        import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js"; // Import getAnalytics
+
+        // Global Firebase variables (will be initialized in window.onload)
+        window.firebaseApp = null;
+        window.db = null;
+        window.auth = null;
+        window.userId = null; // userId will now represent the anonymous user for public data
+        window.isAuthReady = false; // Flag to indicate if auth is ready
+        window.analytics = null; // Global variable for analytics
+
+        // MANDATORY global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyC8vVDqpBjFX1sRDRAia2nuy3uIKBJA1NQ",
+            authDomain: "gradingsheetapp.firebaseapp.com",
+            projectId: "gradingsheetapp",
+            storageBucket: "gradingsheetapp.firebasestorage.app",
+            messagingSenderId: "176819621092",
+            appId: "1:176819621092:web:049c38a2690542930b30f1",
+            measurementId: "G-8MZW3RSJ8W"
+        };
+        // Removed initialAuthToken as we are explicitly using anonymous sign-in for no-login scenario
+        // const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        window.addEventListener('load', async () => {
+            try {
+                if (Object.keys(firebaseConfig).length > 0) {
+                    window.firebaseApp = initializeApp(firebaseConfig);
+                    window.auth = getAuth(window.firebaseApp);
+                    window.db = getFirestore(window.firebaseApp);
+                    window.analytics = getAnalytics(window.firebaseApp); // Initialize Analytics
+
+                    onAuthStateChanged(window.auth, async (user) => {
+                        if (user) {
+                            window.userId = user.uid; // Still get UID, but it's for the anonymous user
+                            console.log("Firebase Auth Ready. User ID:", window.userId);
+                            window.isAuthReady = true;
+                            // Call loadData and populateDropdowns AFTER auth is ready
+                            await loadData(); // Ensure data is loaded before populating dropdowns
+                            populateDropdowns(); 
+                            updateCourseSelection(); // Ensure UI is updated based on loaded data
+                        } else {
+                            console.log("No user signed in. Attempting anonymous sign-in.");
+                            await signInAnonymously(window.auth); // Always sign in anonymously for public access
+                            console.log("Signed in anonymously.");
+                        }
+                    });
+                } else {
+                    console.warn("Firebase config is missing. Running without Firebase features.");
+                    window.isAuthReady = true; 
+                    loadData();
+                    populateDropdowns(); // Populate dropdowns even if Firebase is not used
+                    updateCourseSelection(); // Ensure UI is updated
+                }
+            } catch (e) {
+                console.error("Error initializing Firebase:", e);
+                showToast('Failed to initialize Firebase. Data persistence may not work.', 'error');
+                window.isAuthReady = true; 
+                loadData();
+                populateDropdowns(); // Populate dropdowns even if Firebase is not used
+                updateCourseSelection(); // Ensure UI is updated
+            }
+        });
     </script>
 
     <style>
@@ -456,7 +519,7 @@
 
     <div id="reset-confirmation-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
-            <h3 class="text-xl font-semibold mb-4 text-red-400">Confirm Reset</h3>
+            <h3 id="confirmation-title" class="text-xl font-semibold mb-4 text-red-400">Confirm Reset</h3>
             <p class="text-slate-300 mb-4">This will clear all categories and teacher information for the currently selected course, and remove all associated scores from students for this course.</p>
             <p class="text-slate-300 mb-4 font-bold">Please enter the password "HASTIN" to confirm:</p>
             <div>
@@ -602,6 +665,28 @@
     let originalStudentState = null; // Backup of student state during editing
     let currentConfirmCallback = null; // Callback for generic confirmation modal
 
+    // Global Firebase variables (will be initialized in window.onload)
+    let firebaseApp = null;
+    let db = null;
+    let auth = null;
+    let userId = null;
+    let isAuthReady = false; // Flag to indicate if auth is ready
+
+    // MANDATORY global variables provided by the Canvas environment
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyC8vVDqpBjFX1sRDRAia2nuy3uIKBJA1NQ",
+            authDomain: "gradingsheetapp.firebaseapp.com",
+            projectId: "gradingsheetapp",
+            storageBucket: "gradingsheetapp.firebasestorage.app",
+            messagingSenderId: "176819621092",
+            appId: "1:176819621092:web:049c38a2690542930b30f1",
+            measurementId: "G-8MZW3RSJ8W"
+        };
+    // Removed initialAuthToken as we are explicitly using anonymous sign-in for no-login scenario
+    // const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+
     // Colors for category headers in tables
     const tableHeaderColors = ['#1e3a8a', '#064e3b', '#78350f', '#991b1b', '#5b21b6'];
     // List of available subjects
@@ -617,67 +702,130 @@
         return num.toFixed(2);
     }
 
-    // --- DATA PERSISTENCE (Local Storage) ---
-    // Saves current state of courses and students to Local Storage
-    function saveData() {
-        try {
-            localStorage.setItem('gradingSheetCourses', JSON.stringify(courses));
-            localStorage.setItem('gradingSheetStudents', JSON.stringify(students));
-            // Also save activeCourse and selectedAssessmentComponent for better UX on refresh
-            localStorage.setItem('gradingSheetActiveCourseId', activeCourse ? activeCourse.id : '');
-            localStorage.setItem('gradingSheetSelectedAssessmentComponentId', selectedAssessmentComponent ? selectedAssessmentComponent.id : '');
+    // --- DATA PERSISTENCE (Firestore) ---
+    async function saveData() {
+        if (!isAuthReady || !db || !userId) {
+            console.warn("Firestore not ready or userId not available. Skipping save to Firestore.");
+            // Fallback to localStorage if Firestore is not ready
+            try {
+                localStorage.setItem('gradingSheetCourses', JSON.stringify(courses));
+                localStorage.setItem('gradingSheetStudents', JSON.stringify(students));
+                localStorage.setItem('gradingSheetActiveCourseId', activeCourse ? activeCourse.id : '');
+                localStorage.setItem('gradingSheetSelectedAssessmentComponentId', selectedAssessmentComponent ? selectedAssessmentComponent.id : '');
+            } catch (e) {
+                console.error("Error saving to Local Storage:", e);
+                showToast('บันทึกข้อมูลล้มเหลว (Local Storage).', 'error');
+            }
+            return;
+        }
 
-            // Removed toast here to avoid spamming on every score input,
-            // as score inputs now trigger saveData frequently.
-            // showToast('บันทึกข้อมูลแล้ว (บันทึกในเครื่อง).', 'success', 2000); // Data saved locally.
+        try {
+            // Save activeCourse data
+            if (activeCourse) {
+                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id); // Changed path to 'public'
+                await setDoc(courseRef, activeCourse, { merge: true });
+            }
+
+            // Save all students data
+            // For simplicity, we'll update all students. In a large app, you might only update changed students.
+            for (const student of students) {
+                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', student.studentId); // Changed path to 'public'
+                await setDoc(studentRef, student, { merge: true });
+            }
+            // showToast('บันทึกข้อมูลแล้ว (Firestore).', 'success', 2000);
         } catch (e) {
-            console.error("Error saving to Local Storage:", e);
-            showToast('บันทึกข้อมูลล้มเหลว.', 'error'); // Failed to save data.
+            console.error("Error saving to Firestore:", e);
+            showToast('บันทึกข้อมูลล้มเหลว (Firestore).', 'error');
         }
     }
 
-    // Loads data from Local Storage
-    function loadData() {
+    async function loadData() {
+        if (!isAuthReady) {
+            console.warn("Auth not ready. Deferring loadData until auth is ready.");
+            return;
+        }
+
+        if (!db || !userId) {
+            console.warn("Firestore not ready or userId not available. Loading from Local Storage instead.");
+            // Fallback to localStorage if Firestore is not ready
+            try {
+                const storedCourses = localStorage.getItem('gradingSheetCourses');
+                const storedStudents = localStorage.getItem('gradingSheetStudents');
+                const storedActiveCourseId = localStorage.getItem('gradingSheetActiveCourseId');
+                const storedSelectedAssessmentComponentId = localStorage.getItem('gradingSheetSelectedAssessmentComponentId');
+
+                if (storedCourses) {
+                    courses = JSON.parse(storedCourses);
+                } else {
+                    courses = [];
+                }
+                if (storedStudents) {
+                    students = JSON.parse(storedStudents);
+                } else {
+                    students = [];
+                }
+
+                if (storedActiveCourseId && courses.length > 0) {
+                    activeCourse = courses.find(c => c.id === storedActiveCourseId);
+                } else {
+                    activeCourse = null;
+                }
+
+                if (storedSelectedAssessmentComponentId && activeCourse && activeCourse.assessmentComponents) {
+                    selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === storedSelectedAssessmentComponentId);
+                } else {
+                    selectedAssessmentComponent = null;
+                }
+                console.log("Data loaded from Local Storage.");
+                // populateDropdowns(); // Removed: will be called after full data load
+                // updateCourseSelection(); // Removed: will be called after full data load
+            } catch (e) {
+                console.error("Error loading from Local Storage:", e);
+                showToast('ไม่สามารถโหลดข้อมูลที่บันทึกไว้ได้.', 'error');
+            }
+            return;
+        }
+
         try {
-            const storedCourses = localStorage.getItem('gradingSheetCourses');
-            const storedStudents = localStorage.getItem('gradingSheetStudents');
-            const storedActiveCourseId = localStorage.getItem('gradingSheetActiveCourseId');
-            const storedSelectedAssessmentComponentId = localStorage.getItem('gradingSheetSelectedAssessmentComponentId');
+            // Setup real-time listener for courses
+            const coursesColRef = collection(db, 'artifacts', appId, 'public', 'courses'); // Changed path to 'public'
+            onSnapshot(coursesColRef, (snapshot) => {
+                courses = snapshot.docs.map(doc => doc.data());
+                console.log("Courses updated from Firestore:", courses);
+                // Re-establish activeCourse after courses array is updated
+                if (activeCourse) {
+                    activeCourse = courses.find(c => c.id === activeCourse.id) || null;
+                    if (activeCourse && selectedAssessmentComponent) {
+                        selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === selectedAssessmentComponent.id) || null;
+                    }
+                }
+                populateDropdowns();
+                updateCourseSelection(); // Re-evaluate course selection and UI state
+            }, (error) => {
+                console.error("Error listening to courses:", error);
+                showToast('ข้อผิดพลาดในการโหลดข้อมูลวิชา.', 'error');
+            });
 
-            if (storedCourses) {
-                courses = JSON.parse(storedCourses);
-            } else {
-                courses = [];
-            }
-            if (storedStudents) {
-                students = JSON.parse(storedStudents);
-            } else {
-                students = [];
-            }
+            // Setup real-time listener for students
+            const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students'); // Changed path to 'public'
+            onSnapshot(studentsColRef, (snapshot) => {
+                students = snapshot.docs.map(doc => doc.data());
+                console.log("Students updated from Firestore:", students);
+                renderAll(); // Re-render UI whenever student data changes
+            }, (error) => {
+                console.error("Error listening to students:", error);
+                showToast('ข้อผิดพลาดในการโหลดข้อมูลนักเรียน.', 'error');
+            });
 
-            // Restore activeCourse and selectedAssessmentComponent based on IDs
-            if (storedActiveCourseId && courses.length > 0) {
-                activeCourse = courses.find(c => c.id === storedActiveCourseId);
-            } else {
-                activeCourse = null;
-            }
-
-            if (storedSelectedAssessmentComponentId && activeCourse && activeCourse.assessmentComponents) {
-                selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === storedSelectedAssessmentComponentId);
-            } else {
-                selectedAssessmentComponent = null;
-            }
-
-            console.log("Data loaded from Local Storage.");
+            console.log("Firestore listeners set up.");
         } catch (e) {
-            console.error("Error loading from Local Storage:", e);
-            courses = [];
-            students = [];
-            activeCourse = null;
-            selectedAssessmentComponent = null;
-            showToast('ไม่สามารถโหลดข้อมูลที่บันทึกไว้ได้.', 'error'); // Could not load saved data.
+            console.error("Error setting up Firestore listeners:", e);
+            showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลแบบเรียลไทม์ได้.', 'error');
+            // Fallback to localStorage load if Firestore setup fails
+            loadData(); // Call local storage load if real-time fails
         }
     }
+
 
     // --- MODAL & UI HELPERS ---
     // Displays a toast notification
@@ -736,13 +884,13 @@
         document.getElementById('reset-confirmation-modal').classList.add('hidden');
     }
 
-    function confirmResetCourse() {
+    async function confirmResetCourse() {
         const passwordInput = document.getElementById('reset-password-input').value;
-        if (passwordInput === "HASTIN") { // Hardcoded admin password
-            resetCourseData();
+        if (passwordInput === "HASTIN") { // Admin password for reset
+            await resetCourseData(); // Await reset data
             hideResetConfirmationModal();
         } else {
-            showAlert("Error", "Incorrect password.");
+            showAlert("Error", "Incorrect password. Data reset cancelled.");
             document.getElementById('reset-password-input').value = '';
         }
     }
@@ -817,7 +965,7 @@
         }
     }
 
-    function saveSettings() {
+    async function saveSettings() {
         if (!activeCourse) {
             showToast("Please select a course first.", "error");
             return;
@@ -829,9 +977,10 @@
         }
         activeCourse.teacher.logoUrl = logoUrl;
         document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-        saveData(); // Save changes (now local-only)
+        
+        await saveData(); // Save changes to Firestore
         hideSettingsModal();
-        showToast("Settings saved successfully!");
+        showToast("Settings saved successfully!", 'success');
     }
 
     // --- INITIALIZATION ---
@@ -955,7 +1104,7 @@
         updateCourseSelection(); // Trigger full course selection update
     }
 
-    function updateCourseSelection() {
+    async function updateCourseSelection() {
         const academicYear = document.getElementById('select-academic-year').value;
         const semester = document.getElementById('select-semester').value;
         const subject = document.getElementById('select-subject').value;
@@ -981,7 +1130,7 @@
                 // Initialize new course with assessmentComponents array
                 course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} };
                 courses.push(course);
-                saveData(); // Save changes (now local-only)
+                await saveData(); // Save changes to Firestore
                 statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
             } else {
@@ -1026,11 +1175,11 @@
         }
     }
 
-    function saveTeacherInfo() {
+    async function saveTeacherInfo() {
         if (!activeCourse) return;
         activeCourse.teacher.realName = document.getElementById('teacher-real-name').value.trim();
         activeCourse.teacher.id = document.getElementById('teacher-id').value.trim();
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         showToast('Teacher information saved!', 'success');
         renderTeacherInfoSection(); // Update UI after saving
         updateMainContentState(); // <--- This call is crucial for unlocking main content
@@ -1090,32 +1239,59 @@
         );
     }
 
-    // Function to delete teacher info (called by confirmation modal)
-    function deleteTeacherInfo() {
+    async function deleteTeacherInfo() {
         if (!activeCourse) return;
         activeCourse.teacher = {}; // Clear teacher object
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         showToast('Teacher information deleted!', 'success');
         renderTeacherInfoSection(); // Update UI after deletion
         updateMainContentState();
     }
 
-    function resetCourseData() {
+    async function resetCourseData() {
         if (!activeCourse) return;
         const courseIdentifier = `${activeCourse.subject} (${activeCourse.gradeLevel}/${activeCourse.room}) - ${activeCourse.academicYear} ${activeCourse.semester}`;
-        // Clear assessment components instead of categories directly
+        
+        if (db && userId) {
+            try {
+                // Delete course document from Firestore
+                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id); // Changed path to 'public'
+                await deleteDoc(courseRef);
+
+                // Remove scores related to this course from all students in Firestore
+                const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students'); // Changed path to 'public'
+                const q = query(studentsColRef, where('gradeLevel', '==', activeCourse.gradeLevel), where('room', '==', activeCourse.room));
+                const querySnapshot = await getDocs(q);
+                for (const studentDoc of querySnapshot.docs) {
+                    const studentData = studentDoc.data();
+                    if (studentData.scores && studentData.scores[activeCourse.id]) {
+                        delete studentData.scores[activeCourse.id];
+                        await setDoc(studentDoc.ref, studentData, { merge: true });
+                    }
+                }
+            } catch (e) {
+                console.error("Error resetting course data in Firestore:", e);
+                showToast('ข้อผิดพลาดในการรีเซ็ตข้อมูลวิชาในฐานข้อมูล.', 'error');
+            }
+        } else {
+             // Fallback to local storage reset if Firestore is not ready
+            students.forEach(s => {
+                if (s.scores && s.scores[activeCourse.id]) {
+                    delete s.scores[activeCourse.id];
+                }
+            });
+        }
+        
+        // Clear local state
         activeCourse.assessmentComponents = [];
         activeCourse.teacher = {};
-        // Remove scores related to this course from all students
-        students.forEach(s => {
-            if (s.scores && s.scores[activeCourse.id]) {
-                delete s.scores[activeCourse.id];
-            }
-        });
-        saveData(); // Save changes (now local-only)
+        courses = courses.filter(c => c.id !== activeCourse.id); // Remove from local courses array
+        students = students.filter(s => !(s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room)); // Remove students from this class locally
+
+        await saveData(); // Save local changes (this will also trigger Firestore update if db is ready)
         showToast(`All data for course "${courseIdentifier}" has been reset!`, 'success');
 
-        // Reset course selection dropdowns and status
+        // Reset UI selections
         activeCourse = null;
         selectedAssessmentComponent = null;
         document.getElementById('select-subject').value = '';
@@ -1192,7 +1368,7 @@
         updateCategoryManagementSectionState(); // Ensure state is updated after rendering components
     }
 
-    function addGradingPeriod() { // Function name from HTML remains, but it adds an "Assessment Component"
+    async function addGradingPeriod() { // Function name from HTML remains, but it adds an "Assessment Component"
         if (!activeCourse) return;
         const nameInput = document.getElementById('new-grading-period-name');
         const weightInput = document.getElementById('new-grading-period-weight');
@@ -1207,7 +1383,7 @@
         activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] });
         nameInput.value = '';
         weightInput.value = '';
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         renderAssessmentComponents(); // Re-render the list
         selectGradingPeriod(); // Force re-selection to update UI state
         renderAll(); // <--- Added: Re-render all tables after structural change
@@ -1229,7 +1405,7 @@
         renderAssessmentComponents();
     }
 
-    function saveAssessmentComponentChanges(index) {
+    async function saveAssessmentComponentChanges(index) {
         const componentElement = document.querySelector(`#grading-period-list > div:nth-child(${index + 1})`);
         const newName = componentElement.querySelector('.grading-period-name-input').value.trim();
         const newWeight = parseFloat(componentElement.querySelector('.grading-period-weight-input').value);
@@ -1253,7 +1429,7 @@
         activeCourse.assessmentComponents[index].weight = newWeight;
         editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         showToast('Assessment component changes saved!', 'success');
         renderAssessmentComponents(); // Re-render to show updated name
         renderAll(); // <--- Added: Re-render all tables after structural change
@@ -1268,7 +1444,7 @@
         );
     }
 
-    function deleteAssessmentComponent(index) {
+    async function deleteAssessmentComponent(index) {
         if (!activeCourse) return;
         const componentIdToDelete = activeCourse.assessmentComponents[index].id;
         const componentName = activeCourse.assessmentComponents[index].name;
@@ -1281,7 +1457,7 @@
         });
 
         activeCourse.assessmentComponents.splice(index, 1);
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         showToast(`Assessment component "${componentName}" removed.`, 'success');
 
         // If the deleted component was the currently selected one, clear selection
@@ -1415,7 +1591,7 @@
         }).join('');
     }
 
-    function addCategory() {
+    async function addCategory() {
         if (!selectedAssessmentComponent) return;
         const nameInput = document.getElementById('new-category-name');
         const weightInput = document.getElementById('new-category-weight');
@@ -1430,12 +1606,12 @@
         selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name, weight, subItems: [] });
         nameInput.value = '';
         weightInput.value = '';
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         renderCategories(); // Re-render the list
         renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
-    function handleCategoryCsvImport(event) {
+    async function handleCategoryCsvImport(event) {
         if (!selectedAssessmentComponent) {
             showToast("Please select an Assessment Component first to import categories.", "error");
             return;
@@ -1443,7 +1619,7 @@
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = e => {
+        reader.onload = async e => { // Made onload async
             const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1); // Filter empty lines and skip header
             let added = 0, updated = 0, skipped = 0;
             lines.forEach(line => {
@@ -1477,7 +1653,7 @@
                     added++;
                 }
             });
-            saveData(); // Save changes (now local-only)
+            await saveData(); // Save changes to Firestore
             renderCategories(); // Re-render the categories after import
             showToast(`Category import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
             renderAll(); // <--- Added: Re-render all tables after structural change
@@ -1496,7 +1672,7 @@
         );
     }
 
-    function removeCategory(index) {
+    async function removeCategory(index) {
         if (!selectedAssessmentComponent) return;
         const catName = selectedAssessmentComponent.categories[index].name;
         selectedAssessmentComponent.categories.splice(index, 1); // Remove category
@@ -1506,7 +1682,7 @@
                 delete s.scores[activeCourse.id][selectedAssessmentComponent.name][catName];
             }
         });
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         renderCategories(); // Re-render the categories after removal
         showToast(`Category "${catName}" removed.`, 'success');
         renderAll(); // <--- Added: Re-render all tables after structural change
@@ -1528,7 +1704,7 @@
         renderCategories(); // Re-render to show normal UI
     }
 
-    function saveCategoryChanges(index) {
+    async function saveCategoryChanges(index) {
         const catElement = document.querySelector(`#category-settings details:nth-child(${index + 1})`);
         const newName = catElement.querySelector('.category-name-input').value.trim();
         const newWeight = parseFloat(catElement.querySelector('.category-weight-input').value);
@@ -1569,13 +1745,13 @@
         selectedAssessmentComponent.categories[index] = { ...originalCategoryState, name: newName, weight: newWeight, subItems: newSubItems };
         editingCategoryIndex = -1; // Exit editing mode
         originalCategoryState = null;
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         renderCategories(); // Re-render to show updated details
         showToast('Category changes saved!', 'success');
         renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
-    function addSubItem(catIndex) {
+    async function addSubItem(catIndex) {
         const name = document.getElementById(`new-sub-item-name-${catIndex}`).value.trim();
         const maxScore = parseFloat(document.getElementById(`new-sub-item-max-score-${catIndex}`).value);
         if (!name || isNaN(maxScore) || maxScore < 0) { showToast('Invalid sub-item name or max score (must be >= 0).', 'error'); return; }
@@ -1594,15 +1770,15 @@
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
         document.getElementById(`new-sub-item-name-${catIndex}`).value = ''; // Clear input fields
         document.getElementById(`new-sub-item-max-score-${catIndex}`).value = '';
-        saveData(); // Save changes immediately after adding a sub-item
+        await saveData(); // Save changes to Firestore
         renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
-    function removeSubItem(catIndex, subIndex) {
+    async function removeSubItem(catIndex, subIndex) {
         selectedAssessmentComponent.categories[catIndex].subItems.splice(subIndex, 1);
         // Update the rendered sub-items dynamically for the current category in edit mode
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
-        saveData(); // Save changes immediately after removing a sub-item
+        await saveData(); // Save changes to Firestore
         renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
@@ -1615,7 +1791,7 @@
         document.getElementById('add-student-button').disabled = !name || !id || !roll;
     }
 
-    function addStudent() {
+    async function addStudent() {
         if (!activeCourse) return;
         const realName = document.getElementById('new-student-real-name').value.trim();
         const nickname = document.getElementById('new-student-nickname').value.trim();
@@ -1633,7 +1809,7 @@
         // Clear form fields
         ['new-student-real-name', 'new-student-nickname', 'new-student-id', 'new-student-roll-number'].forEach(id => document.getElementById(id).value = '');
         checkAddStudentFormValidity(); // Re-check validity after clearing
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         renderStudents(); // Re-render the student list
         showToast(`${realName} has been added.`, 'success');
         renderAll(); // <--- Added: Re-render all tables after structural change (adding student)
@@ -1650,10 +1826,19 @@
         );
     }
 
-    function removeStudent(studentId) {
-        // Filter out the student
+    async function removeStudent(studentId) {
+        if (db && userId) {
+            try {
+                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', studentId); // Changed path to 'public'
+                await deleteDoc(studentRef);
+            } catch (e) {
+                console.error("Error deleting student from Firestore:", e);
+                showToast('ข้อผิดพลาดในการลบนักเรียนจากฐานข้อมูล.', 'error');
+            }
+        }
+        // Filter out the student locally
         students = students.filter(s => s.studentId !== studentId);
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes (now local-only)
         renderStudents(); // Re-render the student list
         showToast('Student removed.', 'success');
         renderAll(); // <--- Added: Re-render all tables after structural change (removing student)
@@ -1679,7 +1864,7 @@
         renderStudents(); // Re-render to show normal UI
     }
 
-    function saveStudentChanges(studentId) {
+    async function saveStudentChanges(studentId) {
         const studentIndex = students.findIndex(s => s.studentId === studentId);
         if (studentIndex === -1) return;
 
@@ -1706,7 +1891,7 @@
 
         editingStudentId = null; // Exit editing mode
         originalStudentState = null;
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
         renderStudents(); // Re-render to show updated details
         showToast('Student details updated!', 'success');
         renderAll(); // <--- Added: Re-render all tables after structural change (editing student details)
@@ -1739,7 +1924,7 @@
                             <input type="text" value="${s.studentId}" class="edit-student-id p-1" placeholder="Student ID" disabled> <!-- Student ID is not editable -->
                             <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="Roll No.">
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex gap-2">
                             <button onclick="saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">Save</button>
                             <button onclick="cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">Cancel</button>
                         </div>
@@ -1761,7 +1946,7 @@
         }).join('');
     }
 
-    function handleCsvImport(event) {
+    async function handleCsvImport(event) {
         if (!activeCourse) {
             showToast("Please select a course first to import students.", "error");
             return;
@@ -1769,21 +1954,20 @@
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = e => {
+        reader.onload = async e => {
             const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1); // Filter empty lines and skip header
             let added = 0, updated = 0, skipped = 0;
-            lines.forEach(line => {
+            for (const line of lines) { // Changed to for...of for async/await with Firestore
                 const [studentId, realName, nickname, rollNumber] = line.split(',').map(f => f.trim());
                 if (!studentId || !realName || !rollNumber) {
                     skipped++;
                     console.warn(`Skipping invalid student CSV row: ${line}`);
-                    return; // Skip invalid rows
+                    continue; // Skip invalid rows
                 }
 
                 const existingIndex = students.findIndex(s => s.studentId === studentId);
                 const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
                 const rollNumberExistsInCurrentClass = studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === rollNumber);
-                // check if the studentId already exists but with a different roll number AND in the same class
                 const studentIdExistsWithDifferentRollInSameClass = students.some(s => s.studentId === studentId && s.rollNumber !== rollNumber && s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
 
 
@@ -1792,7 +1976,7 @@
                     if (rollNumberExistsInCurrentClass && students[existingIndex].rollNumber !== rollNumber) {
                          showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping update for ${realName} (ID: ${studentId}).`, 'error', 5000);
                          skipped++;
-                         return;
+                         continue;
                     }
                     const existingStudent = students[existingIndex];
                     Object.assign(existingStudent, { realName, nickname, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room });
@@ -1806,8 +1990,8 @@
                     students.push({ studentId, realName, nickname, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room, scores: {} });
                     added++;
                 }
-            });
-            saveData(); // Save changes (now local-only)
+            }
+            await saveData(); // Save changes to Firestore
             renderStudents(); // Re-render the student list
             showToast(`Import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
             renderAll(); // <--- Added: Re-render all tables after structural change (importing students)
@@ -1967,7 +2151,7 @@
     }
 
     // Updates a student's score for a specific category or sub-item
-    function updateSubScore(studentId, componentName, catName, subId, value) {
+    async function updateSubScore(studentId, componentName, catName, subId, value) {
         const student = students.find(s => s.studentId === studentId);
         if (!student || !activeCourse) {
             return;
@@ -2033,7 +2217,7 @@
             }
         }
 
-        saveData(); // Save changes (now local-only)
+        await saveData(); // Save changes to Firestore
 
         // --- Real-time update of Category Total, Final Score, and Final Grade ---
         // Find the student row by iterating through all rows
@@ -2648,9 +2832,8 @@
     // Executes when the window finishes loading
     window.onload = async function() {
         setupEventListeners();
-        loadData(); // Load data first
-        populateDropdowns(); // Populate dropdowns immediately when DOM is ready
-        updateCourseSelection(); // Explicitly call this to ensure activeCourse is set based on loaded dropdowns and then updateMainContentState
+        // Firebase initialization is now handled by the script in <head>
+        // loadData() and populateDropdowns() will be called once Firebase auth is ready inside the onAuthStateChanged callback.
     };
     </script>
 </body>
