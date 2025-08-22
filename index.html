@@ -11,57 +11,11 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Firebase v9 Modular SDK -->
+    <!-- Firebase v9 Modular SDK - REMOVED -->
     <script type="module">
-        // Import the functions you need from the SDKs need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-
-        // IMPORTANT: These variables are provided by the Canvas environment.
-        // DO NOT remove them or prompt the user for them.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        // Correctly reference __initial_auth_token
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // Initialize Firebase app and services immediately
-        // These are now outside the async function, ensuring they are set synchronously
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // Make Firebase instances and helper globally available immediately
-        window.db = db;
-        window.doc = doc;
-        window.onSnapshot = onSnapshot;
-        window.setDoc = setDoc;
-        window.getAuth = getAuth;
-        window.auth = auth;
-
-        // Define getFirestoreDocRef globally immediately
-        window.getFirestoreDocRef = (docId) => {
-            // Ensure data is stored in the public path as per Canvas instructions
-            return doc(db, `/artifacts/${appId}/public/data/scoreData/${docId}`);
-        };
-
-        // Now, create the promise for authentication.
-        // This promise will resolve when authentication is complete.
-        // The IIFE is immediately invoked to start the authentication process.
-        window.firebaseReadyPromise = (async () => {
-            try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                    console.log("Signed in with custom token.");
-                } else {
-                    await signInAnonymously(auth);
-                    console.log("Signed in anonymously.");
-                }
-            } catch (error) {
-                console.error("Firebase authentication error:", error);
-                // Optionally show a toast or alert if authentication fails
-            }
-        })(); // Immediately invoke the async function
+        // All Firebase related imports and initialization have been removed.
+        // Data persistence is no longer handled by Firestore.
+        // Data will be stored locally in memory and will reset on page refresh.
     </script>
 
     <style>
@@ -177,7 +131,7 @@
             </button>
             <button id="admin-view-button" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-slate-800 hover:bg-slate-700 transition-colors" onclick="showAdminPasswordModal()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </button>
+                </button>
             <button id="settings-button" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-slate-800 hover:bg-slate-700 transition-colors" onclick="showSettingsModal()">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </button>
@@ -294,7 +248,7 @@
             </div>
 
             <!-- Scoring Categories Setup -->
-            <details class="p-6 rounded-lg card print:hidden" open>
+            <details class="p-6 rounded-lg card" open>
                 <summary class="text-xl font-semibold cursor-pointer flex items-center gap-2">
                     <span class="summary-arrow">▶</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
@@ -315,7 +269,7 @@
                         </div>
                         <div class="text-right mt-2">
                             <p id="total-grading-period-weight-info" class="font-medium">Total Component Weight: <span id="current-total-grading-period-weight">0</span>%</p>
-                            <p id="grading-period-weight-warning" class="text-red-500 font-medium hidden">⚠️ Total component weight must be 100%</p>
+                            <p id="grading-period-warning" class="text-red-500 font-medium hidden">⚠️ Total component weight must be 100%</p>
                         </div>
                     </div>
 
@@ -350,7 +304,7 @@
                                 Import Categories (CSV)
                             </button>
                         </div>
-                        <p class="text-sm text-slate-400 mt-2">Format: `categoryName,weight` (e.g., `Quizzes,20`)</p>
+                        <p class="text-sm text-slate-400 mt-2">Format: `categoryName,weight` (e.g., `Participation,10`)</p>
                         <div class="text-right mt-2">
                             <p id="total-category-weight-info" class="font-medium">Total Category Weight: <span id="current-total-category-weight">0</span>%</p>
                             <p id="category-weight-warning" class="text-red-500 font-medium hidden">⚠️ Total category weight must be 100% within this component</p>
@@ -385,7 +339,7 @@
                         <p class="text-sm text-slate-400 my-2">(Grade & Room are based on current selection)</p>
                         <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
                         <button onclick="document.getElementById('csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                             Choose .csv File
                         </button>
                     </div>
@@ -405,7 +359,7 @@
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-2xl font-semibold">Enter Student Scores</h2>
                         <button onclick="window.print()" class="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600 transition-colors print:hidden flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
                             Print Table
                         </button>
                     </div>
@@ -663,72 +617,65 @@
         return num.toFixed(2);
     }
 
-    // --- DATA PERSISTENCE (FIREBASE v9) ---
-    // Sets up a real-time listener for score data from Firestore
-    function setupFirestoreListener() {
-        // Ensure Firebase objects are available globally
-        const { db, onSnapshot, getFirestoreDocRef } = window;
-        // Reference to the main document where all course and student data is stored
-        const mainDocRef = getFirestoreDocRef("mainDocument");
+    // --- DATA PERSISTENCE (Local Storage) ---
+    // Saves current state of courses and students to Local Storage
+    function saveData() {
+        try {
+            localStorage.setItem('gradingSheetCourses', JSON.stringify(courses));
+            localStorage.setItem('gradingSheetStudents', JSON.stringify(students));
+            // Also save activeCourse and selectedAssessmentComponent for better UX on refresh
+            localStorage.setItem('gradingSheetActiveCourseId', activeCourse ? activeCourse.id : '');
+            localStorage.setItem('gradingSheetSelectedAssessmentComponentId', selectedAssessmentComponent ? selectedAssessmentComponent.id : '');
 
-        onSnapshot(mainDocRef, (doc) => {
-            if (doc.exists()) {
-                const data = doc.data();
-                courses = data.courses || []; // Load courses
-                students = data.students || []; // Load students
-                console.log("Data loaded from Firestore.");
-                populateDropdowns(); // Re-populate dropdowns with current data
-                if (activeCourse) {
-                    // If a course was active, try to find and re-activate it to refresh UI
-                    const courseId = activeCourse.id;
-                    // Re-find the active course object from the new 'courses' array to ensure it's up-to-date
-                    activeCourse = courses.find(c => c.id === courseId) || null;
-                    if (activeCourse) {
-                        // Resync UI elements with potentially updated activeCourse data
-                        document.getElementById('select-subject').value = activeCourse.subject;
-                        document.getElementById('select-grade-level').value = activeCourse.gradeLevel;
-                        document.getElementById('select-room').value = activeCourse.room;
-                        document.getElementById('select-academic-year').value = activeCourse.academicYear || '';
-                        document.getElementById('select-semester').value = activeCourse.semester || '';
-                        // Resync selectedAcademicYear and selectedSemester global variables
-                        selectedAcademicYear = activeCourse.academicYear || '';
-                        selectedSemester = activeCourse.semester || '';
-
-                        // New: Resync selectedAssessmentComponent if it exists in the updated activeCourse
-                        if (selectedAssessmentComponent) {
-                            const componentId = selectedAssessmentComponent.id;
-                            selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === componentId) || null;
-                        }
-                    }
-                }
-                renderAll(); // Re-render all UI components
-            } else {
-                console.log("No data in Firestore. Ready for initial setup.");
-                populateDropdowns(); // Populate dropdowns even if no data exists
-                renderAll(); // Initial render for empty state
-            }
-        }, (error) => {
-            console.error("Error listening to Firestore: ", error);
-            showAlert("Connection Error", "Could not connect to the database. Please check your connection and Firebase setup.");
-        });
+            // Removed toast here to avoid spamming on every score input,
+            // as score inputs now trigger saveData frequently.
+            // showToast('บันทึกข้อมูลแล้ว (บันทึกในเครื่อง).', 'success', 2000); // Data saved locally.
+        } catch (e) {
+            console.error("Error saving to Local Storage:", e);
+            showToast('บันทึกข้อมูลล้มเหลว.', 'error'); // Failed to save data.
+        }
     }
 
-    // Saves current state of courses and students to Firestore
-    async function saveData() {
-        showToast('Saving...', 'info', 1000); // Show saving indicator
-        const { db, setDoc, getFirestoreDocRef } = window;
-        const mainDocRef = getFirestoreDocRef("mainDocument");
+    // Loads data from Local Storage
+    function loadData() {
         try {
-            // Log the data being saved for debugging
-            console.log("Data being saved:", JSON.parse(JSON.stringify({ courses: courses, students: students })));
-            await setDoc(mainDocRef, {
-                courses: courses,
-                students: students
-            }, { merge: true }); // Use merge to avoid overwriting other fields if they existed
-            console.log("Data saved to Firestore.");
-        } catch (error) {
-            console.error("Error writing to Firestore: ", error);
-            showToast('Failed to save data.', 'error');
+            const storedCourses = localStorage.getItem('gradingSheetCourses');
+            const storedStudents = localStorage.getItem('gradingSheetStudents');
+            const storedActiveCourseId = localStorage.getItem('gradingSheetActiveCourseId');
+            const storedSelectedAssessmentComponentId = localStorage.getItem('gradingSheetSelectedAssessmentComponentId');
+
+            if (storedCourses) {
+                courses = JSON.parse(storedCourses);
+            } else {
+                courses = [];
+            }
+            if (storedStudents) {
+                students = JSON.parse(storedStudents);
+            } else {
+                students = [];
+            }
+
+            // Restore activeCourse and selectedAssessmentComponent based on IDs
+            if (storedActiveCourseId && courses.length > 0) {
+                activeCourse = courses.find(c => c.id === storedActiveCourseId);
+            } else {
+                activeCourse = null;
+            }
+
+            if (storedSelectedAssessmentComponentId && activeCourse && activeCourse.assessmentComponents) {
+                selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === storedSelectedAssessmentComponentId);
+            } else {
+                selectedAssessmentComponent = null;
+            }
+
+            console.log("Data loaded from Local Storage.");
+        } catch (e) {
+            console.error("Error loading from Local Storage:", e);
+            courses = [];
+            students = [];
+            activeCourse = null;
+            selectedAssessmentComponent = null;
+            showToast('ไม่สามารถโหลดข้อมูลที่บันทึกไว้ได้.', 'error'); // Could not load saved data.
         }
     }
 
@@ -791,16 +738,19 @@
 
     function confirmResetCourse() {
         const passwordInput = document.getElementById('reset-password-input').value;
-        if (passwordInput === "HASTIN") { // Admin password for reset
+        if (passwordInput === "HASTIN") { // Hardcoded admin password
             resetCourseData();
             hideResetConfirmationModal();
         } else {
-            showAlert("Error", "Incorrect password. Data reset cancelled.");
+            showAlert("Error", "Incorrect password.");
             document.getElementById('reset-password-input').value = '';
         }
     }
 
-    function showAdminPasswordModal() { document.getElementById('admin-password-modal').classList.remove('hidden'); }
+    function showAdminPasswordModal() { 
+        document.getElementById('admin-password-input').value = ''; // Clear password field
+        document.getElementById('admin-password-modal').classList.remove('hidden'); 
+    }
     function hideAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); }
     function showSettingsModal() {
         // Pre-fill logo URL if available for the active course
@@ -825,7 +775,7 @@
         const contentDiv = document.getElementById('score-breakdown-content');
         contentDiv.innerHTML = activeCourse.assessmentComponents.map(component => { // Iterate through assessment components
             let componentHtml = `<div class="p-2 border rounded-md bg-slate-700 border-slate-500 mb-2">
-                    <p class="font-bold text-indigo-300">${component.name} (${component.weight}%)</p>`;
+                        <p class="font-bold text-indigo-300">${component.name} (${component.weight}%)</p>`;
             if (component.categories && component.categories.length > 0) {
                 componentHtml += `<ul class="list-disc list-inside ml-4 text-sm space-y-1">`;
                 component.categories.forEach(cat => {
@@ -858,7 +808,7 @@
     function checkAdminPassword() {
         const password = document.getElementById('admin-password-input').value;
         if (password === "HASTIN") { // Hardcoded admin password
-            hideAdminDashboardModal();
+            hideAdminPasswordModal(); // <--- Added: Hide the admin password modal
             renderAdminDashboard(); // Render dashboard content
             document.getElementById('admin-dashboard-modal').classList.remove('hidden');
         } else {
@@ -879,7 +829,7 @@
         }
         activeCourse.teacher.logoUrl = logoUrl;
         document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-        saveData(); // Save changes to Firestore
+        saveData(); // Save changes (now local-only)
         hideSettingsModal();
         showToast("Settings saved successfully!");
     }
@@ -892,11 +842,12 @@
         const academicYearSelect = document.getElementById('select-academic-year');
         const semesterSelect = document.getElementById('select-semester');
 
+        // Capture current values before overwriting innerHTML
         const currentSubject = subjectSelect.value;
         const currentGrade = gradeLevelSelect.value;
-        // Capture current values before overwriting innerHTML
         const currentAcademicYearSelection = academicYearSelect.value;
         const currentSemesterSelection = semesterSelect.value;
+        const currentRoom = document.getElementById('select-room').value;
 
         subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
         gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
@@ -914,12 +865,11 @@
         console.log("Semester options added:", semesterSelect.innerHTML);
 
         // Restore previous selections or set defaults
-        subjectSelect.value = currentSubject;
-        gradeLevelSelect.value = currentGrade;
-
-        // Set Academic Year and Semester values, prioritizing existing selection, then activeCourse, then default
         academicYearSelect.value = currentAcademicYearSelection || (activeCourse ? activeCourse.academicYear : '') || currentYear;
         semesterSelect.value = currentSemesterSelection || (activeCourse ? activeCourse.semester : '') || 'Term 1';
+        subjectSelect.value = activeCourse?.subject || currentSubject;
+        gradeLevelSelect.value = activeCourse?.gradeLevel || currentGrade;
+        document.getElementById('select-room').value = activeCourse?.room || currentRoom; // Restore room selection
 
         // Update global variables to reflect the current UI selection/default
         selectedAcademicYear = academicYearSelect.value;
@@ -956,19 +906,25 @@
         console.log("activeCourse.teacher:", activeCourse ? activeCourse.teacher : 'N/A');
         console.log("activeCourse.teacher.realName:", activeCourse && activeCourse.teacher ? activeCourse.teacher.realName : 'N/A');
 
-        const isReadyForMainContent = activeCourse && activeCourse.teacher && activeCourse.teacher.realName && isAcademicPeriodSelected;
+        // Check if course is selected AND teacher info is saved
+        const isCourseSelected = document.getElementById('select-subject').value && document.getElementById('select-grade-level').value && document.getElementById('select-room').value;
+        const isTeacherInfoSaved = activeCourse && activeCourse.teacher && activeCourse.teacher.realName;
+
+        const isReadyForMainContent = isAcademicPeriodSelected && isCourseSelected && isTeacherInfoSaved;
         console.log("isReadyForMainContent (final check):", isReadyForMainContent);
 
         const mainContent = document.getElementById('main-content-area');
         const mainContentOverlay = document.getElementById('main-content-overlay');
 
-        if (activeCourse) {
+        if (isAcademicPeriodSelected && isCourseSelected) { // Only enable teacher info if course is selected
             teacherInfoContainer.classList.remove('disabled-section');
             teacherInfoContainerOverlay.classList.add('hidden');
         } else {
             teacherInfoContainer.classList.add('disabled-section');
             teacherInfoContainerOverlay.classList.remove('hidden');
+            teacherInfoContainerOverlay.querySelector('span').textContent = 'Please select a Course above.';
         }
+
 
         if (isReadyForMainContent) {
             mainContent.classList.remove('disabled-section');
@@ -976,6 +932,13 @@
         } else {
             mainContent.classList.add('disabled-section');
             mainContentOverlay.classList.remove('hidden');
+            // Update overlay message based on what's missing
+            let overlayMessage = 'Please complete: ';
+            let missingSteps = [];
+            if (!isAcademicPeriodSelected) missingSteps.push('Academic Year & Semester');
+            if (!isCourseSelected) missingSteps.push('Course Selection');
+            if (!isTeacherInfoSaved) missingSteps.push('Teacher Info (and click Save Info)');
+            mainContentOverlay.querySelector('span').textContent = overlayMessage + missingSteps.join(', ') + '.';
         }
 
         renderAll(); // Re-render all UI components
@@ -1018,7 +981,7 @@
                 // Initialize new course with assessmentComponents array
                 course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} };
                 courses.push(course);
-                saveData();
+                saveData(); // Save changes (now local-only)
                 statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
             } else {
@@ -1067,7 +1030,7 @@
         if (!activeCourse) return;
         activeCourse.teacher.realName = document.getElementById('teacher-real-name').value.trim();
         activeCourse.teacher.id = document.getElementById('teacher-id').value.trim();
-        saveData();
+        saveData(); // Save changes (now local-only)
         showToast('Teacher information saved!', 'success');
         renderTeacherInfoSection(); // Update UI after saving
         updateMainContentState(); // <--- This call is crucial for unlocking main content
@@ -1131,7 +1094,7 @@
     function deleteTeacherInfo() {
         if (!activeCourse) return;
         activeCourse.teacher = {}; // Clear teacher object
-        saveData();
+        saveData(); // Save changes (now local-only)
         showToast('Teacher information deleted!', 'success');
         renderTeacherInfoSection(); // Update UI after deletion
         updateMainContentState();
@@ -1149,12 +1112,7 @@
                 delete s.scores[activeCourse.id];
             }
         });
-        saveData();
-        // Clear UI fields
-        document.getElementById('teacher-real-name').value = '';
-        document.getElementById('teacher-id').value = '';
-        document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-        updateMainContentState();
+        saveData(); // Save changes (now local-only)
         showToast(`All data for course "${courseIdentifier}" has been reset!`, 'success');
 
         // Reset course selection dropdowns and status
@@ -1171,18 +1129,27 @@
         renderTeacherInfoSection(); // Ensure teacher info section is reset
         renderAssessmentComponents();
         updateCategoryManagementSectionState();
+        renderAll(); // Re-render all tables after reset
     }
 
     // --- NEW: ASSESSMENT COMPONENT LOGIC ---
     function updateTotalAssessmentComponentWeightDisplay() {
+        const totalWeightSpan = document.getElementById('current-total-grading-period-weight');
+        const warningDiv = document.getElementById('grading-period-warning');
+
+        // Added checks for DOM elements to prevent TypeError if they are not yet rendered
+        if (!totalWeightSpan || !warningDiv) {
+            return; // Exit if elements are not found
+        }
+
         if (!activeCourse) {
-            document.getElementById('current-total-grading-period-weight').textContent = '0';
-            document.getElementById('grading-period-weight-warning').classList.add('hidden');
+            totalWeightSpan.textContent = '0';
+            warningDiv.classList.add('hidden');
             return;
         }
         const totalWeight = activeCourse.assessmentComponents.reduce((sum, component) => sum + Number(component.weight), 0);
-        document.getElementById('current-total-grading-period-weight').textContent = totalWeight;
-        document.getElementById('grading-period-weight-warning').classList.toggle('hidden', totalWeight === 100 || activeCourse.assessmentComponents.length === 0);
+        totalWeightSpan.textContent = totalWeight;
+        warningDiv.classList.toggle('hidden', totalWeight === 100 || activeCourse.assessmentComponents.length === 0);
     }
 
     function renderAssessmentComponents() {
@@ -1240,7 +1207,10 @@
         activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] });
         nameInput.value = '';
         weightInput.value = '';
-        saveData();
+        saveData(); // Save changes (now local-only)
+        renderAssessmentComponents(); // Re-render the list
+        selectGradingPeriod(); // Force re-selection to update UI state
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function startEditAssessmentComponent(index) {
@@ -1283,8 +1253,10 @@
         activeCourse.assessmentComponents[index].weight = newWeight;
         editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
-        saveData();
+        saveData(); // Save changes (now local-only)
         showToast('Assessment component changes saved!', 'success');
+        renderAssessmentComponents(); // Re-render to show updated name
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function showDeleteAssessmentComponentConfirmation(index) {
@@ -1309,7 +1281,7 @@
         });
 
         activeCourse.assessmentComponents.splice(index, 1);
-        saveData();
+        saveData(); // Save changes (now local-only)
         showToast(`Assessment component "${componentName}" removed.`, 'success');
 
         // If the deleted component was the currently selected one, clear selection
@@ -1319,6 +1291,7 @@
         }
         renderAssessmentComponents();
         updateCategoryManagementSectionState();
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function selectGradingPeriod() { // Function name from HTML remains, but it selects an "Assessment Component"
@@ -1341,6 +1314,7 @@
         statusDiv.classList.remove('hidden');
         updateCategoryManagementSectionState();
         renderCategories(); // Re-render categories for the newly selected component
+        renderAll(); // <--- Added: Re-render all tables after structural change (selection change implies structural view change)
     }
 
     function updateCategoryManagementSectionState() {
@@ -1358,14 +1332,22 @@
 
     // --- CATEGORY LOGIC (now nested under selectedAssessmentComponent) ---
     function updateTotalCategoryWeightDisplay() {
+        const totalWeightSpan = document.getElementById('current-total-category-weight');
+        const warningDiv = document.getElementById('category-weight-warning');
+
+        // Added checks for DOM elements to prevent TypeError if they are not yet rendered
+        if (!totalWeightSpan || !warningDiv) {
+            return; // Exit if elements are not found
+        }
+
         if (!selectedAssessmentComponent) {
-            document.getElementById('current-total-category-weight').textContent = '0';
-            document.getElementById('category-weight-warning').classList.add('hidden');
+            totalWeightSpan.textContent = '0';
+            warningDiv.classList.add('hidden');
             return;
         }
         const totalWeight = selectedAssessmentComponent.categories.reduce((sum, cat) => sum + Number(cat.weight), 0);
-        document.getElementById('current-total-category-weight').textContent = totalWeight;
-        document.getElementById('category-weight-warning').classList.toggle('hidden', totalWeight === 100 || selectedAssessmentComponent.categories.length === 0);
+        totalWeightSpan.textContent = totalWeight;
+        warningDiv.classList.toggle('hidden', totalWeight === 100 || selectedAssessmentComponent.categories.length === 0);
     }
 
     function renderCategories() {
@@ -1420,15 +1402,15 @@
         return cat.subItems.map((sub, subIndex) => {
             if (isEditing) {
                 return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
-                        <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
-                        <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
-                        <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
-                    </div>`;
+                            <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
+                            <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
+                            <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
+                        </div>`;
             } else {
                 return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
-                        <span class="flex-grow text-sm">${sub.name}</span>
-                        <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} pts</span>
-                    </div>`;
+                            <span class="flex-grow text-sm">${sub.name}</span>
+                            <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} pts</span>
+                        </div>`;
             }
         }).join('');
     }
@@ -1448,7 +1430,9 @@
         selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name, weight, subItems: [] });
         nameInput.value = '';
         weightInput.value = '';
-        saveData();
+        saveData(); // Save changes (now local-only)
+        renderCategories(); // Re-render the list
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function handleCategoryCsvImport(event) {
@@ -1493,8 +1477,10 @@
                     added++;
                 }
             });
-            saveData();
+            saveData(); // Save changes (now local-only)
+            renderCategories(); // Re-render the categories after import
             showToast(`Category import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
+            renderAll(); // <--- Added: Re-render all tables after structural change
         };
         reader.readAsText(file);
         event.target.value = '';
@@ -1520,8 +1506,10 @@
                 delete s.scores[activeCourse.id][selectedAssessmentComponent.name][catName];
             }
         });
-        saveData(); // Save changes
+        saveData(); // Save changes (now local-only)
+        renderCategories(); // Re-render the categories after removal
         showToast(`Category "${catName}" removed.`, 'success');
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function startEditCategory(index) {
@@ -1581,8 +1569,10 @@
         selectedAssessmentComponent.categories[index] = { ...originalCategoryState, name: newName, weight: newWeight, subItems: newSubItems };
         editingCategoryIndex = -1; // Exit editing mode
         originalCategoryState = null;
-        saveData(); // Save changes
+        saveData(); // Save changes (now local-only)
+        renderCategories(); // Re-render to show updated details
         showToast('Category changes saved!', 'success');
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function addSubItem(catIndex) {
@@ -1604,14 +1594,16 @@
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
         document.getElementById(`new-sub-item-name-${catIndex}`).value = ''; // Clear input fields
         document.getElementById(`new-sub-item-max-score-${catIndex}`).value = '';
-        // No saveData() call here, it will be saved when "Save Category" is clicked
+        saveData(); // Save changes immediately after adding a sub-item
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
     function removeSubItem(catIndex, subIndex) {
         selectedAssessmentComponent.categories[catIndex].subItems.splice(subIndex, 1);
         // Update the rendered sub-items dynamically for the current category in edit mode
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
-        // No saveData() call here, it will be saved when "Save Category" is clicked
+        saveData(); // Save changes immediately after removing a sub-item
+        renderAll(); // <--- Added: Re-render all tables after structural change
     }
 
 
@@ -1641,8 +1633,10 @@
         // Clear form fields
         ['new-student-real-name', 'new-student-nickname', 'new-student-id', 'new-student-roll-number'].forEach(id => document.getElementById(id).value = '');
         checkAddStudentFormValidity(); // Re-check validity after clearing
-        saveData(); // Save changes
+        saveData(); // Save changes (now local-only)
+        renderStudents(); // Re-render the student list
         showToast(`${realName} has been added.`, 'success');
+        renderAll(); // <--- Added: Re-render all tables after structural change (adding student)
     }
 
     // Function to show confirmation for deleting a student
@@ -1659,8 +1653,10 @@
     function removeStudent(studentId) {
         // Filter out the student
         students = students.filter(s => s.studentId !== studentId);
-        saveData(); // Save changes
+        saveData(); // Save changes (now local-only)
+        renderStudents(); // Re-render the student list
         showToast('Student removed.', 'success');
+        renderAll(); // <--- Added: Re-render all tables after structural change (removing student)
     }
 
     function startEditStudent(studentId) {
@@ -1710,8 +1706,10 @@
 
         editingStudentId = null; // Exit editing mode
         originalStudentState = null;
-        saveData(); // Save changes
+        saveData(); // Save changes (now local-only)
+        renderStudents(); // Re-render to show updated details
         showToast('Student details updated!', 'success');
+        renderAll(); // <--- Added: Re-render all tables after structural change (editing student details)
     }
 
     function renderStudents() {
@@ -1809,8 +1807,10 @@
                     added++;
                 }
             });
-            saveData(); // Save changes after import
+            saveData(); // Save changes (now local-only)
+            renderStudents(); // Re-render the student list
             showToast(`Import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
+            renderAll(); // <--- Added: Re-render all tables after structural change (importing students)
         };
         reader.readAsText(file);
         event.target.value = ''; // Clear file input
@@ -1825,7 +1825,7 @@
         }
 
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room)
-                                       .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)); // Sort numerically
+                                         .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)); // Sort numerically
 
         let csvContent = "data:text/csv;charset=utf-8,";
 
@@ -1837,7 +1837,7 @@
                 if (cat.subItems && cat.subItems.length > 0) {
                     cat.subItems.forEach(sub => headers.push(`"${component.name.replace(/"/g, '""')} - ${cat.name.replace(/"/g, '""')} - ${sub.name.replace(/"/g, '""')}"`));
                 } else {
-                    headers.push(`"${component.name.replace(/"/g, '""')} - ${cat.name.replace(/"/g, '""')}"`);
+                    headers.push(`"${cat.name.replace(/"/g, '""')}"`); // Use category name directly if no sub-items
                 }
             });
         });
@@ -1900,12 +1900,12 @@
                 max += Number(sub.maxScore);
                 const subScoreValue = parseFloat(catScores[sub.id] || 0); // Get score for sub-item
                 current += subScoreValue;
-                // console.log(`  Sub-item: ${sub.name} (ID: ${sub.id}), maxScore=${sub.maxScore}, scoreFromData=${catScores[sub.id]}, parsedScore=${subScoreValue}, currentTotal=${current}, maxTotal=${max}`);
+                // console.log(`   Sub-item: ${sub.name} (ID: ${sub.id}), maxScore=${sub.maxScore}, scoreFromData=${catScores[sub.id]}, parsedScore=${subScoreValue}, currentTotal=${current}, maxTotal=${max}`);
             });
         } else {
             max = 100; // Default for simple categories within a component
             current = parseFloat(catScores || 0);
-            // console.log(`  Simple category: current=${current}, max=${max}`);
+            // console.log(`   Simple category: current=${current}, max=${max}`);
         }
         // console.log(`getCategoryScores: Final for ${componentName} - ${category.name}: current=${current}, max=${max}`);
         return { current, max };
@@ -1929,7 +1929,7 @@
 
             component.categories.forEach(cat => {
                 // Pass component.name to getCategoryScores
-                const { current, max } = getCategoryScores(student, component.name, cat, course);
+                const { current, max } = getCategoryScores(student, component.name, cat, activeCourse); // Changed course to activeCourse
                 if (max > 0) {
                     // Calculate percentage for this category within its component
                     const categoryPercentage = (current / max);
@@ -1968,10 +1968,8 @@
 
     // Updates a student's score for a specific category or sub-item
     function updateSubScore(studentId, componentName, catName, subId, value) {
-        // console.log(`updateSubScore called: studentId=${studentId}, componentName=${componentName}, catName=${catName}, subId=${subId}, value=${value}`);
         const student = students.find(s => s.studentId === studentId);
         if (!student || !activeCourse) {
-            console.log("updateSubScore: Student or activeCourse not found.");
             return;
         }
 
@@ -1997,31 +1995,98 @@
             }
         }
 
-        if (isNaN(score) || score < 0 || score > maxScore) {
-            console.warn(`updateSubScore: Invalid score input: ${value}. Max: ${maxScore}.`);
+        // Input validation: allow empty string for clearing, but otherwise must be valid number
+        if (value.trim() === '') {
+            // If input is cleared, set score to 0 or null depending on preference. 0 is safer for calculations.
+            if (subId) {
+                if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
+                if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
+                if (!student.scores[activeCourse.id][componentName][catName]) student.scores[activeCourse.id][componentName][catName] = {};
+                student.scores[activeCourse.id][componentName][catName][subId] = 0;
+            } else {
+                if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
+                if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
+                student.scores[activeCourse.id][componentName][catName] = 0;
+            }
+        } else if (isNaN(score) || score < 0 || score > maxScore) {
             showToast(`Score must be between 0 and ${formatNumber(maxScore)}.`, 'error');
-            // Do NOT re-render the entire table immediately on invalid input.
-            // Let the user correct it. The correct value will be picked up on next render.
-            // Optionally, reset the specific input field if desired, but for now,
-            // we'll rely on the user correcting it and `renderScoresTable` will fix
-            // it on next full data load/render. For immediate feedback, we show a toast.
+            // Revert the input field to its last valid saved value or 0 if no valid value
+            const currentInput = document.querySelector(`input[onchange*='${studentId}'][onchange*='${componentName}'][onchange*='${catName}'][onchange*='${subId || 'null'}']`);
+            if (currentInput) {
+                if (subId) {
+                    currentInput.value = student.scores[activeCourse.id]?.[componentName]?.[catName]?.[subId] || '';
+                } else {
+                    currentInput.value = student.scores[activeCourse.id]?.[componentName]?.[cat.name] || '';
+                }
+            }
             return;
-        }
-
-        // Ensure the nested score objects exist
-        if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
-        if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
-        if (!student.scores[activeCourse.id][componentName][catName]) student.scores[activeCourse.id][componentName][catName] = {};
-
-        if (subId) {
-            student.scores[activeCourse.id][componentName][catName][subId] = score;
-            // console.log(`Updated sub-item score in student data: student.scores[${activeCourse.id}][${componentName}][${catName}][${sub.id}] = ${score}`);
         } else {
-            student.scores[activeCourse.id][componentName][catName] = score;
-            // console.log(`Updated category score in student data: student.scores[${activeCourse.id}][${componentName}][${catName}] = ${score}`);
+            // Valid score, update it
+            if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
+            if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
+            if (!student.scores[activeCourse.id][componentName][catName]) student.scores[activeCourse.id][componentName][catName] = {};
+
+            if (subId) {
+                student.scores[activeCourse.id][componentName][catName][subId] = score;
+            } else {
+                student.scores[activeCourse.id][componentName][catName] = score;
+            }
         }
 
-        saveData();
+        saveData(); // Save changes (now local-only)
+
+        // --- Real-time update of Category Total, Final Score, and Final Grade ---
+        // Find the student row by iterating through all rows
+        const scoreTableBody = document.querySelector('#score-input-table tbody');
+        let studentRow = null;
+        if (scoreTableBody) {
+            for (let i = 0; i < scoreTableBody.children.length; i++) {
+                const row = scoreTableBody.children[i];
+                // Assuming studentId is in a div within the first td of the row
+                const studentIdDiv = row.querySelector('td:first-child div.text-xs');
+                if (studentIdDiv && studentIdDiv.textContent.includes(`ID: ${studentId}`)) {
+                    studentRow = row;
+                    break;
+                }
+            }
+        }
+
+        if (studentRow) {
+            let currentCategoryColIndex = 0;
+            let foundCategory = false;
+
+            // Find the correct category total cell for the updated category
+            activeCourse.assessmentComponents.forEach(comp => {
+                comp.categories.forEach(cat => {
+                    const colspan = (cat.subItems && cat.subItems.length > 0) ? cat.subItems.length + 1 : 2;
+                    if (comp.name === componentName && cat.name === catName) {
+                        // This is the category we just updated
+                        const categoryTotalCell = studentRow.children[1 + currentCategoryColIndex + (cat.subItems?.length || 0)]; // +1 for student column, + subItems.length for sub-item columns
+                        if (categoryTotalCell) {
+                            const { current, max } = getCategoryScores(student, componentName, category, activeCourse);
+                            // Round the percentage to a whole number for display
+                            const percentage = max > 0 ? Math.round((current / max) * 100) : 0;
+                            categoryTotalCell.innerHTML = `${formatNumber(current)}<br>(${percentage}%)`; // Use Math.round for percentage
+                        }
+                        foundCategory = true;
+                    }
+                    currentCategoryColIndex += colspan;
+                });
+                if (foundCategory) return; // Exit outer loop once category is found
+            });
+
+
+            // Update final score and grade cells
+            const { finalScore, grade } = calculateFinalScoreAndGrade(student, activeCourse);
+            // Assuming final score and grade are the last two columns
+            const finalScoreCell = studentRow.querySelector('.final-score-cell');
+            const finalGradeCell = studentRow.querySelector('.final-grade-cell');
+
+            if (finalScoreCell && finalGradeCell) {
+                finalScoreCell.textContent = formatNumber(finalScore);
+                finalGradeCell.textContent = grade;
+            }
+        }
     }
 
     // Renders the score input table
@@ -2084,10 +2149,10 @@
             component.categories.forEach((cat, catIndex) => {
                 if (cat.subItems && cat.subItems.length > 0) {
                     cat.subItems.forEach(sub => tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${sub.name} (${formatNumber(sub.maxScore)})</th>`);
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
                 } else {
                     tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Score (${formatNumber(100)})</th>`;
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
                 }
             });
         });
@@ -2097,9 +2162,9 @@
         studentsInClass.sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)).forEach(s => {
             const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
             tableHTML += `<tr class="hover:bg-slate-800"><td class="sticky-col p-2 border border-slate-600 text-left font-medium">
-                    <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                    <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
-                </td>`;
+                        <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
+                        <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
+                    </td>`;
             activeCourse.assessmentComponents.forEach(component => {
                 component.categories.forEach(cat => {
                     const catScores = getCategoryScores(s, component.name, cat, activeCourse);
@@ -2111,21 +2176,21 @@
                             const subScore = s.scores[activeCourse.id]?.[component.name]?.[cat.name]?.[sub.id] || '';
                             tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${subScore}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', '${sub.id}', this.value)" min="0" max="${sub.maxScore}"></td>`;
                         });
-                        tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium">
-                                ${formatNumber(catScores.current)}<br>(${formatNumber(categoryPercentage)}%)
+                        tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium category-total-cell">
+                                ${formatNumber(catScores.current)}<br>(${Math.round(categoryPercentage)}%)
                             </td>`;
                     } else {
                         const score = s.scores[activeCourse.id]?.[component.name]?.[cat.name] || '';
                         const currentScore = parseFloat(score || 0);
                         const singleCategoryPercentage = (100 > 0 ? (currentScore / 100) * 100 : 0); // Always based on 100 max for simple category
                         tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${score}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', null, this.value)" min="0" max="100"></td>`;
-                        tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium">
-                                ${formatNumber(currentScore)}<br>(${formatNumber(singleCategoryPercentage)}%)
+                        tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium category-total-cell">
+                                ${formatNumber(currentScore)}<br>(${Math.round(singleCategoryPercentage)}%)
                             </td>`;
                     }
                 });
             });
-            tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold">${grade}</td></tr>`;
+            tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold final-score-cell">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold final-grade-cell">${grade}</td></tr>`;
         });
 
         tableHTML += `</tbody></table>`;
@@ -2196,10 +2261,10 @@
             }
 
             tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 font-medium">
-                    <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                    <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
-                    <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
-                </td>`;
+                        <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
+                        <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
+                        <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
+                    </td>`;
             // Display percentage for each assessment component
             activeCourse.assessmentComponents.forEach(component => {
                 let componentCurrentScore = 0;
@@ -2289,30 +2354,14 @@
             return;
         }
 
-        // Overall school statistics
-        let overallDashboardHtml = `
-            <div class="mb-8 p-6 rounded-lg border card">
-                <h4 class="text-xl font-semibold mb-4 text-indigo-300">Overall School Overview</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div><p class="text-sm text-slate-400">Total Courses</p><p class="text-2xl font-bold text-white">${courses.length}</p></div>
-                    <div><p class="text-sm text-slate-400">Total Students</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
-                    <div><p class="text-sm text-slate-400">Active Teachers</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
-                </div>
-            </div>
-        `;
-        dashboardContent.innerHTML += overallDashboardHtml;
+        let totalPossibleEntriesOverall = 0;
+        let filledEntriesOverall = 0;
 
-        // Details for each course
+        // Calculate overall progress and individual course stats
         courses.forEach(course => {
             const studentsInThisCourse = students.filter(s => s.gradeLevel === course.gradeLevel && s.room === course.room);
-            const courseName = `${course.subject} (${course.gradeLevel}/${course.room}) - ${course.academicYear} ${course.semester}`;
-            const teacherName = course.teacher.realName || 'N/A';
-            let totalCourseScore = 0, gradedStudentsCount = 0, highestScoreInClass = 0, lowestScoreInClass = 100;
-            let gradeCounts = { 'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': 0, 'C+': 0, 'C': 0, 'C-': 0, 'D': 0, 'F': 0, 'N/A': 0 };
-
-            // Calculate score entry progress
-            let totalPossibleEntries = 0;
-            let filledEntries = 0;
+            let courseTotalPossibleEntries = 0;
+            let courseFilledEntries = 0;
 
             if (course.assessmentComponents && course.assessmentComponents.length > 0) {
                 studentsInThisCourse.forEach(s => {
@@ -2321,15 +2370,15 @@
                             component.categories.forEach(cat => {
                                 if (cat.subItems && cat.subItems.length > 0) {
                                     cat.subItems.forEach(sub => {
-                                        totalPossibleEntries++;
+                                        courseTotalPossibleEntries++;
                                         if (s.scores[course.id]?.[component.name]?.[cat.name]?.[sub.id] !== undefined && s.scores[course.id]?.[component.name]?.[cat.name]?.[sub.id] !== null && !isNaN(s.scores[course.id]?.[component.name]?.[cat.name]?.[sub.id])) {
-                                            filledEntries++;
+                                            courseFilledEntries++;
                                         }
                                     });
                                 } else {
-                                    totalPossibleEntries++;
+                                    courseTotalPossibleEntries++;
                                     if (s.scores[course.id]?.[component.name]?.[cat.name] !== undefined && s.scores[course.id]?.[component.name]?.[cat.name] !== null && !isNaN(s.scores[course.id]?.[component.name]?.[cat.name])) {
-                                        filledEntries++;
+                                        courseFilledEntries++;
                                     }
                                 }
                             });
@@ -2337,8 +2386,13 @@
                     });
                 });
             }
-            const scoreEntryProgress = totalPossibleEntries > 0 ? (filledEntries / totalPossibleEntries) * 100 : 0;
+            totalPossibleEntriesOverall += courseTotalPossibleEntries;
+            filledEntriesOverall += courseFilledEntries;
 
+            const courseName = `${course.subject} (${course.gradeLevel}/${course.room}) - ${course.academicYear} ${course.semester}`;
+            const teacherName = course.teacher.realName || 'N/A';
+            let totalCourseScore = 0, gradedStudentsCount = 0, highestScoreInClass = 0, lowestScoreInClass = 100;
+            let gradeCounts = { 'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': 0, 'C+': 0, 'C': 0, 'C-': 0, 'D': 0, 'F': 0, 'N/A': 0 };
 
             studentsInThisCourse.forEach(s => {
                 const { finalScore, grade } = calculateFinalScoreAndGrade(s, course);
@@ -2357,17 +2411,25 @@
             const averageCourseScore = gradedStudentsCount > 0 ? (totalCourseScore / gradedStudentsCount) : 'N/A';
             const displayHighestScore = gradedStudentsCount > 0 ? formatNumber(highestScoreInClass) : 'N/A';
             const displayLowestScore = gradedStudentsCount > 0 ? formatNumber(lowestScoreInClass) : 'N/A';
+            const scoreEntryProgress = courseTotalPossibleEntries > 0 ? (courseFilledEntries / courseTotalPossibleEntries) * 100 : 0;
+
 
             dashboardContent.innerHTML += `
                 <div class="p-6 rounded-lg border card">
                     <h4 class="text-xl font-semibold mb-2 text-blue-300">${courseName}</h4>
                     <p class="text-slate-400 mb-4">Teacher: ${teacherName}</p>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                        <div><p class="text-sm text-slate-400">Students</p><p class="text-lg font-bold">${studentsInThisCourse.length}</p></div>
+                        <div><p class="text-sm text-slate-400">Students</p><p class="text-2xl font-bold text-white">${studentsInThisCourse.length}</p></div>
                         <div><p class="text-sm text-slate-400">Avg. Score</p><p class="text-lg font-bold">${formatNumber(averageCourseScore)}%</p></div>
                         <div><p class="text-sm text-blue-300">Highest</p><p class="text-lg font-bold">${displayHighestScore}%</p></div>
                         <div><p class="text-sm text-purple-300">Lowest</p><p class="text-lg font-bold">${displayLowestScore}%</p></div>
-                        <div class="col-span-full mt-2"><p class="text-sm text-slate-400">Score Entry Progress</p><p class="text-lg font-bold">${formatNumber(scoreEntryProgress)}%</p></div>
+                        <div class="col-span-full mt-2">
+                            <p class="text-sm text-slate-400">Score Entry Progress</p>
+                            <div class="w-full bg-slate-700 rounded-full h-3">
+                                <div class="bg-indigo-500 h-3 rounded-full" style="width: ${scoreEntryProgress}%"></div>
+                            </div>
+                            <p class="text-right text-xs text-slate-400 mt-1">${Math.round(scoreEntryProgress)}% Complete</p>
+                        </div>
                     </div>
                     <div class="mt-4 space-y-2">
                         <details class="p-2 bg-green-900/50 rounded-lg">
@@ -2397,6 +2459,28 @@
                     </div>
                 </div>`;
         });
+
+        const overallScoreEntryProgress = totalPossibleEntriesOverall > 0 ? (filledEntriesOverall / totalPossibleEntriesOverall) * 100 : 0;
+
+        // Overall school statistics (moved to top for better flow)
+        dashboardContent.insertAdjacentHTML('afterbegin', `
+            <div class="mb-8 p-6 rounded-lg border card">
+                <h4 class="text-xl font-semibold mb-4 text-indigo-300">Overall School Overview</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div><p class="text-sm text-slate-400">Total Courses</p><p class="text-2xl font-bold text-white">${courses.length}</p></div>
+                    <div><p class="text-sm text-slate-400">Total Students</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
+                    <div><p class="text-sm text-slate-400">Active Teachers</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
+                </div>
+                <!-- New: Overall Score Entry Progress Bar -->
+                <div class="mt-6">
+                    <h5 class="font-semibold text-lg mb-2">Overall Score Entry Progress</h5>
+                    <div class="w-full bg-slate-700 rounded-full h-4">
+                        <div class="bg-indigo-500 h-4 rounded-full" style="width: ${overallScoreEntryProgress}%"></div>
+                    </div>
+                    <p class="text-right text-sm text-slate-400 mt-1">${Math.round(overallScoreEntryProgress)}% Complete</p>
+                </div>
+            </div>
+        `);
     }
 
 
@@ -2414,9 +2498,10 @@
     function renderAll() {
         // If no active course, clear sections and display info messages
         if (!activeCourse) {
-            // Clear assessment components list and dropdown
+            console.log("activeCourse is null. Clearing sections and displaying initial messages.");
+            // Clear all relevant sections when no active course
             document.getElementById('grading-period-list').innerHTML = '';
-            document.getElementById('select-grading-period').innerHTML = '<option value="">Select Assessment Component</option>';
+            document.getElementById('select-grading-period').innerHTML = '<option value="">Select an Assessment Component</option>';
             document.getElementById('selected-grading-period-status').classList.add('hidden');
             document.getElementById('current-period-name').textContent = 'Selected Assessment Component';
             selectedAssessmentComponent = null; // Ensure selected component is cleared
@@ -2425,24 +2510,42 @@
             document.getElementById('student-list').innerHTML = '';
             document.getElementById('score-input-table').innerHTML = '';
             document.getElementById('summary-table').innerHTML = '';
+
             document.getElementById('score-entry-info').textContent = 'Please select an Academic Year, Semester, Course, and save Teacher Info to begin.';
             document.getElementById('summary-info').textContent = 'No data to display.';
             document.getElementById('score-entry-info').classList.remove('hidden');
             document.getElementById('summary-info').classList.remove('hidden');
-            if (studentGroupChartInstance) studentGroupChartInstance.destroy(); // Destroy chart if no data
+
+            if (studentGroupChartInstance) studentGroupChartInstance.destroy();
             document.getElementById('advanced-dashboard').classList.add('hidden');
-            updateTotalAssessmentComponentWeightDisplay();
-            updateTotalCategoryWeightDisplay();
-            renderTeacherInfoSection(); // Ensure teacher info section is reset
-            updateCategoryManagementSectionState();
-            return;
+
+            // Explicitly update total weight displays to 0 and hide warnings if elements exist
+            const totalCompWeightSpan = document.getElementById('current-total-grading-period-weight');
+            const compWarningDiv = document.getElementById('grading-period-warning');
+            if (totalCompWeightSpan) totalCompWeightSpan.textContent = '0';
+            if (compWarningDiv) compWarningDiv.classList.add('hidden');
+
+            const totalCatWeightSpan = document.getElementById('current-total-category-weight');
+            const catWarningDiv = document.getElementById('category-weight-warning');
+            if (totalCatWeightSpan) totalCatWeightSpan.textContent = '0';
+            if (catWarningDiv) catWarningDiv.classList.add('hidden');
+
+            // Ensure teacher info section is rendered correctly for initial state
+            renderTeacherInfoSection();
+            // Ensure category management section is disabled and cleared
+            updateCategoryManagementSectionState(); // This will handle clearing category-related UI
+
+            return; // Exit renderAll if no active course
         }
+
+        // --- If activeCourse is NOT null, proceed with rendering based on its state ---
+        console.log("activeCourse is valid. Proceeding with rendering sections.");
 
         renderCategories(); // Render category settings
         renderStudents(); // Render student list
         renderTeacherInfoSection(); // Render teacher info section (display or edit form)
         renderAssessmentComponents();
-        updateCategoryManagementSectionState();
+        updateCategoryManagementSectionState(); // This will handle category UI state and total weight display
 
         // Render either score table or summary based on active tab
         const activeTab = document.querySelector('.tab-button.active').id;
@@ -2477,7 +2580,7 @@
         });
 
         // New sub-item inputs: Enter to add sub-item (delegated)
-        document.getElementById('category-settings').addEventListener('keydown', (e) => {
+        document.getElementById('category-management-section').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.id.startsWith('new-sub-item-name-')) {
                 const catIndex = parseInt(e.target.id.replace('new-sub-item-name-', ''));
                 addSubItem(catIndex);
@@ -2545,11 +2648,9 @@
     // Executes when the window finishes loading
     window.onload = async function() {
         setupEventListeners();
+        loadData(); // Load data first
         populateDropdowns(); // Populate dropdowns immediately when DOM is ready
-        updateMainContentState(); // Update UI state based on initial selections
-
-        await window.firebaseReadyPromise; // Wait for Firebase auth
-        setupFirestoreListener(); // Then set up Firestore listener
+        updateCourseSelection(); // Explicitly call this to ensure activeCourse is set based on loaded dropdowns and then updateMainContentState
     };
     </script>
 </body>
