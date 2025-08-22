@@ -485,7 +485,7 @@
             <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 Settings
-            </h3>
+            </h4>
             <div class="space-y-4">
                 <div>
                     <label for="settings-logo-url" class="block text-sm font-medium text-slate-400">School Logo URL</label>
@@ -719,14 +719,14 @@
         try {
             // Save activeCourse data
             if (activeCourse) {
-                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id); // Changed path to 'public'
+                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id);
                 await setDoc(courseRef, activeCourse, { merge: true });
             }
 
             // Save all students data
             // For simplicity, we'll update all students. In a large app, you might only update changed students.
             for (const student of students) {
-                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', student.studentId); // Changed path to 'public'
+                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', student.studentId);
                 await setDoc(studentRef, student, { merge: true });
             }
             // showToast('บันทึกข้อมูลแล้ว (Firestore).', 'success', 2000);
@@ -973,8 +973,8 @@
     function checkAdminPassword() {
         const password = document.getElementById('admin-password-input').value;
         if (password === "HASTIN") { // Hardcoded admin password
-            hideAdminPasswordModal(); // <--- Added: Hide the admin password modal
-            renderAdminDashboard(); // Render dashboard content
+            hideAdminPasswordModal();
+            renderAdminDashboard();
             document.getElementById('admin-dashboard-modal').classList.remove('hidden');
         } else {
             showAlert("Access Denied", "Incorrect password.");
@@ -988,14 +988,13 @@
             return;
         }
         const logoUrl = document.getElementById('settings-logo-url').value.trim();
-        // Ensure activeCourse.teacher exists before assigning logoUrl
         if (!activeCourse.teacher) {
             activeCourse.teacher = {};
         }
         activeCourse.teacher.logoUrl = logoUrl;
         document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
         
-        await saveData(); // Save changes to Firestore
+        await saveData();
         hideSettingsModal();
         showToast("Settings saved successfully!", 'success');
     }
@@ -1008,7 +1007,6 @@
         const academicYearSelect = document.getElementById('select-academic-year');
         const semesterSelect = document.getElementById('select-semester');
 
-        // Capture current values before overwriting innerHTML
         const currentSubject = subjectSelect.value;
         const currentGrade = gradeLevelSelect.value;
         const currentAcademicYearSelection = academicYearSelect.value;
@@ -1030,20 +1028,17 @@
         semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
         console.log("Semester options added:", semesterSelect.innerHTML);
 
-        // Restore previous selections or set defaults
         academicYearSelect.value = currentAcademicYearSelection || (activeCourse ? activeCourse.academicYear : '') || currentYear;
         semesterSelect.value = currentSemesterSelection || (activeCourse ? activeCourse.semester : '') || 'Term 1';
         subjectSelect.value = activeCourse?.subject || currentSubject;
         gradeLevelSelect.value = activeCourse?.gradeLevel || currentGrade;
-        document.getElementById('select-room').value = activeCourse?.room || currentRoom; // Restore room selection
+        document.getElementById('select-room').value = activeCourse?.room || currentRoom;
 
-        // Update global variables to reflect the current UI selection/default
         selectedAcademicYear = academicYearSelect.value;
         selectedSemester = semesterSelect.value;
     }
 
     // --- UI STATE MANAGEMENT ---
-    // Updates the state of the main content area (enabled/disabled)
     function updateMainContentState() {
         console.log("updateMainContentState called.");
         const isAcademicPeriodSelected = document.getElementById('select-academic-year').value && document.getElementById('select-semester').value;
@@ -1057,7 +1052,7 @@
 
         if (isAcademicPeriodSelected) {
             academicPeriodStatusDiv.classList.add('hidden');
-            academicPeriodStatusDiv.className = 'p-3 rounded-md text-center font-medium mt-4 hidden'; // Reset class
+            academicPeriodStatusDiv.className = 'p-3 rounded-md text-center font-medium mt-4 hidden';
             courseSelectionSection.classList.remove('disabled-section');
             courseSelectionOverlay.classList.add('hidden');
         } else {
@@ -1072,7 +1067,6 @@
         console.log("activeCourse.teacher:", activeCourse ? activeCourse.teacher : 'N/A');
         console.log("activeCourse.teacher.realName:", activeCourse && activeCourse.teacher ? activeCourse.teacher.realName : 'N/A');
 
-        // Check if course is selected AND teacher info is saved
         const isCourseSelected = document.getElementById('select-subject').value && document.getElementById('select-grade-level').value && document.getElementById('select-room').value;
         const isTeacherInfoSaved = activeCourse && activeCourse.teacher && activeCourse.teacher.realName;
 
@@ -1082,7 +1076,7 @@
         const mainContent = document.getElementById('main-content-area');
         const mainContentOverlay = document.getElementById('main-content-overlay');
 
-        if (isAcademicPeriodSelected && isCourseSelected) { // Only enable teacher info if course is selected
+        if (isAcademicPeriodSelected && isCourseSelected) {
             teacherInfoContainer.classList.remove('disabled-section');
             teacherInfoContainerOverlay.classList.add('hidden');
         } else {
@@ -1098,7 +1092,6 @@
         } else {
             mainContent.classList.add('disabled-section');
             mainContentOverlay.classList.remove('hidden');
-            // Update overlay message based on what's missing
             let overlayMessage = 'Please complete: ';
             let missingSteps = [];
             if (!isAcademicPeriodSelected) missingSteps.push('Academic Year & Semester');
@@ -1107,18 +1100,18 @@
             mainContentOverlay.querySelector('span').textContent = overlayMessage + missingSteps.join(', ') + '.';
         }
 
-        renderAll(); // Re-render all UI components
+        renderAll();
     }
 
     // --- COURSE & TEACHER LOGIC ---
     function updateAcademicYearSelection() {
         selectedAcademicYear = document.getElementById('select-academic-year').value;
-        updateCourseSelection(); // Trigger full course selection update
+        updateCourseSelection();
     }
 
     function updateSemesterSelection() {
         selectedSemester = document.getElementById('select-semester').value;
-        updateCourseSelection(); // Trigger full course selection update
+        updateCourseSelection();
     }
 
     async function updateCourseSelection() {
@@ -1129,14 +1122,13 @@
         const room = document.getElementById('select-room').value;
         const statusDiv = document.getElementById('course-selection-status');
 
-        // Only proceed if Academic Year and Semester are selected
         if (!academicYear || !semester) {
             activeCourse = null;
             document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
             statusDiv.textContent = 'Please select Academic Year and Semester first.';
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
             statusDiv.classList.remove('hidden');
-            updateMainContentState(); // Update main content state (will disable if not ready)
+            updateMainContentState();
             return;
         }
 
@@ -1144,10 +1136,9 @@
             const courseId = `${subject}-${grade}-${room}-${academicYear}-${semester}`;
             let course = courses.find(c => c.id === courseId);
             if (!course) {
-                // Initialize new course with assessmentComponents array
                 course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} };
                 courses.push(course);
-                await saveData(); // Save changes to Firestore
+                await saveData();
                 statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
             } else {
@@ -1156,25 +1147,24 @@
             }
             activeCourse = course;
 
-            // Populate teacher info fields based on active course
-            document.getElementById('teacher-real-name').value = activeCourse.teacher.realName || '';
-            document.getElementById('teacher-id').value = activeCourse.teacher.id || '';
+            document.getElementById('teacher-real-name').value = activeCourse.teacher?.realName || '';
+            document.getElementById('teacher-id').value = activeCourse.teacher?.id || '';
             const logoUrl = activeCourse.teacher?.logoUrl || '';
             document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
 
-            renderTeacherInfoSection(); // Call to update teacher info display/form
+            renderTeacherInfoSection();
             checkTeacherFormValidity();
         } else {
             activeCourse = null;
             document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
             statusDiv.textContent = 'Please complete all Course selections.';
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
-            renderTeacherInfoSection(); // Clear teacher info display
+            renderTeacherInfoSection();
         }
         statusDiv.classList.remove('hidden');
         updateMainContentState();
-        renderAssessmentComponents(); // New: Render assessment components dropdown
-        updateCategoryManagementSectionState(); // New: Update state of category management section
+        renderAssessmentComponents();
+        updateCategoryManagementSectionState();
     }
 
     function checkTeacherFormValidity() {
@@ -1184,7 +1174,6 @@
 
         saveButton.disabled = !activeCourse || !realName;
 
-        // Only show hint if button is enabled and teacher info is NOT yet saved (or name is empty)
         if (!saveButton.disabled && (!activeCourse.teacher || !activeCourse.teacher.realName)) {
             hint.classList.remove('hidden');
         } else {
@@ -1196,13 +1185,12 @@
         if (!activeCourse) return;
         activeCourse.teacher.realName = document.getElementById('teacher-real-name').value.trim();
         activeCourse.teacher.id = document.getElementById('teacher-id').value.trim();
-        await saveData(); // Save changes to Firestore
+        await saveData();
         showToast('Teacher information saved!', 'success');
-        renderTeacherInfoSection(); // Update UI after saving
-        updateMainContentState(); // <--- This call is crucial for unlocking main content
+        renderTeacherInfoSection();
+        updateMainContentState();
     }
 
-    // New function to render teacher info section (display or edit form)
     function renderTeacherInfoSection() {
         const displayDiv = document.getElementById('teacher-info-display');
         const editFormDiv = document.getElementById('teacher-info-edit-form');
@@ -1212,26 +1200,22 @@
 
 
         if (activeCourse && activeCourse.teacher && activeCourse.teacher.realName) {
-            // Show display mode
             displayDiv.classList.remove('hidden');
             editFormDiv.classList.add('hidden');
             document.getElementById('display-teacher-name').textContent = activeCourse.teacher.realName;
             document.getElementById('display-teacher-id').textContent = `ID: ${activeCourse.teacher.id || 'N/A'}`;
-            saveTeacherHint.classList.add('hidden'); // Hide hint when info is displayed
+            saveTeacherHint.classList.add('hidden');
         } else {
-            // Show edit form mode
             displayDiv.classList.add('hidden');
             editFormDiv.classList.remove('hidden');
-            // Clear inputs if no teacher info
             if (!activeCourse || !activeCourse.teacher || !activeCourse.teacher.realName) {
                 teacherNameInput.value = '';
                 teacherIdInput.value = '';
             }
-            checkTeacherFormValidity(); // Ensure save button state and hint state are correct
+            checkTeacherFormValidity();
         }
     }
 
-    // Function to switch to edit mode for teacher info
     function editTeacherInfo() {
         const displayDiv = document.getElementById('teacher-info-display');
         const editFormDiv = document.getElementById('teacher-info-edit-form');
@@ -1241,27 +1225,25 @@
         displayDiv.classList.add('hidden');
         editFormDiv.classList.remove('hidden');
 
-        // Pre-fill form with current activeCourse teacher data
         teacherNameInput.value = activeCourse.teacher.realName || '';
         teacherIdInput.value = activeCourse.teacher.id || '';
         checkTeacherFormValidity();
     }
 
-    // Function to show confirmation for deleting teacher info
     function showDeleteTeacherConfirmation() {
         showConfirmationModal(
             'Confirm Delete Teacher Info',
             'Are you sure you want to delete teacher information for this course? This action cannot be undone.',
-            deleteTeacherInfo // Callback function if confirmed
+            deleteTeacherInfo
         );
     }
 
     async function deleteTeacherInfo() {
         if (!activeCourse) return;
-        activeCourse.teacher = {}; // Clear teacher object
-        await saveData(); // Save changes to Firestore
+        activeCourse.teacher = {};
+        await saveData();
         showToast('Teacher information deleted!', 'success');
-        renderTeacherInfoSection(); // Update UI after deletion
+        renderTeacherInfoSection();
         updateMainContentState();
     }
 
@@ -1271,12 +1253,10 @@
         
         if (db && userId) {
             try {
-                // Delete course document from Firestore
-                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id); // Changed path to 'public'
+                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id);
                 await deleteDoc(courseRef);
 
-                // Remove scores related to this course from all students in Firestore
-                const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students'); // Changed path to 'public'
+                const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students');
                 const q = query(studentsColRef, where('gradeLevel', '==', activeCourse.gradeLevel), where('room', '==', activeCourse.room));
                 const querySnapshot = await getDocs(q);
                 for (const studentDoc of querySnapshot.docs) {
@@ -1291,7 +1271,6 @@
                 showToast('ข้อผิดพลาดในการรีเซ็ตข้อมูลวิชาในฐานข้อมูล.', 'error');
             }
         } else {
-             // Fallback to local storage reset if Firestore is not ready
             students.forEach(s => {
                 if (s.scores && s.scores[activeCourse.id]) {
                     delete s.scores[activeCourse.id];
@@ -1299,16 +1278,14 @@
             });
         }
         
-        // Clear local state
         activeCourse.assessmentComponents = [];
         activeCourse.teacher = {};
-        courses = courses.filter(c => c.id !== activeCourse.id); // Remove from local courses array
-        students = students.filter(s => !(s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room)); // Remove students from this class locally
+        courses = courses.filter(c => c.id !== activeCourse.id);
+        students = students.filter(s => !(s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room));
 
-        await saveData(); // Save local changes (this will also trigger Firestore update if db is ready)
+        await saveData();
         showToast(`All data for course "${courseIdentifier}" has been reset!`, 'success');
 
-        // Reset UI selections
         activeCourse = null;
         selectedAssessmentComponent = null;
         document.getElementById('select-subject').value = '';
@@ -1316,13 +1293,13 @@
         document.getElementById('select-room').value = '';
         document.getElementById('select-academic-year').value = '';
         document.getElementById('select-semester').value = '';
-        selectedAcademicYear = ''; // Reset global variable
-        selectedSemester = ''; // Reset global variable
+        selectedAcademicYear = '';
+        selectedSemester = '';
         document.getElementById('course-selection-status').classList.add('hidden');
-        renderTeacherInfoSection(); // Ensure teacher info section is reset
+        renderTeacherInfoSection();
         renderAssessmentComponents();
         updateCategoryManagementSectionState();
-        renderAll(); // Re-render all tables after reset
+        renderAll();
     }
 
     // --- NEW: ASSESSMENT COMPONENT LOGIC ---
@@ -1330,9 +1307,8 @@
         const totalWeightSpan = document.getElementById('current-total-grading-period-weight');
         const warningDiv = document.getElementById('grading-period-warning');
 
-        // Added checks for DOM elements to prevent TypeError if they are not yet rendered
         if (!totalWeightSpan || !warningDiv) {
-            return; // Exit if elements are not found
+            return;
         }
 
         if (!activeCourse) {
@@ -1375,17 +1351,16 @@
             }
         }).join('');
 
-        // Populate the select dropdown for assessment components
         const currentSelectedComponentId = selectedAssessmentComponent ? selectedAssessmentComponent.id : '';
         selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>' + activeCourse.assessmentComponents.map(component =>
             `<option value="${component.id}" ${component.id === currentSelectedComponentId ? 'selected' : ''}>${component.name}</option>`
         ).join('');
 
         updateTotalAssessmentComponentWeightDisplay();
-        updateCategoryManagementSectionState(); // Ensure state is updated after rendering components
+        updateCategoryManagementSectionState();
     }
 
-    async function addGradingPeriod() { // Function name from HTML remains, but it adds an "Assessment Component"
+    async function addGradingPeriod() {
         if (!activeCourse) return;
         const nameInput = document.getElementById('new-grading-period-name');
         const weightInput = document.getElementById('new-grading-period-weight');
@@ -1400,10 +1375,10 @@
         activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] });
         nameInput.value = '';
         weightInput.value = '';
-        await saveData(); // Save changes to Firestore
-        renderAssessmentComponents(); // Re-render the list
-        selectGradingPeriod(); // Force re-selection to update UI state
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        await saveData();
+        renderAssessmentComponents();
+        selectGradingPeriod();
+        renderAll();
     }
 
     function startEditAssessmentComponent(index) {
@@ -1432,7 +1407,6 @@
         const totalWeight = activeCourse.assessmentComponents.reduce((sum, p, i) => sum + (i === index ? newWeight : p.weight), 0);
         if (totalWeight > 100) { showToast('Total component weight exceeds 100%.', 'error'); return; }
 
-        // If component name changed, update student scores to reflect new name
         if (newName !== originalAssessmentComponentState.name) {
             students.forEach(s => {
                 if (s.scores[activeCourse.id] && s.scores[activeCourse.id][originalAssessmentComponentState.name]) {
@@ -1446,10 +1420,10 @@
         activeCourse.assessmentComponents[index].weight = newWeight;
         editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
-        await saveData(); // Save changes to Firestore
+        await saveData();
         showToast('Assessment component changes saved!', 'success');
-        renderAssessmentComponents(); // Re-render to show updated name
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        renderAssessmentComponents();
+        renderAll();
     }
 
     function showDeleteAssessmentComponentConfirmation(index) {
@@ -1466,7 +1440,6 @@
         const componentIdToDelete = activeCourse.assessmentComponents[index].id;
         const componentName = activeCourse.assessmentComponents[index].name;
 
-        // Remove scores associated with this component from all students
         students.forEach(s => {
             if (s.scores[activeCourse.id] && s.scores[activeCourse.id][componentName]) {
                 delete s.scores[activeCourse.id][componentName];
@@ -1474,20 +1447,19 @@
         });
 
         activeCourse.assessmentComponents.splice(index, 1);
-        await saveData(); // Save changes to Firestore
+        await saveData();
         showToast(`Assessment component "${componentName}" removed.`, 'success');
 
-        // If the deleted component was the currently selected one, clear selection
         if (selectedAssessmentComponent && selectedAssessmentComponent.id === componentIdToDelete) {
             selectedAssessmentComponent = null;
             document.getElementById('select-grading-period').value = '';
         }
         renderAssessmentComponents();
         updateCategoryManagementSectionState();
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        renderAll();
     }
 
-    function selectGradingPeriod() { // Function name from HTML remains, but it selects an "Assessment Component"
+    function selectGradingPeriod() {
         const selectElement = document.getElementById('select-grading-period');
         const componentId = selectElement.value;
         const statusDiv = document.getElementById('selected-grading-period-status');
@@ -1506,8 +1478,8 @@
         }
         statusDiv.classList.remove('hidden');
         updateCategoryManagementSectionState();
-        renderCategories(); // Re-render categories for the newly selected component
-        renderAll(); // <--- Added: Re-render all tables after structural change (selection change implies structural view change)
+        renderCategories();
+        renderAll();
     }
 
     function updateCategoryManagementSectionState() {
@@ -1520,7 +1492,7 @@
             categoryManagementSection.classList.add('disabled-section');
             categoryManagementOverlay.classList.remove('hidden');
         }
-        updateTotalCategoryWeightDisplay(); // Update category weight display for selected component
+        updateTotalCategoryWeightDisplay();
     }
 
     // --- CATEGORY LOGIC (now nested under selectedAssessmentComponent) ---
@@ -1528,9 +1500,8 @@
         const totalWeightSpan = document.getElementById('current-total-category-weight');
         const warningDiv = document.getElementById('category-weight-warning');
 
-        // Added checks for DOM elements to prevent TypeError if they are not yet rendered
         if (!totalWeightSpan || !warningDiv) {
-            return; // Exit if elements are not found
+            return;
         }
 
         if (!selectedAssessmentComponent) {
@@ -1584,7 +1555,7 @@
                     </details>`;
             }
         }).join('');
-        updateTotalCategoryWeightDisplay(); // Update total weight display after rendering
+        updateTotalCategoryWeightDisplay();
     }
 
     function renderSubItems(catIndex) {
@@ -1623,9 +1594,9 @@
         selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name, weight, subItems: [] });
         nameInput.value = '';
         weightInput.value = '';
-        await saveData(); // Save changes to Firestore
-        renderCategories(); // Re-render the list
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        await saveData();
+        renderCategories();
+        renderAll();
     }
 
     async function handleCategoryCsvImport(event) {
@@ -1636,8 +1607,8 @@
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = async e => { // Made onload async
-            const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1); // Filter empty lines and skip header
+        reader.onload = async e => {
+            const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1);
             let added = 0, updated = 0, skipped = 0;
             lines.forEach(line => {
                 const [categoryName, weight] = line.split(',').map(f => f.trim());
@@ -1645,14 +1616,13 @@
 
                 if (!categoryName || isNaN(parsedWeight) || parsedWeight <= 0) {
                     skipped++;
-                    return; // Skip invalid rows
+                    return;
                 }
 
                 const existingIndex = selectedAssessmentComponent.categories.findIndex(c => c.name.toLowerCase() === categoryName.toLowerCase());
                 const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c) => sum + c.weight, 0);
 
                 if (existingIndex !== -1) {
-                    // Update existing category
                     const currentCategoryWeight = selectedAssessmentComponent.categories[existingIndex].weight;
                     if ((totalWeight - currentCategoryWeight + parsedWeight) > 100) {
                         showToast(`Cannot update "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
@@ -1665,51 +1635,48 @@
                     showToast(`Cannot add "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
                     skipped++;
                 } else {
-                    // Add new category
                     selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name: categoryName, weight: parsedWeight, subItems: [] });
                     added++;
                 }
             });
-            await saveData(); // Save changes to Firestore
-            renderCategories(); // Re-render the categories after import
+            await saveData();
+            renderCategories();
             showToast(`Category import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
-            renderAll(); // <--- Added: Re-render all tables after structural change
+            renderAll();
         };
         reader.readAsText(file);
         event.target.value = '';
     }
 
-    // Function to show confirmation for deleting a category
     function showDeleteCategoryConfirmation(index) {
         const categoryName = selectedAssessmentComponent.categories[index].name;
         showConfirmationModal(
             'Confirm Delete Category',
             `Are you sure you want to delete the category "${categoryName}"? All associated scores for this category will be removed from all students. This action cannot be undone.`,
-            () => removeCategory(index) // Callback function if confirmed
+            () => removeCategory(index)
         );
     }
 
     async function removeCategory(index) {
         if (!selectedAssessmentComponent) return;
         const catName = selectedAssessmentComponent.categories[index].name;
-        selectedAssessmentComponent.categories.splice(index, 1); // Remove category
-        // Remove scores associated with this category from all students
+        selectedAssessmentComponent.categories.splice(index, 1);
         students.forEach(s => {
             if (s.scores[activeCourse.id] && s.scores[activeCourse.id][selectedAssessmentComponent.name] && s.scores[activeCourse.id][selectedAssessmentComponent.name][catName]) {
                 delete s.scores[activeCourse.id][selectedAssessmentComponent.name][catName];
             }
         });
-        await saveData(); // Save changes to Firestore
-        renderCategories(); // Re-render the categories after removal
+        await saveData();
+        renderCategories();
         showToast(`Category "${catName}" removed.`, 'success');
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        renderAll();
     }
 
     function startEditCategory(index) {
         if (editingCategoryIndex !== -1) { showToast('Please save or cancel the current edit first.', 'error'); return; }
         editingCategoryIndex = index;
         originalCategoryState = JSON.parse(JSON.stringify(selectedAssessmentComponent.categories[index]));
-        renderCategories(); // Re-render to show editing UI
+        renderCategories();
     }
 
     function cancelEditCategory() {
@@ -1718,7 +1685,7 @@
         }
         editingCategoryIndex = -1;
         originalCategoryState = null;
-        renderCategories(); // Re-render to show normal UI
+        renderCategories();
     }
 
     async function saveCategoryChanges(index) {
@@ -1727,9 +1694,7 @@
         const newWeight = parseFloat(catElement.querySelector('.category-weight-input').value);
 
         if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid name or weight.', 'error'); return; }
-        // Check for duplicate category names (excluding the current category being edited)
         if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name.toLowerCase() === newName.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
-        // Check total weight limit
         const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c, i) => sum + (i === index ? newWeight : c.weight), 0);
         if (totalWeight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
 
@@ -1738,10 +1703,7 @@
         subItemElements.forEach(el => {
             const subName = el.querySelector('.sub-item-name-input')?.value.trim();
             const maxScore = parseFloat(el.querySelector('.sub-item-max-score-input')?.value);
-            // Only push valid sub-items
-            if (subName && !isNaN(maxScore) && maxScore >= 0) { // Max score can be 0 (e.g., participation)
-                // Re-use ID if it exists (for existing sub-items), otherwise generate new
-                // Find existing sub-item by name and if found, use its ID.
+            if (subName && !isNaN(maxScore) && maxScore >= 0) {
                 const existingSubItem = originalCategoryState.subItems?.find(sub => sub.name.toLowerCase() === subName.toLowerCase());
                 newSubItems.push({ id: existingSubItem ? existingSubItem.id : crypto.randomUUID(), name: subName, maxScore });
             } else if (subName && (isNaN(maxScore) || maxScore < 0)) {
@@ -1749,7 +1711,6 @@
             }
         });
 
-        // If category name changed, update student scores to reflect new name
         if (newName !== originalCategoryState.name) {
             students.forEach(s => {
                 if (s.scores[activeCourse.id] && s.scores[activeCourse.id][selectedAssessmentComponent.name] && s.scores[activeCourse.id][selectedAssessmentComponent.name][originalCategoryState.name]) {
@@ -1760,12 +1721,12 @@
         }
 
         selectedAssessmentComponent.categories[index] = { ...originalCategoryState, name: newName, weight: newWeight, subItems: newSubItems };
-        editingCategoryIndex = -1; // Exit editing mode
+        editingCategoryIndex = -1;
         originalCategoryState = null;
-        await saveData(); // Save changes to Firestore
-        renderCategories(); // Re-render to show updated details
+        await saveData();
+        renderCategories();
         showToast('Category changes saved!', 'success');
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        renderAll();
     }
 
     async function addSubItem(catIndex) {
@@ -1775,7 +1736,6 @@
 
         const cat = selectedAssessmentComponent.categories[catIndex];
         if (!cat.subItems) cat.subItems = [];
-        // Check for duplicate sub-item name within the category
         if (cat.subItems.some(sub => sub.name.toLowerCase() === name.toLowerCase())) {
             showToast('Sub-item name already exists in this category.', 'error');
             return;
@@ -1783,20 +1743,18 @@
 
         cat.subItems.push({ id: crypto.randomUUID(), name, maxScore });
 
-        // Update the rendered sub-items dynamically for the current category in edit mode
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
-        document.getElementById(`new-sub-item-name-${catIndex}`).value = ''; // Clear input fields
+        document.getElementById(`new-sub-item-name-${catIndex}`).value = '';
         document.getElementById(`new-sub-item-max-score-${catIndex}`).value = '';
-        await saveData(); // Save changes to Firestore
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        await saveData();
+        renderAll();
     }
 
     async function removeSubItem(catIndex, subIndex) {
         selectedAssessmentComponent.categories[catIndex].subItems.splice(subIndex, 1);
-        // Update the rendered sub-items dynamically for the current category in edit mode
         document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
-        await saveData(); // Save changes to Firestore
-        renderAll(); // <--- Added: Re-render all tables after structural change
+        await saveData();
+        renderAll();
     }
 
 
@@ -1815,50 +1773,45 @@
         const studentId = document.getElementById('new-student-id').value.trim();
         const rollNumber = document.getElementById('new-student-roll-number').value.trim();
 
-        // Check for duplicate student ID globally
         if (students.some(s => s.studentId === studentId)) { showToast('Student ID already exists in the system. Please use a unique ID.', 'error'); return; }
-        // Check for duplicate roll number within the same class (grade and room)
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
         if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { showToast('Roll Number already exists for another student in this class.', 'error'); return; }
 
         students.push({ realName, nickname, studentId, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room, scores: {} });
 
-        // Clear form fields
         ['new-student-real-name', 'new-student-nickname', 'new-student-id', 'new-student-roll-number'].forEach(id => document.getElementById(id).value = '');
-        checkAddStudentFormValidity(); // Re-check validity after clearing
-        await saveData(); // Save changes to Firestore
-        renderStudents(); // Re-render the student list
+        checkAddStudentFormValidity();
+        await saveData();
+        renderStudents();
         showToast(`${realName} has been added.`, 'success');
-        renderAll(); // <--- Added: Re-render all tables after structural change (adding student)
+        renderAll();
     }
 
-    // Function to show confirmation for deleting a student
     function showDeleteStudentConfirmation(studentId) {
         const student = students.find(s => s.studentId === studentId);
         if (!student) return;
         showConfirmationModal(
             'Confirm Delete Student',
             `Are you sure you want to delete student "${student.realName}" (ID: ${student.studentId})? All their scores will be removed. This action cannot be undone.`,
-            () => removeStudent(studentId) // Callback function if confirmed
+            () => removeStudent(studentId)
         );
     }
 
     async function removeStudent(studentId) {
         if (db && userId) {
             try {
-                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', studentId); // Changed path to 'public'
+                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', studentId);
                 await deleteDoc(studentRef);
             } catch (e) {
                 console.error("Error deleting student from Firestore:", e);
                 showToast('ข้อผิดพลาดในการลบนักเรียนจากฐานข้อมูล.', 'error');
             }
         }
-        // Filter out the student locally
         students = students.filter(s => s.studentId !== studentId);
-        await saveData(); // Save changes (now local-only)
-        renderStudents(); // Re-render the student list
+        await saveData();
+        renderStudents();
         showToast('Student removed.', 'success');
-        renderAll(); // <--- Added: Re-render all tables after structural change (removing student)
+        renderAll();
     }
 
     function startEditStudent(studentId) {
@@ -1867,18 +1820,18 @@
             return;
         }
         editingStudentId = studentId;
-        originalStudentState = JSON.parse(JSON.stringify(students.find(s => s.studentId === studentId))); // Deep copy
-        renderStudents(); // Re-render to show editing UI
+        originalStudentState = JSON.parse(JSON.stringify(students.find(s => s.studentId === studentId)));
+        renderStudents();
     }
 
     function cancelEditStudent() {
         const studentIndex = students.findIndex(s => s.studentId === editingStudentId);
         if (studentIndex > -1) {
-            students[studentIndex] = originalStudentState; // Restore original data
+            students[studentIndex] = originalStudentState;
         }
         editingStudentId = null;
         originalStudentState = null;
-        renderStudents(); // Re-render to show normal UI
+        renderStudents();
     }
 
     async function saveStudentChanges(studentId) {
@@ -1895,7 +1848,6 @@
             return;
         }
 
-        // Check for duplicate roll number (excluding the student being edited, and ensuring it's in the *current* class)
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
         if (studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === newRollNumber)) {
             showToast('Roll Number already exists for another student in this class.', 'error');
@@ -1906,18 +1858,17 @@
         students[studentIndex].nickname = newNickname;
         students[studentIndex].rollNumber = newRollNumber;
 
-        editingStudentId = null; // Exit editing mode
+        editingStudentId = null;
         originalStudentState = null;
-        await saveData(); // Save changes to Firestore
-        renderStudents(); // Re-render to show updated details
+        await saveData();
+        renderStudents();
         showToast('Student details updated!', 'success');
-        renderAll(); // <--- Added: Re-render all tables after structural change (editing student details)
+        renderAll();
     }
 
     function renderStudents() {
         const container = document.getElementById('student-list');
         if (!activeCourse) { container.innerHTML = ''; return; }
-        // Filter students for the active course's grade level and room
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
 
         if (studentsInClass.length === 0) {
@@ -1925,20 +1876,18 @@
             return;
         }
 
-        // Sort students by roll number
         container.innerHTML = studentsInClass.sort((a, b) => {
             const rollA = parseInt(a.rollNumber, 10);
             const rollB = parseInt(b.rollNumber, 10);
             return rollA - rollB;
         }).map(s => {
             if (editingStudentId === s.studentId) {
-                // EDITING VIEW
                 return `
                     <div id="student-${s.studentId}" class="p-2 rounded-md border-2 border-indigo-500 card space-y-2">
                         <div class="grid grid-cols-2 gap-3">
                             <input type="text" value="${s.realName}" class="edit-student-real-name p-1 col-span-2" placeholder="Full Name">
                             <input type="text" value="${s.nickname || ''}" class="edit-student-nickname p-1 col-span-2" placeholder="Nickname">
-                            <input type="text" value="${s.studentId}" class="edit-student-id p-1" placeholder="Student ID" disabled> <!-- Student ID is not editable -->
+                            <input type="text" value="${s.studentId}" class="edit-student-id p-1" placeholder="Student ID" disabled>
                             <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="Roll No.">
                         </div>
                         <div class="flex gap-2">
@@ -1947,7 +1896,6 @@
                         </div>
                     </div>`;
             } else {
-                // NORMAL VIEW
                 return `
                     <div id="student-${s.studentId}" class="flex items-center gap-2 p-2 rounded-md border card hover:bg-slate-800">
                         <div class="flex-grow">
@@ -1972,14 +1920,14 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = async e => {
-            const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1); // Filter empty lines and skip header
+            const lines = e.target.result.split(/\r\n|\n/).filter(line => line.trim() !== '').slice(1);
             let added = 0, updated = 0, skipped = 0;
-            for (const line of lines) { // Changed to for...of for async/await with Firestore
+            for (const line of lines) {
                 const [studentId, realName, nickname, rollNumber] = line.split(',').map(f => f.trim());
                 if (!studentId || !realName || !rollNumber) {
                     skipped++;
                     console.warn(`Skipping invalid student CSV row: ${line}`);
-                    continue; // Skip invalid rows
+                    continue;
                 }
 
                 const existingIndex = students.findIndex(s => s.studentId === studentId);
@@ -1989,7 +1937,6 @@
 
 
                 if (existingIndex !== -1) {
-                    // Update existing student
                     if (rollNumberExistsInCurrentClass && students[existingIndex].rollNumber !== rollNumber) {
                          showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping update for ${realName} (ID: ${studentId}).`, 'error', 5000);
                          skipped++;
@@ -2003,22 +1950,20 @@
                     skipped++;
                 }
                 else {
-                    // Add new student
                     students.push({ studentId, realName, nickname, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room, scores: {} });
                     added++;
                 }
             }
-            await saveData(); // Save changes to Firestore
-            renderStudents(); // Re-render the student list
+            await saveData();
+            renderStudents();
             showToast(`Import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
-            renderAll(); // <--- Added: Re-render all tables after structural change (importing students)
+            renderAll();
         };
         reader.readAsText(file);
-        event.target.value = ''; // Clear file input
+        event.target.value = '';
     }
 
     // --- NEW: EXPORT TO CSV ---
-    // Exports student scores to a CSV file
     function exportScoresToCsv() {
         if (!activeCourse || students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room).length === 0) {
             showToast("No student data to export for this course.", "error");
@@ -2026,31 +1971,28 @@
         }
 
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room)
-                                         .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)); // Sort numerically
+                                         .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10));
 
         let csvContent = "data:text/csv;charset=utf-8,";
 
-        // Define CSV headers
         const headers = ["Roll Number", "Student ID", "Full Name", "Nickname"];
-        // Iterate through assessment components and then categories for headers
         activeCourse.assessmentComponents.forEach(component => {
             component.categories.forEach(cat => {
                 if (cat.subItems && cat.subItems.length > 0) {
                     cat.subItems.forEach(sub => headers.push(`"${component.name.replace(/"/g, '""')} - ${cat.name.replace(/"/g, '""')} - ${sub.name.replace(/"/g, '""')}"`));
                 } else {
-                    headers.push(`"${cat.name.replace(/"/g, '""')}"`); // Use category name directly if no sub-items
+                    headers.push(`"${cat.name.replace(/"/g, '""')}"`);
                 }
             });
         });
         headers.push("Final Score (%)", "Final Grade");
         csvContent += headers.join(",") + "\r\n";
 
-        // Add student data rows
         studentsInClass.forEach(student => {
             const row = [
                 student.rollNumber,
                 student.studentId,
-                `"${student.realName.replace(/"/g, '""')}"`, // Quote names and escape existing quotes
+                `"${student.realName.replace(/"/g, '""')}"`,
                 `"${(student.nickname || '').replace(/"/g, '""')}"`
             ];
             activeCourse.assessmentComponents.forEach(component => {
@@ -2082,75 +2024,59 @@
     }
 
     // --- SCORE CALCULATION & RENDERING ---
-    // Calculates current and max scores for a given category for a student
-    // Now accepts componentName to correctly access nested scores
     function getCategoryScores(student, componentName, category, courseToUse) {
         let current = 0;
         let max = 0;
-        // Ensure courseToUse, student scores, and course ID are valid
         if (!courseToUse || !student.scores || !student.scores[courseToUse.id] || !student.scores[courseToUse.id][componentName]) {
             console.log(`getCategoryScores: Missing data for student ${student.studentId}, component ${componentName} or course ${courseToUse?.id}. Returning 0 scores.`);
             return { current: 0, max: 0 };
         }
 
         const catScores = student.scores[courseToUse.id][componentName][category.name] || {};
-        // console.log(`getCategoryScores: student=${student.realName}, component=${componentName}, category=${category.name}, catScores=`, catScores);
 
         if (category.subItems && category.subItems.length > 0) {
             category.subItems.forEach(sub => {
                 max += Number(sub.maxScore);
-                const subScoreValue = parseFloat(catScores[sub.id] || 0); // Get score for sub-item
+                const subScoreValue = parseFloat(catScores[sub.id] || 0);
                 current += subScoreValue;
-                // console.log(`   Sub-item: ${sub.name} (ID: ${sub.id}), maxScore=${sub.maxScore}, scoreFromData=${catScores[sub.id]}, parsedScore=${subScoreValue}, currentTotal=${current}, maxTotal=${max}`);
             });
         } else {
-            max = 100; // Default for simple categories within a component
+            max = 100;
             current = parseFloat(catScores || 0);
-            // console.log(`   Simple category: current=${current}, max=${max}`);
         }
-        // console.log(`getCategoryScores: Final for ${componentName} - ${category.name}: current=${current}, max=${max}`);
         return { current, max };
     }
 
-    // Calculates the final score and grade for a student in a specific course
     function calculateFinalScoreAndGrade(student, course) {
         let totalWeightedCourseScore = 0;
-        // Return default if course or student scores are not available or no components defined
         if (!course || !student.scores[course.id] || !course.assessmentComponents || course.assessmentComponents.length === 0) return { finalScore: '0.00', grade: 'N/A' };
 
         course.assessmentComponents.forEach(component => {
             let totalComponentScore = 0;
             let totalComponentMaxWeight = 0;
 
-            // Ensure component.categories is an array before iterating
             if (!Array.isArray(component.categories)) {
                 console.warn(`Assessment component "${component.name}" has no categories array. Skipping component in score calculation.`);
-                return; // Skip this component if categories are missing
+                return;
             }
 
             component.categories.forEach(cat => {
-                // Pass component.name to getCategoryScores
-                const { current, max } = getCategoryScores(student, component.name, cat, activeCourse); // Changed course to activeCourse
+                const { current, max } = getCategoryScores(student, component.name, cat, activeCourse);
                 if (max > 0) {
-                    // Calculate percentage for this category within its component
                     const categoryPercentage = (current / max);
-                    // Add weighted category score to component total
                     totalComponentScore += categoryPercentage * cat.weight;
                 }
-                totalComponentMaxWeight += cat.weight; // Sum up category weights for this component
+                totalComponentMaxWeight += cat.weight;
             });
 
-            // If component has categories and their total weight is > 0, calculate component's weighted score
             if (totalComponentMaxWeight > 0) {
-                // Normalize component score to 100% of its own categories, then apply component's weight
                 const normalizedComponentScore = (totalComponentScore / totalComponentMaxWeight) * 100;
                 totalWeightedCourseScore += (normalizedComponentScore / 100) * component.weight;
             }
         });
 
-        const score = Math.min(totalWeightedCourseScore, 100); // Cap score at 100%
+        const score = Math.min(totalWeightedCourseScore, 100);
         let grade = 'N/A';
-        // Assign grade based on score thresholds
         if (isNaN(score)) grade = 'N/A';
         else if (score >= 90) grade = 'A+';
         else if (score >= 85) grade = 'A';
@@ -2167,7 +2093,6 @@
         return { finalScore: score.toFixed(2), grade };
     }
 
-    // Updates a student's score for a specific category or sub-item
     async function updateSubScore(studentId, componentName, catName, subId, value) {
         const student = students.find(s => s.studentId === studentId);
         if (!student || !activeCourse) {
@@ -2186,7 +2111,7 @@
             return;
         }
 
-        let maxScore = 100; // Default max score for simple categories
+        let maxScore = 100;
         if (subId) {
             const subItem = category.subItems.find(s => s.id === subId);
             if (subItem) maxScore = subItem.maxScore;
@@ -2196,9 +2121,7 @@
             }
         }
 
-        // Input validation: allow empty string for clearing, but otherwise must be valid number
         if (value.trim() === '') {
-            // If input is cleared, set score to 0 or null depending on preference. 0 is safer for calculations.
             if (subId) {
                 if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
                 if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
@@ -2211,7 +2134,6 @@
             }
         } else if (isNaN(score) || score < 0 || score > maxScore) {
             showToast(`Score must be between 0 and ${formatNumber(maxScore)}.`, 'error');
-            // Revert the input field to its last valid saved value or 0 if no valid value
             const currentInput = document.querySelector(`input[onchange*='${studentId}'][onchange*='${componentName}'][onchange*='${catName}'][onchange*='${subId || 'null'}']`);
             if (currentInput) {
                 if (subId) {
@@ -2222,7 +2144,6 @@
             }
             return;
         } else {
-            // Valid score, update it
             if (!student.scores[activeCourse.id]) student.scores[activeCourse.id] = {};
             if (!student.scores[activeCourse.id][componentName]) student.scores[activeCourse.id][componentName] = {};
             if (!student.scores[activeCourse.id][componentName][catName]) student.scores[activeCourse.id][componentName][catName] = {};
@@ -2234,16 +2155,13 @@
             }
         }
 
-        await saveData(); // Save changes to Firestore
+        await saveData();
 
-        // --- Real-time update of Category Total, Final Score, and Final Grade ---
-        // Find the student row by iterating through all rows
         const scoreTableBody = document.querySelector('#score-input-table tbody');
         let studentRow = null;
         if (scoreTableBody) {
             for (let i = 0; i < scoreTableBody.children.length; i++) {
                 const row = scoreTableBody.children[i];
-                // Assuming studentId is in a div within the first td of the row
                 const studentIdDiv = row.querySelector('td:first-child div.text-xs');
                 if (studentIdDiv && studentIdDiv.textContent.includes(`ID: ${studentId}`)) {
                     studentRow = row;
@@ -2256,30 +2174,25 @@
             let currentCategoryColIndex = 0;
             let foundCategory = false;
 
-            // Find the correct category total cell for the updated category
             activeCourse.assessmentComponents.forEach(comp => {
                 comp.categories.forEach(cat => {
                     const colspan = (cat.subItems && cat.subItems.length > 0) ? cat.subItems.length + 1 : 2;
                     if (comp.name === componentName && cat.name === catName) {
-                        // This is the category we just updated
-                        const categoryTotalCell = studentRow.children[1 + currentCategoryColIndex + (cat.subItems?.length || 0)]; // +1 for student column, + subItems.length for sub-item columns
+                        const categoryTotalCell = studentRow.children[1 + currentCategoryColIndex + (cat.subItems?.length || 0)];
                         if (categoryTotalCell) {
                             const { current, max } = getCategoryScores(student, componentName, category, activeCourse);
-                            // Round the percentage to a whole number for display
                             const percentage = max > 0 ? Math.round((current / max) * 100) : 0;
-                            categoryTotalCell.innerHTML = `${formatNumber(current)}<br>(${percentage}%)`; // Use Math.round for percentage
+                            categoryTotalCell.innerHTML = `${formatNumber(current)}<br>(${percentage}%)`;
                         }
                         foundCategory = true;
                     }
                     currentCategoryColIndex += colspan;
                 });
-                if (foundCategory) return; // Exit outer loop once category is found
+                if (foundCategory) return;
             });
 
 
-            // Update final score and grade cells
             const { finalScore, grade } = calculateFinalScoreAndGrade(student, activeCourse);
-            // Assuming final score and grade are the last two columns
             const finalScoreCell = studentRow.querySelector('.final-score-cell');
             const finalGradeCell = studentRow.querySelector('.final-grade-cell');
 
@@ -2290,7 +2203,6 @@
         }
     }
 
-    // Renders the score input table
     function renderScoresTable() {
         const container = document.getElementById('score-input-table');
         const info = document.getElementById('score-entry-info');
@@ -2310,7 +2222,6 @@
             return;
         }
 
-        // Check if there are any categories defined within any component
         const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0);
         if (!hasCategories) {
             info.textContent = 'Please add Categories within your Assessment Components to begin.';
@@ -2322,19 +2233,16 @@
         info.classList.add('hidden');
 
         let tableHTML = `<table class="min-w-full border-collapse"><thead><tr class="sticky-header">`;
-        tableHTML += `<th rowspan="3" class="sticky-col p-2 border border-slate-600 text-left">Student</th>`; // Rowspan 3 for student column
+        tableHTML += `<th rowspan="3" class="sticky-col p-2 border border-slate-600 text-left">Student</th>`;
 
-        // First row: Assessment Component headers
         activeCourse.assessmentComponents.forEach((component, componentIndex) => {
-            // Calculate colspan for this component: sum of colspans of its categories
             const totalCategoriesInComponent = component.categories.reduce((sum, cat) => sum + (cat.subItems && cat.subItems.length > 0 ? cat.subItems.length + 1 : 2), 0);
-            if (totalCategoriesInComponent > 0) { // Only render if component has categories
+            if (totalCategoriesInComponent > 0) {
                 tableHTML += `<th colspan="${totalCategoriesInComponent}" class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${component.name} (${component.weight}%)</th>`;
             }
         });
-        tableHTML += `<th rowspan="3" class="p-2 border border-slate-600">Final Score</th><th rowspan="3" class="p-2 border border-slate-600">Final Grade</th></tr>`; // Final Score and Grade span all rows
+        tableHTML += `<th rowspan="3" class="p-2 border border-slate-600">Final Score</th><th rowspan="3" class="p-2 border border-slate-600">Final Grade</th></tr>`;
 
-        // Second row: Category headers
         tableHTML += `<tr class="sticky-header">`;
         activeCourse.assessmentComponents.forEach((component, componentIndex) => {
             component.categories.forEach((cat, catIndex) => {
@@ -2344,22 +2252,20 @@
         });
         tableHTML += `</tr>`;
 
-        // Third row: Sub-item headers and Category Total headers
         tableHTML += `<tr class="sticky-header">`;
         activeCourse.assessmentComponents.forEach((component, componentIndex) => {
             component.categories.forEach((cat, catIndex) => {
                 if (cat.subItems && cat.subItems.length > 0) {
                     cat.subItems.forEach(sub => tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${sub.name} (${formatNumber(sub.maxScore)})</th>`);
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`;
                 } else {
                     tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Score (${formatNumber(100)})</th>`;
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`; // Shorter text for space
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`;
                 }
             });
         });
         tableHTML += `</tr></thead><tbody>`;
 
-        // Render rows for each student
         studentsInClass.sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)).forEach(s => {
             const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
             tableHTML += `<tr class="hover:bg-slate-800"><td class="sticky-col p-2 border border-slate-600 text-left font-medium">
@@ -2369,7 +2275,6 @@
             activeCourse.assessmentComponents.forEach(component => {
                 component.categories.forEach(cat => {
                     const catScores = getCategoryScores(s, component.name, cat, activeCourse);
-                    // Calculate percentage of category within its component (not weighted yet for this display)
                     const categoryPercentage = (catScores.max > 0 ? (catScores.current / catScores.max) * 100 : 0);
 
                     if (cat.subItems && cat.subItems.length > 0) {
@@ -2383,7 +2288,7 @@
                     } else {
                         const score = s.scores[activeCourse.id]?.[component.name]?.[cat.name] || '';
                         const currentScore = parseFloat(score || 0);
-                        const singleCategoryPercentage = (100 > 0 ? (currentScore / 100) * 100 : 0); // Always based on 100 max for simple category
+                        const singleCategoryPercentage = (100 > 0 ? (currentScore / 100) * 100 : 0);
                         tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${score}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', null, this.value)" min="0" max="100"></td>`;
                         tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium category-total-cell">
                                 ${formatNumber(currentScore)}<br>(${Math.round(singleCategoryPercentage)}%)
@@ -2434,13 +2339,11 @@
 
         let tableHTML = `<table class="min-w-full"><thead><tr>
                 <th class="p-2 border border-slate-600 text-left">Student</th>`;
-        // Headers for each assessment component percentage
         activeCourse.assessmentComponents.forEach((component, i) => {
             tableHTML += `<th class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[i % tableHeaderColors.length]}">${component.name} (%)</th>`;
         });
         tableHTML += `<th class="p-2 border border-slate-600">Final Score</th><th class="p-2 border border-slate-600">Final Grade</th></tr></thead><tbody>`;
 
-        // Sort students by final score in descending order
         studentsInClass.sort((a,b) => parseFloat(calculateFinalScoreAndGrade(b, activeCourse).finalScore) - parseFloat(calculateFinalScoreAndGrade(a, activeCourse).finalScore)).forEach(s => {
             const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
             let rowBgClass = '';
@@ -2466,15 +2369,13 @@
                         <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
                         <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
                     </td>`;
-            // Display percentage for each assessment component
             activeCourse.assessmentComponents.forEach(component => {
                 let componentCurrentScore = 0;
                 let componentMaxWeight = 0;
-                // Ensure component.categories is an array before iterating
                 if (!Array.isArray(component.categories)) {
                     console.warn(`Assessment component "${component.name}" has no categories array in summary. Skipping component percentage display.`);
-                    tableHTML += `<td class="p-2 border border-slate-600 text-center">N/A</td>`; // Display N/A if categories are missing
-                    return; // Skip to next component
+                    tableHTML += `<td class="p-2 border border-slate-600 text-center">N/A</td>`;
+                    return;
                 }
                 component.categories.forEach(cat => {
                     const { current, max } = getCategoryScores(s, component.name, cat, activeCourse);
@@ -2498,7 +2399,7 @@
         const excellentUl = document.getElementById('group-excellent');
         const averageUl = document.getElementById('group-average');
         const improvementUl = document.getElementById('group-improvement');
-        excellentUl.innerHTML = averageUl.innerHTML = improvementUl.innerHTML = ''; // Clear previous lists
+        excellentUl.innerHTML = averageUl.innerHTML = improvementUl.innerHTML = '';
 
         let counts = { excellent: 0, average: 0, improvement: 0 };
 
@@ -2507,7 +2408,6 @@
             const score = parseFloat(finalScore);
             const li = document.createElement('li');
             li.textContent = `${s.realName} (${formatNumber(score)}%)`;
-            // Categorize students into groups
             if (score >= 70) {
                 excellentUl.appendChild(li);
                 counts.excellent++;
@@ -2521,14 +2421,14 @@
         });
 
         const ctx = document.getElementById('student-group-chart').getContext('2d');
-        if (studentGroupChartInstance) studentGroupChartInstance.destroy(); // Destroy existing chart before creating new one
+        if (studentGroupChartInstance) studentGroupChartInstance.destroy();
         studentGroupChartInstance = new Chart(ctx, {
             type: 'pie',
             data: {
                 labels: ['Excellent', 'Average', 'Needs Improvement'],
                 datasets: [{
                     data: [counts.excellent, counts.average, counts.improvement],
-                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], // Colors for each segment
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
                 }]
             },
             options: {
@@ -2537,7 +2437,7 @@
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#e2e8f0' // Legend label color for dark mode
+                            color: '#e2e8f0'
                         }
                     }
                 }
@@ -2545,10 +2445,9 @@
         });
     }
 
-    // Renders the admin dashboard with overall course statistics
     function renderAdminDashboard() {
         const dashboardContent = document.getElementById('admin-dashboard-content');
-        dashboardContent.innerHTML = ''; // Clear previous content
+        dashboardContent.innerHTML = '';
 
         if (courses.length === 0) {
             dashboardContent.innerHTML = '<p class="text-slate-400 text-center text-lg mt-8">No course data available.</p>';
@@ -2558,7 +2457,6 @@
         let totalPossibleEntriesOverall = 0;
         let filledEntriesOverall = 0;
 
-        // Calculate overall progress and individual course stats
         courses.forEach(course => {
             const studentsInThisCourse = students.filter(s => s.gradeLevel === course.gradeLevel && s.room === course.room);
             let courseTotalPossibleEntries = 0;
@@ -2663,7 +2561,6 @@
 
         const overallScoreEntryProgress = totalPossibleEntriesOverall > 0 ? (filledEntriesOverall / totalPossibleEntriesOverall) * 100 : 0;
 
-        // Overall school statistics (moved to top for better flow)
         dashboardContent.insertAdjacentHTML('afterbegin', `
             <div class="mb-8 p-6 rounded-lg border card">
                 <h4 class="text-xl font-semibold mb-4 text-indigo-300">Overall School Overview</h4>
@@ -2672,7 +2569,6 @@
                     <div><p class="text-sm text-slate-400">Total Students</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
                     <div><p class="text-sm text-slate-400">Active Teachers</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
                 </div>
-                <!-- New: Overall Score Entry Progress Bar -->
                 <div class="mt-6">
                     <h5 class="font-semibold text-lg mb-2">Overall Score Entry Progress</h5>
                     <div class="w-full bg-slate-700 rounded-full h-4">
@@ -2686,26 +2582,22 @@
 
 
     // --- TABS & MAIN RENDER ---
-    // Controls which tab is visible (Score Entry or Summary)
     function showTab(tabName) {
         document.getElementById('score-entry-section').classList.toggle('hidden', tabName !== 'score-entry');
         document.getElementById('summary-section').classList.toggle('hidden', tabName !== 'summary');
         document.getElementById('score-entry-tab').classList.toggle('active', tabName === 'score-entry');
         document.getElementById('summary-tab').classList.toggle('active', tabName === 'summary');
-        renderAll(); // Re-render content based on active tab
+        renderAll();
     }
 
-    // Main render function, calls other render functions based on state
     function renderAll() {
-        // If no active course, clear sections and display info messages
         if (!activeCourse) {
             console.log("activeCourse is null. Clearing sections and displaying initial messages.");
-            // Clear all relevant sections when no active course
             document.getElementById('grading-period-list').innerHTML = '';
             document.getElementById('select-grading-period').innerHTML = '<option value="">Select an Assessment Component</option>';
             document.getElementById('selected-grading-period-status').classList.add('hidden');
             document.getElementById('current-period-name').textContent = 'Selected Assessment Component';
-            selectedAssessmentComponent = null; // Ensure selected component is cleared
+            selectedAssessmentComponent = null;
 
             document.getElementById('category-settings').innerHTML = '';
             document.getElementById('student-list').innerHTML = '';
@@ -2720,7 +2612,6 @@
             if (studentGroupChartInstance) studentGroupChartInstance.destroy();
             document.getElementById('advanced-dashboard').classList.add('hidden');
 
-            // Explicitly update total weight displays to 0 and hide warnings if elements exist
             const totalCompWeightSpan = document.getElementById('current-total-grading-period-weight');
             const compWarningDiv = document.getElementById('grading-period-warning');
             if (totalCompWeightSpan) totalCompWeightSpan.textContent = '0';
@@ -2731,24 +2622,20 @@
             if (totalCatWeightSpan) totalCatWeightSpan.textContent = '0';
             if (catWarningDiv) catWarningDiv.classList.add('hidden');
 
-            // Ensure teacher info section is rendered correctly for initial state
             renderTeacherInfoSection();
-            // Ensure category management section is disabled and cleared
-            updateCategoryManagementSectionState(); // This will handle clearing category-related UI
+            updateCategoryManagementSectionState();
 
-            return; // Exit renderAll if no active course
+            return;
         }
 
-        // --- If activeCourse is NOT null, proceed with rendering based on its state ---
         console.log("activeCourse is valid. Proceeding with rendering sections.");
 
-        renderCategories(); // Render category settings
-        renderStudents(); // Render student list
-        renderTeacherInfoSection(); // Render teacher info section (display or edit form)
+        renderCategories();
+        renderStudents();
+        renderTeacherInfoSection();
         renderAssessmentComponents();
-        updateCategoryManagementSectionState(); // This will handle category UI state and total weight display
+        updateCategoryManagementSectionState();
 
-        // Render either score table or summary based on active tab
         const activeTab = document.querySelector('.tab-button.active').id;
         if (activeTab === 'summary-tab') {
             renderSummary();
@@ -2758,13 +2645,10 @@
     }
 
     // --- EVENT LISTENERS & SETUP ---
-    // Sets up various event listeners for input fields
     function setupEventListeners() {
-        // New: Academic Year and Semester selects
         document.getElementById('select-academic-year').addEventListener('change', updateAcademicYearSelection);
         document.getElementById('select-semester').addEventListener('change', updateSemesterSelection);
 
-        // Assessment Component inputs: Enter to add component
         document.getElementById('new-grading-period-name').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') addGradingPeriod();
         });
@@ -2772,7 +2656,6 @@
             if (e.key === 'Enter') addGradingPeriod();
         });
 
-        // Category inputs: Enter to add category
         document.getElementById('new-category-name').addEventListener('keydown', (e) => {
             if(e.key === 'Enter') addCategory();
         });
@@ -2780,7 +2663,6 @@
             if(e.key === 'Enter') addCategory();
         });
 
-        // New sub-item inputs: Enter to add sub-item (delegated)
         document.getElementById('category-management-section').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.id.startsWith('new-sub-item-name-')) {
                 const catIndex = parseInt(e.target.id.replace('new-sub-item-name-', ''));
@@ -2791,7 +2673,6 @@
             }
         });
 
-        // New student inputs: Enter to add student
         document.querySelectorAll('.new-student-input').forEach(input => {
             input.addEventListener('keydown', (e) => {
                 if(e.key === 'Enter' && !document.getElementById('add-student-button').disabled) {
@@ -2800,7 +2681,6 @@
             });
         });
 
-        // Teacher info inputs: Enter to save teacher info
         document.querySelectorAll('.teacher-info-input').forEach(input => {
             input.addEventListener('keydown', (e) => {
                 if(e.key === 'Enter' && !document.getElementById('save-teacher-info-button').disabled) {
@@ -2809,35 +2689,31 @@
             });
         });
 
-        // Score input table: Enter to move to next input
         document.getElementById('score-input-table').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('score-input')) {
-                e.preventDefault(); // Prevent form submission
+                e.preventDefault();
                 const inputs = Array.from(document.querySelectorAll('.score-input'));
                 const currentIndex = inputs.indexOf(e.target);
                 const nextInput = inputs[currentIndex + 1];
                 if (nextInput) {
                     nextInput.focus();
-                    nextInput.select(); // Select text for easy overwriting
+                    nextInput.select();
                 }
             }
         });
 
-        // Admin password input: Enter to check password
         document.getElementById('admin-password-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 checkAdminPassword();
             }
         });
 
-        // Reset password input: Enter to confirm reset
         document.getElementById('reset-password-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 confirmResetCourse();
             }
         });
 
-        // Settings logo URL input: Enter to save settings
         document.getElementById('settings-logo-url').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 saveSettings();
@@ -2846,11 +2722,8 @@
     }
 
     // --- PAGE LOAD ---
-    // Executes when the window finishes loading
     window.onload = async function() {
         setupEventListeners();
-        // Firebase initialization is now handled by the script in <head>
-        // loadData() and populateDropdowns() will be called once Firebase auth is ready inside the onAuthStateChanged callback.
     };
     </script>
 </body>
