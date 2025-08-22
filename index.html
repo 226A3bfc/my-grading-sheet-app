@@ -66,17 +66,17 @@
                 } else {
                     console.warn("Firebase config is missing. Running without Firebase features.");
                     window.isAuthReady = true; 
-                    loadData();
-                    populateDropdowns(); // Populate dropdowns even if Firebase is not used
-                    updateCourseSelection(); // Ensure UI is updated
+                    await loadData(); // Ensure data is loaded even without Firebase
+                    populateDropdowns(); 
+                    updateCourseSelection();
                 }
             } catch (e) {
                 console.error("Error initializing Firebase:", e);
                 showToast('Failed to initialize Firebase. Data persistence may not work.', 'error');
                 window.isAuthReady = true; 
-                loadData();
-                populateDropdowns(); // Populate dropdowns even if Firebase is not used
-                updateCourseSelection(); // Ensure UI is updated
+                await loadData(); // Ensure data is loaded even if Firebase init fails
+                populateDropdowns(); 
+                updateCourseSelection();
             }
         });
     </script>
@@ -787,42 +787,67 @@
         }
 
         try {
-            // Setup real-time listener for courses
-            const coursesColRef = collection(db, 'artifacts', appId, 'public', 'courses'); // Changed path to 'public'
+            // --- Fetch initial data once before setting up listeners ---
+            const coursesColRef = collection(db, 'artifacts', appId, 'public', 'courses');
+            const coursesSnapshot = await getDocs(coursesColRef); // Fetch initial courses
+            courses = coursesSnapshot.docs.map(doc => doc.data());
+
+            const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students');
+            const studentsSnapshot = await getDocs(studentsColRef); // Fetch initial students
+            students = studentsSnapshot.docs.map(doc => doc.data());
+
+            // Re-establish activeCourse and selectedAssessmentComponent based on fetched data
+            const storedActiveCourseId = localStorage.getItem('gradingSheetActiveCourseId');
+            const storedSelectedAssessmentComponentId = localStorage.getItem('gradingSheetSelectedAssessmentComponentId');
+
+            if (storedActiveCourseId && courses.length > 0) {
+                activeCourse = courses.find(c => c.id === storedActiveCourseId);
+            } else {
+                activeCourse = null;
+            }
+
+            if (storedSelectedAssessmentComponentId && activeCourse && activeCourse.assessmentComponents) {
+                selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === storedSelectedAssessmentComponentId);
+            } else {
+                selectedAssessmentComponent = null;
+            }
+            console.log("Initial data loaded from Firestore.");
+            // --- End initial data fetch ---
+
+            // Now set up real-time listeners for subsequent changes
             onSnapshot(coursesColRef, (snapshot) => {
                 courses = snapshot.docs.map(doc => doc.data());
-                console.log("Courses updated from Firestore:", courses);
-                // Re-establish activeCourse after courses array is updated
-                if (activeCourse) {
+                console.log("Courses updated from Firestore (real-time):", courses);
+                if (activeCourse) { // Re-establish activeCourse based on its ID
                     activeCourse = courses.find(c => c.id === activeCourse.id) || null;
                     if (activeCourse && selectedAssessmentComponent) {
                         selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === selectedAssessmentComponent.id) || null;
                     }
                 }
-                populateDropdowns();
-                updateCourseSelection(); // Re-evaluate course selection and UI state
+                populateDropdowns(); // Re-populate dropdowns
+                updateCourseSelection(); // Re-evaluate UI state
             }, (error) => {
                 console.error("Error listening to courses:", error);
-                showToast('ข้อผิดพลาดในการโหลดข้อมูลวิชา.', 'error');
+                showToast('ข้อผิดพลาดในการโหลดข้อมูลวิชา (เรียลไทม์).', 'error');
             });
 
-            // Setup real-time listener for students
-            const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students'); // Changed path to 'public'
             onSnapshot(studentsColRef, (snapshot) => {
                 students = snapshot.docs.map(doc => doc.data());
-                console.log("Students updated from Firestore:", students);
+                console.log("Students updated from Firestore (real-time):", students);
                 renderAll(); // Re-render UI whenever student data changes
             }, (error) => {
                 console.error("Error listening to students:", error);
-                showToast('ข้อผิดพลาดในการโหลดข้อมูลนักเรียน.', 'error');
+                showToast('ข้อผิดพลาดในการโหลดข้อมูลนักเรียน (เรียลไทม์).', 'error');
             });
 
-            console.log("Firestore listeners set up.");
+            console.log("Firestore real-time listeners set up.");
         } catch (e) {
-            console.error("Error setting up Firestore listeners:", e);
-            showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลแบบเรียลไทม์ได้.', 'error');
+            console.error("Error setting up Firestore listeners or initial fetch:", e);
+            showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลแบบเรียลไทม์ได้ หรือโหลดข้อมูลเริ่มต้นไม่สำเร็จ.', 'error');
             // Fallback to localStorage load if Firestore setup fails
-            loadData(); // Call local storage load if real-time fails
+            // This might cause double loading if local storage was already attempted
+            // Let's remove the fallback here, as the initial load should handle it.
+            // If Firestore fails, the app will just show an error and remain empty.
         }
     }
 
