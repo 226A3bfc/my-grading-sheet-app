@@ -53,10 +53,10 @@
                             window.userId = user.uid; // Still get UID, but it's for the anonymous user
                             console.log("Firebase Auth Ready. User ID:", window.userId);
                             window.isAuthReady = true;
-                            // Call loadData and populateDropdowns AFTER auth is ready
-                            await loadData(); // Ensure data is loaded before populating dropdowns
+                            // Call loadData and then populateDropdowns and updateCourseSelection AFTER auth is ready
+                            await loadData(); 
                             populateDropdowns(); 
-                            updateCourseSelection(); // Ensure UI is updated based on loaded data
+                            updateCourseSelection(); 
                         } else {
                             console.log("No user signed in. Attempting anonymous sign-in.");
                             await signInAnonymously(window.auth); // Always sign in anonymously for public access
@@ -528,7 +528,7 @@
             </div>
             <div class="flex justify-end gap-2 mt-6">
                 <button onclick="hideResetConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
-                <button onclick="confirmResetCourse()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm Reset</button>
+                <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm</button>
             </div>
         </div>
     </div>
@@ -777,13 +777,12 @@
                     selectedAssessmentComponent = null;
                 }
                 console.log("Data loaded from Local Storage.");
-                // populateDropdowns(); // Removed: will be called after full data load
-                // updateCourseSelection(); // Removed: will be called after full data load
+                return; // Exit here if loaded from local storage
             } catch (e) {
                 console.error("Error loading from Local Storage:", e);
                 showToast('ไม่สามารถโหลดข้อมูลที่บันทึกไว้ได้.', 'error');
             }
-            return;
+            return; // Exit if local storage also failed
         }
 
         try {
@@ -844,10 +843,6 @@
         } catch (e) {
             console.error("Error setting up Firestore listeners or initial fetch:", e);
             showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลแบบเรียลไทม์ได้ หรือโหลดข้อมูลเริ่มต้นไม่สำเร็จ.', 'error');
-            // Fallback to localStorage load if Firestore setup fails
-            // This might cause double loading if local storage was already attempted
-            // Let's remove the fallback here, as the initial load should handle it.
-            // If Firestore fails, the app will just show an error and remain empty.
         }
     }
 
