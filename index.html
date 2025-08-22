@@ -14,17 +14,9 @@
     <!-- Firebase v9 Modular SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-
-        // Global Firebase variables (will be initialized in window.onload)
-        window.firebaseApp = null;
-        window.db = null;
-        window.auth = null;
-        window.userId = null;
-        window.isAuthReady = false;
-        window.analytics = null;
 
         // MANDATORY global variables provided by the Canvas environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -37,10 +29,31 @@
             appId: "1:176819621092:web:049c38a2690542930b30f1",
             measurementId: "G-8MZW3RSJ8W"
         };
-        
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Global Firebase variables accessible via window (initialized here)
+        window.firebaseApp = null;
+        window.db = null;
+        window.auth = null;
+        window.userId = null;
+        window.isAuthReady = false;
+        window.analytics = null;
+
+        // Make Firestore functions globally accessible
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.onSnapshot = onSnapshot;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+        window.getDocs = getDocs;
+
+
         window.addEventListener('load', async () => {
             try {
-                if (Object.keys(firebaseConfig).length > 0) {
+                if (Object.keys(firebaseConfig).length > 0 && firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId) {
                     window.firebaseApp = initializeApp(firebaseConfig);
                     window.auth = getAuth(window.firebaseApp);
                     window.db = getFirestore(window.firebaseApp);
@@ -51,31 +64,122 @@
                             window.userId = user.uid;
                             console.log("Firebase Auth Ready. User ID:", window.userId);
                             window.isAuthReady = true;
-                            await loadData(); 
-                            populateDropdowns(); 
-                            updateCourseSelection(); 
+                            // Initial data load after auth is ready
+                            await window.loadData();
+                            window.populateDropdowns();
+                            window.updateCourseSelection(); // This will trigger renderAll indirectly
                         } else {
-                            console.log("No user signed in. Attempting anonymous sign-in.");
-                            await signInAnonymously(window.auth);
-                            console.log("Signed in anonymously.");
+                            console.log("No user signed in. Attempting sign-in.");
+                            try {
+                                if (initialAuthToken) {
+                                    await signInWithCustomToken(window.auth, initialAuthToken);
+                                    console.log("Signed in with custom token.");
+                                } else {
+                                    await signInAnonymously(window.auth);
+                                    console.log("Signed in anonymously.");
+                                }
+                            } catch (authError) {
+                                console.error("Error during Firebase sign-in:", authError);
+                                window.showToast('Failed to sign in to Firebase. Data persistence may not work.', 'error');
+                            }
                         }
                     });
                 } else {
-                    console.warn("Firebase config is missing. Running without Firebase features.");
-                    window.isAuthReady = true; 
-                    await loadData();
-                    populateDropdowns(); 
-                    updateCourseSelection();
+                    console.warn("Firebase config is missing or incomplete. Running without Firebase features.");
+                    window.isAuthReady = true;
+                    // Initial data load even without Firebase config
+                    await window.loadData();
+                    window.populateDropdowns();
+                    window.updateCourseSelection();
                 }
             } catch (e) {
                 console.error("Error initializing Firebase:", e);
-                showToast('Failed to initialize Firebase. Data persistence may not work.', 'error');
-                window.isAuthReady = true; 
-                await loadData();
-                populateDropdowns(); 
-                updateCourseSelection();
+                window.showToast('Failed to initialize Firebase. Data persistence may not work.', 'error');
+                window.isAuthReady = true;
+                // Attempt to load local data if Firebase init fails completely
+                await window.loadData();
+                window.populateDropdowns();
+                window.updateCourseSelection();
             }
         });
+
+        // Making functions globally accessible so inline HTML event handlers can call them
+        window.saveData = saveData;
+        window.loadData = loadData;
+        window.showToast = showToast;
+        window.showAlert = showAlert;
+        window.hideAlert = hideAlert;
+        window.showConfirmationModal = showConfirmationModal;
+        window.hideConfirmationModal = hideConfirmationModal;
+        window.showResetConfirmationModal = showResetConfirmationModal;
+        window.hideResetConfirmationModal = hideResetConfirmationModal;
+        window.confirmResetCourse = confirmResetCourse;
+        window.showAdminPasswordModal = showAdminPasswordModal;
+        window.hideAdminPasswordModal = hideAdminDashboardModal; // Corrected to hideAdminDashboardModal
+        window.checkAdminPassword = checkAdminPassword;
+        window.showSettingsModal = showSettingsModal;
+        window.hideSettingsModal = hideSettingsModal;
+        window.saveSettings = saveSettings;
+        window.showHowToUseModal = showHowToUseModal;
+        window.hideHowToUseModal = hideHowToUseModal;
+        window.showScoreBreakdownModal = showScoreBreakdownModal;
+        window.hideScoreBreakdownModal = hideScoreBreakdownModal;
+        window.hideAdminDashboardModal = hideAdminDashboardModal;
+        window.populateDropdowns = populateDropdowns;
+        window.updateMainContentState = updateMainContentState;
+        window.updateAcademicYearSelection = updateAcademicYearSelection;
+        window.updateSemesterSelection = updateSemesterSelection;
+        window.updateCourseSelection = updateCourseSelection;
+        window.checkTeacherFormValidity = checkTeacherFormValidity;
+        window.saveTeacherInfo = saveTeacherInfo;
+        window.renderTeacherInfoSection = renderTeacherInfoSection;
+        window.editTeacherInfo = editTeacherInfo;
+        window.showDeleteTeacherConfirmation = showDeleteTeacherConfirmation;
+        window.deleteTeacherInfo = deleteTeacherInfo;
+        window.resetCourseData = resetCourseData;
+        window.updateTotalAssessmentComponentWeightDisplay = updateTotalAssessmentComponentWeightDisplay;
+        window.renderAssessmentComponents = renderAssessmentComponents;
+        window.addGradingPeriod = addGradingPeriod;
+        window.startEditAssessmentComponent = startEditAssessmentComponent;
+        window.cancelEditAssessmentComponent = cancelEditAssessmentComponent;
+        window.saveAssessmentComponentChanges = saveAssessmentComponentChanges;
+        window.showDeleteAssessmentComponentConfirmation = showDeleteAssessmentComponentConfirmation;
+        window.deleteAssessmentComponent = deleteAssessmentComponent;
+        window.selectGradingPeriod = selectGradingPeriod;
+        window.updateCategoryManagementSectionState = updateCategoryManagementSectionState;
+        window.updateTotalCategoryWeightDisplay = updateTotalCategoryWeightDisplay;
+        window.renderCategories = renderCategories;
+        window.renderSubItems = renderSubItems;
+        window.addCategory = addCategory;
+        window.handleCategoryCsvImport = handleCategoryCsvImport;
+        window.showDeleteCategoryConfirmation = showDeleteCategoryConfirmation;
+        window.removeCategory = removeCategory;
+        window.startEditCategory = startEditCategory;
+        window.cancelEditCategory = cancelEditCategory;
+        window.saveCategoryChanges = saveCategoryChanges;
+        window.addSubItem = addSubItem;
+        window.removeSubItem = removeSubItem;
+        window.checkAddStudentFormValidity = checkAddStudentFormValidity;
+        window.addStudent = addStudent;
+        window.showDeleteStudentConfirmation = showDeleteStudentConfirmation;
+        window.removeStudent = removeStudent;
+        window.startEditStudent = startEditStudent;
+        window.cancelEditStudent = cancelEditStudent;
+        window.saveStudentChanges = saveStudentChanges;
+        window.renderStudents = renderStudents;
+        window.handleCsvImport = handleCsvImport;
+        window.exportScoresToCsv = exportScoresToCsv;
+        window.getCategoryScores = getCategoryScores;
+        window.calculateFinalScoreAndGrade = calculateFinalScoreAndGrade;
+        window.updateSubScore = updateSubScore;
+        window.renderScoresTable = renderScoresTable;
+        window.renderSummary = renderSummary;
+        window.renderAdvancedDashboard = renderAdvancedDashboard;
+        window.renderAdminDashboard = renderAdminDashboard;
+        window.showTab = showTab;
+        window.renderAll = renderAll;
+        window.setupEventListeners = setupEventListeners;
+        window.formatNumber = formatNumber; // Make formatNumber globally accessible
     </script>
 
     <style>
@@ -485,7 +589,7 @@
             <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 Settings
-            </h4>
+            </h3>
             <div class="space-y-4">
                 <div>
                     <label for="settings-logo-url" class="block text-sm font-medium text-slate-400">School Logo URL</label>
@@ -525,7 +629,7 @@
             </div>
             <div class="flex justify-end gap-2 mt-6">
                 <button onclick="hideResetConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
-                <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm</button>
+                <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700" onclick="confirmResetCourse()">Confirm</button>
             </div>
         </div>
     </div>
@@ -559,7 +663,7 @@
             <p id="confirmation-message" class="mb-6 text-slate-300"></p>
             <div class="flex justify-end gap-2">
                 <button onclick="hideConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
-                <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm</button>
+                <button id="confirm-action-button-generic" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm</button>
             </div>
         </div>
     </div>
@@ -662,28 +766,6 @@
     let originalStudentState = null; // Backup of student state during editing
     let currentConfirmCallback = null; // Callback for generic confirmation modal
 
-    // Global Firebase variables (will be initialized in window.onload)
-    let firebaseApp = null;
-    let db = null;
-    let auth = null;
-    let userId = null;
-    let isAuthReady = false; // Flag to indicate if auth is ready
-
-    // MANDATORY global variables provided by the Canvas environment
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyC8vVDqpBjFX1sRDRAia2nuy3uIKBJA1NQ",
-            authDomain: "gradingsheetapp.firebaseapp.com",
-            projectId: "gradingsheetapp",
-            storageBucket: "gradingsheetapp.firebasestorage.app",
-            messagingSenderId: "176819621092",
-            appId: "1:176819621092:web:049c38a2690542930b30f1",
-            measurementId: "G-8MZW3RSJ8W"
-        };
-    // Removed initialAuthToken as we are explicitly using anonymous sign-in for no-login scenario
-    // const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-
     // Colors for category headers in tables
     const tableHeaderColors = ['#1e3a8a', '#064e3b', '#78350f', '#991b1b', '#5b21b6'];
     // List of available subjects
@@ -701,6 +783,12 @@
 
     // --- DATA PERSISTENCE (Firestore) ---
     async function saveData() {
+        // Access global Firebase variables from window object
+        const db = window.db;
+        const userId = window.userId;
+        const isAuthReady = window.isAuthReady;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // Re-get appId for consistency
+
         if (!isAuthReady || !db || !userId) {
             console.warn("Firestore not ready or userId not available. Skipping save to Firestore.");
             // Fallback to localStorage if Firestore is not ready
@@ -709,9 +797,10 @@
                 localStorage.setItem('gradingSheetStudents', JSON.stringify(students));
                 localStorage.setItem('gradingSheetActiveCourseId', activeCourse ? activeCourse.id : '');
                 localStorage.setItem('gradingSheetSelectedAssessmentComponentId', selectedAssessmentComponent ? selectedAssessmentComponent.id : '');
+                console.log("Data saved to Local Storage.");
             } catch (e) {
                 console.error("Error saving to Local Storage:", e);
-                showToast('บันทึกข้อมูลล้มเหลว (Local Storage).', 'error');
+                window.showToast('บันทึกข้อมูลล้มเหลว (Local Storage).', 'error');
             }
             return;
         }
@@ -719,24 +808,30 @@
         try {
             // Save activeCourse data
             if (activeCourse) {
-                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id);
-                await setDoc(courseRef, activeCourse, { merge: true });
+                const courseRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'courses', activeCourse.id);
+                await window.setDoc(courseRef, activeCourse, { merge: true });
             }
 
             // Save all students data
             // For simplicity, we'll update all students. In a large app, you might only update changed students.
             for (const student of students) {
-                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', student.studentId);
-                await setDoc(studentRef, student, { merge: true });
+                const studentRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'students', student.studentId);
+                await window.setDoc(studentRef, student, { merge: true });
             }
-            // showToast('บันทึกข้อมูลแล้ว (Firestore).', 'success', 2000);
+            // window.showToast('บันทึกข้อมูลแล้ว (Firestore).', 'success', 2000); // Only show if user action triggered save
         } catch (e) {
             console.error("Error saving to Firestore:", e);
-            showToast('บันทึกข้อมูลล้มเหลว (Firestore).', 'error');
+            window.showToast('บันทึกข้อมูลล้มเหลว (Firestore).', 'error');
         }
     }
 
     async function loadData() {
+        // Access global Firebase variables from window object
+        const db = window.db;
+        const userId = window.userId;
+        const isAuthReady = window.isAuthReady;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // Re-get appId for consistency
+
         if (!isAuthReady) {
             console.warn("Auth not ready. Deferring loadData until auth is ready.");
             return;
@@ -777,19 +872,19 @@
                 return; // Exit here if loaded from local storage
             } catch (e) {
                 console.error("Error loading from Local Storage:", e);
-                showToast('ไม่สามารถโหลดข้อมูลที่บันทึกไว้ได้.', 'error');
+                window.showToast('ไม่สามารถโหลดข้อมูลที่บันทึกไว้ได้.', 'error');
             }
             return; // Exit if local storage also failed
         }
 
         try {
             // --- Fetch initial data once before setting up listeners ---
-            const coursesColRef = collection(db, 'artifacts', appId, 'public', 'courses');
-            const coursesSnapshot = await getDocs(coursesColRef); // Fetch initial courses
+            const coursesColRef = window.collection(db, 'artifacts', appId, 'public', 'data', 'courses');
+            const coursesSnapshot = await window.getDocs(coursesColRef); // Fetch initial courses
             courses = coursesSnapshot.docs.map(doc => doc.data());
 
-            const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students');
-            const studentsSnapshot = await getDocs(studentsColRef); // Fetch initial students
+            const studentsColRef = window.collection(db, 'artifacts', appId, 'public', 'data', 'students');
+            const studentsSnapshot = await window.getDocs(studentsColRef); // Fetch initial students
             students = studentsSnapshot.docs.map(doc => doc.data());
 
             // Re-establish activeCourse and selectedAssessmentComponent based on fetched data
@@ -811,7 +906,7 @@
             // --- End initial data fetch ---
 
             // Now set up real-time listeners for subsequent changes
-            onSnapshot(coursesColRef, (snapshot) => {
+            window.onSnapshot(coursesColRef, (snapshot) => {
                 courses = snapshot.docs.map(doc => doc.data());
                 console.log("Courses updated from Firestore (real-time):", courses);
                 if (activeCourse) { // Re-establish activeCourse based on its ID
@@ -820,26 +915,26 @@
                         selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === selectedAssessmentComponent.id) || null;
                     }
                 }
-                populateDropdowns(); // Re-populate dropdowns
-                updateCourseSelection(); // Re-evaluate UI state
+                window.populateDropdowns(); // Re-populate dropdowns
+                window.updateCourseSelection(); // Re-evaluate UI state
             }, (error) => {
                 console.error("Error listening to courses:", error);
-                showToast('ข้อผิดพลาดในการโหลดข้อมูลวิชา (เรียลไทม์).', 'error');
+                window.showToast('ข้อผิดพลาดในการโหลดข้อมูลวิชา (เรียลไทม์).', 'error');
             });
 
-            onSnapshot(studentsColRef, (snapshot) => {
+            window.onSnapshot(studentsColRef, (snapshot) => {
                 students = snapshot.docs.map(doc => doc.data());
                 console.log("Students updated from Firestore (real-time):", students);
-                renderAll(); // Re-render UI whenever student data changes
+                window.renderAll(); // Re-render UI whenever student data changes
             }, (error) => {
                 console.error("Error listening to students:", error);
-                showToast('ข้อผิดพลาดในการโหลดข้อมูลนักเรียน (เรียลไทม์).', 'error');
+                window.showToast('ข้อผิดพลาดในการโหลดข้อมูลนักเรียน (เรียลไทม์).', 'error');
             });
 
             console.log("Firestore real-time listeners set up.");
         } catch (e) {
             console.error("Error setting up Firestore listeners or initial fetch:", e);
-            showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลแบบเรียลไทม์ได้ หรือโหลดข้อมูลเริ่มต้นไม่สำเร็จ.', 'error');
+            window.showToast('ไม่สามารถเชื่อมต่อฐานข้อมูลแบบเรียลไทม์ได้ หรือโหลดข้อมูลเริ่มต้นไม่สำเร็จ.', 'error');
         }
     }
 
@@ -881,7 +976,7 @@
     }
 
     // Event listener for the generic confirm button
-    document.getElementById('confirm-action-button').addEventListener('click', () => {
+    document.getElementById('confirm-action-button-generic').addEventListener('click', () => { // Changed ID here
         if (currentConfirmCallback) {
             currentConfirmCallback(); // Execute the stored callback
         }
@@ -904,7 +999,7 @@
     async function confirmResetCourse() {
         const passwordInput = document.getElementById('reset-password-input').value;
         if (passwordInput === "HASTIN") { // Admin password for reset
-            await resetCourseData(); // Await reset data
+            await window.resetCourseData(); // Call through window object
             hideResetConfirmationModal();
         } else {
             showAlert("Error", "Incorrect password. Data reset cancelled.");
@@ -912,11 +1007,11 @@
         }
     }
 
-    function showAdminPasswordModal() { 
+    function showAdminPasswordModal() {
         document.getElementById('admin-password-input').value = ''; // Clear password field
-        document.getElementById('admin-password-modal').classList.remove('hidden'); 
+        document.getElementById('admin-password-modal').classList.remove('hidden');
     }
-    function hideAdminPasswordModal() { document.getElementById('admin-password-modal').classList.add('hidden'); }
+    function hideAdminPasswordModal() { document.getElementById('admin-dashboard-modal').classList.add('hidden'); }
     function showSettingsModal() {
         // Pre-fill logo URL if available for the active course
         document.getElementById('settings-logo-url').value = activeCourse?.teacher?.logoUrl || '';
@@ -940,20 +1035,20 @@
         const contentDiv = document.getElementById('score-breakdown-content');
         contentDiv.innerHTML = activeCourse.assessmentComponents.map(component => { // Iterate through assessment components
             let componentHtml = `<div class="p-2 border rounded-md bg-slate-700 border-slate-500 mb-2">
-                        <p class="font-bold text-indigo-300">${component.name} (${component.weight}%)</p>`;
+                            <p class="font-bold text-indigo-300">${component.name} (${component.weight}%)</p>`;
             if (component.categories && component.categories.length > 0) {
                 componentHtml += `<ul class="list-disc list-inside ml-4 text-sm space-y-1">`;
                 component.categories.forEach(cat => {
                     // Pass component.name to getCategoryScores
-                    const { current, max } = getCategoryScores(student, component.name, cat, activeCourse);
+                    const { current, max } = window.getCategoryScores(student, component.name, cat, activeCourse);
                     const percentage = max > 0 ? (current / max) * 100 : 0;
-                    componentHtml += `<li>${cat.name} (${cat.weight}% of Component): ${formatNumber(current)}/${formatNumber(max)} (${formatNumber(percentage)}%)`;
+                    componentHtml += `<li>${cat.name} (${cat.weight}% of Component): ${window.formatNumber(current)}/${window.formatNumber(max)} (${window.formatNumber(percentage)}%)`;
                     if (cat.subItems && cat.subItems.length > 0) {
                         componentHtml += `<ul class="list-circle list-inside ml-4 text-xs">`;
                         cat.subItems.forEach(sub => {
                             // Access scores using component.name and category.name
                             const subScore = student.scores[activeCourse.id]?.[component.name]?.[cat.name]?.[sub.id] || 0;
-                            componentHtml += `<li>${sub.name}: ${formatNumber(subScore)}/${formatNumber(sub.maxScore)}</li>`;
+                            componentHtml += `<li>${sub.name}: ${window.formatNumber(subScore)}/${window.formatNumber(sub.maxScore)}</li>`;
                         });
                         componentHtml += `</ul>`;
                     }
@@ -974,17 +1069,17 @@
         const password = document.getElementById('admin-password-input').value;
         if (password === "HASTIN") { // Hardcoded admin password
             hideAdminPasswordModal();
-            renderAdminDashboard();
+            window.renderAdminDashboard();
             document.getElementById('admin-dashboard-modal').classList.remove('hidden');
         } else {
-            showAlert("Access Denied", "Incorrect password.");
+            window.showAlert("Access Denied", "Incorrect password.");
             document.getElementById('admin-password-input').value = '';
         }
     }
 
     async function saveSettings() {
         if (!activeCourse) {
-            showToast("Please select a course first.", "error");
+            window.showToast("Please select a course first.", "error");
             return;
         }
         const logoUrl = document.getElementById('settings-logo-url').value.trim();
@@ -993,10 +1088,10 @@
         }
         activeCourse.teacher.logoUrl = logoUrl;
         document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-        
-        await saveData();
+
+        await window.saveData();
         hideSettingsModal();
-        showToast("Settings saved successfully!", 'success');
+        window.showToast("Settings saved successfully!", 'success');
     }
 
     // --- INITIALIZATION ---
@@ -1100,18 +1195,18 @@
             mainContentOverlay.querySelector('span').textContent = overlayMessage + missingSteps.join(', ') + '.';
         }
 
-        renderAll();
+        window.renderAll();
     }
 
     // --- COURSE & TEACHER LOGIC ---
     function updateAcademicYearSelection() {
         selectedAcademicYear = document.getElementById('select-academic-year').value;
-        updateCourseSelection();
+        window.updateCourseSelection();
     }
 
     function updateSemesterSelection() {
         selectedSemester = document.getElementById('select-semester').value;
-        updateCourseSelection();
+        window.updateCourseSelection();
     }
 
     async function updateCourseSelection() {
@@ -1128,7 +1223,7 @@
             statusDiv.textContent = 'Please select Academic Year and Semester first.';
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
             statusDiv.classList.remove('hidden');
-            updateMainContentState();
+            window.updateMainContentState();
             return;
         }
 
@@ -1138,7 +1233,7 @@
             if (!course) {
                 course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} };
                 courses.push(course);
-                await saveData();
+                await window.saveData();
                 statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
             } else {
@@ -1152,19 +1247,19 @@
             const logoUrl = activeCourse.teacher?.logoUrl || '';
             document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
 
-            renderTeacherInfoSection();
-            checkTeacherFormValidity();
+            window.renderTeacherInfoSection();
+            window.checkTeacherFormValidity();
         } else {
             activeCourse = null;
             document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
             statusDiv.textContent = 'Please complete all Course selections.';
             statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
-            renderTeacherInfoSection();
+            window.renderTeacherInfoSection();
         }
         statusDiv.classList.remove('hidden');
-        updateMainContentState();
-        renderAssessmentComponents();
-        updateCategoryManagementSectionState();
+        window.updateMainContentState();
+        window.renderAssessmentComponents();
+        window.updateCategoryManagementSectionState();
     }
 
     function checkTeacherFormValidity() {
@@ -1185,10 +1280,10 @@
         if (!activeCourse) return;
         activeCourse.teacher.realName = document.getElementById('teacher-real-name').value.trim();
         activeCourse.teacher.id = document.getElementById('teacher-id').value.trim();
-        await saveData();
-        showToast('Teacher information saved!', 'success');
-        renderTeacherInfoSection();
-        updateMainContentState();
+        await window.saveData();
+        window.showToast('Teacher information saved!', 'success');
+        window.renderTeacherInfoSection();
+        window.updateMainContentState();
     }
 
     function renderTeacherInfoSection() {
@@ -1212,7 +1307,7 @@
                 teacherNameInput.value = '';
                 teacherIdInput.value = '';
             }
-            checkTeacherFormValidity();
+            window.checkTeacherFormValidity();
         }
     }
 
@@ -1227,48 +1322,52 @@
 
         teacherNameInput.value = activeCourse.teacher.realName || '';
         teacherIdInput.value = activeCourse.teacher.id || '';
-        checkTeacherFormValidity();
+        window.checkTeacherFormValidity();
     }
 
     function showDeleteTeacherConfirmation() {
-        showConfirmationModal(
+        window.showConfirmationModal(
             'Confirm Delete Teacher Info',
             'Are you sure you want to delete teacher information for this course? This action cannot be undone.',
-            deleteTeacherInfo
+            window.deleteTeacherInfo
         );
     }
 
     async function deleteTeacherInfo() {
         if (!activeCourse) return;
         activeCourse.teacher = {};
-        await saveData();
-        showToast('Teacher information deleted!', 'success');
-        renderTeacherInfoSection();
-        updateMainContentState();
+        await window.saveData();
+        window.showToast('Teacher information deleted!', 'success');
+        window.renderTeacherInfoSection();
+        window.updateMainContentState();
     }
 
     async function resetCourseData() {
         if (!activeCourse) return;
+        const db = window.db;
+        const userId = window.userId;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // Re-get appId for consistency
+
         const courseIdentifier = `${activeCourse.subject} (${activeCourse.gradeLevel}/${activeCourse.room}) - ${activeCourse.academicYear} ${activeCourse.semester}`;
-        
+
         if (db && userId) {
             try {
-                const courseRef = doc(db, 'artifacts', appId, 'public', 'courses', activeCourse.id);
-                await deleteDoc(courseRef);
+                const courseRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'courses', activeCourse.id);
+                await window.deleteDoc(courseRef);
 
-                const studentsColRef = collection(db, 'artifacts', appId, 'public', 'students');
-                const q = query(studentsColRef, where('gradeLevel', '==', activeCourse.gradeLevel), where('room', '==', activeCourse.room));
-                const querySnapshot = await getDocs(q);
+                const studentsColRef = window.collection(db, 'artifacts', appId, 'public', 'data', 'students');
+                const q = window.query(studentsColRef, window.where('gradeLevel', '==', activeCourse.gradeLevel), window.where('room', '==', activeCourse.room));
+                const querySnapshot = await window.getDocs(q);
                 for (const studentDoc of querySnapshot.docs) {
                     const studentData = studentDoc.data();
                     if (studentData.scores && studentData.scores[activeCourse.id]) {
                         delete studentData.scores[activeCourse.id];
-                        await setDoc(studentDoc.ref, studentData, { merge: true });
+                        await window.setDoc(studentDoc.ref, studentData, { merge: true });
                     }
                 }
             } catch (e) {
                 console.error("Error resetting course data in Firestore:", e);
-                showToast('ข้อผิดพลาดในการรีเซ็ตข้อมูลวิชาในฐานข้อมูล.', 'error');
+                window.showToast('ข้อผิดพลาดในการรีเซ็ตข้อมูลวิชาในฐานข้อมูล.', 'error');
             }
         } else {
             students.forEach(s => {
@@ -1277,14 +1376,14 @@
                 }
             });
         }
-        
+
         activeCourse.assessmentComponents = [];
         activeCourse.teacher = {};
         courses = courses.filter(c => c.id !== activeCourse.id);
         students = students.filter(s => !(s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room));
 
-        await saveData();
-        showToast(`All data for course "${courseIdentifier}" has been reset!`, 'success');
+        await window.saveData();
+        window.showToast(`All data for course "${courseIdentifier}" has been reset!`, 'success');
 
         activeCourse = null;
         selectedAssessmentComponent = null;
@@ -1296,10 +1395,10 @@
         selectedAcademicYear = '';
         selectedSemester = '';
         document.getElementById('course-selection-status').classList.add('hidden');
-        renderTeacherInfoSection();
-        renderAssessmentComponents();
-        updateCategoryManagementSectionState();
-        renderAll();
+        window.renderTeacherInfoSection();
+        window.renderAssessmentComponents();
+        window.updateCategoryManagementSectionState();
+        window.renderAll();
     }
 
     // --- NEW: ASSESSMENT COMPONENT LOGIC ---
@@ -1338,15 +1437,15 @@
                         <input type="text" value="${component.name}" class="grading-period-name-input flex-grow p-2">
                         <input type="number" value="${component.weight}" class="grading-period-weight-input w-20 p-2 text-center">
                         <span class="text-slate-400">%</span>
-                        <button onclick="saveAssessmentComponentChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
-                        <button onclick="cancelEditAssessmentComponent()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
+                        <button onclick="window.saveAssessmentComponentChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
+                        <button onclick="window.cancelEditAssessmentComponent()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
                     </div>`;
             } else {
                 return `
                     <div class="flex items-center gap-2 p-2 rounded-md border card">
                         <span class="flex-grow font-medium">${component.name} (${component.weight}%)</span>
-                        <button onclick="startEditAssessmentComponent(${index})" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
-                        <button onclick="showDeleteAssessmentComponentConfirmation(${index})" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
+                        <button onclick="window.startEditAssessmentComponent(${index})" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
+                        <button onclick="window.showDeleteAssessmentComponentConfirmation(${index})" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
                     </div>`;
             }
         }).join('');
@@ -1356,8 +1455,8 @@
             `<option value="${component.id}" ${component.id === currentSelectedComponentId ? 'selected' : ''}>${component.name}</option>`
         ).join('');
 
-        updateTotalAssessmentComponentWeightDisplay();
-        updateCategoryManagementSectionState();
+        window.updateTotalAssessmentComponentWeightDisplay();
+        window.updateCategoryManagementSectionState();
     }
 
     async function addGradingPeriod() {
@@ -1367,25 +1466,25 @@
         const name = nameInput.value.trim();
         const weight = parseFloat(weightInput.value);
 
-        if (!name || isNaN(weight) || weight <= 0) { showToast('Please enter a valid component name and weight.', 'error'); return; }
-        if (activeCourse.assessmentComponents.some(p => p.name.toLowerCase() === name.toLowerCase())) { showToast('Assessment component name already exists.', 'error'); return; }
+        if (!name || isNaN(weight) || weight <= 0) { window.showToast('Please enter a valid component name and weight.', 'error'); return; }
+        if (activeCourse.assessmentComponents.some(p => p.name.toLowerCase() === name.toLowerCase())) { window.showToast('Assessment component name already exists.', 'error'); return; }
         const totalWeight = activeCourse.assessmentComponents.reduce((sum, p) => sum + p.weight, 0);
-        if (totalWeight + weight > 100) { showToast('Total component weight cannot exceed 100%.', 'error'); return; }
+        if (totalWeight + weight > 100) { window.showToast('Total component weight cannot exceed 100%.', 'error'); return; }
 
         activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] });
         nameInput.value = '';
         weightInput.value = '';
-        await saveData();
-        renderAssessmentComponents();
-        selectGradingPeriod();
-        renderAll();
+        await window.saveData();
+        window.renderAssessmentComponents();
+        window.selectGradingPeriod();
+        window.renderAll();
     }
 
     function startEditAssessmentComponent(index) {
-        if (editingAssessmentComponentIndex !== -1) { showToast('Please save or cancel the current component edit first.', 'error'); return; }
+        if (editingAssessmentComponentIndex !== -1) { window.showToast('Please save or cancel the current component edit first.', 'error'); return; }
         editingAssessmentComponentIndex = index;
         originalAssessmentComponentState = JSON.parse(JSON.stringify(activeCourse.assessmentComponents[index]));
-        renderAssessmentComponents();
+        window.renderAssessmentComponents();
     }
 
     function cancelEditAssessmentComponent() {
@@ -1394,7 +1493,7 @@
         }
         editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
-        renderAssessmentComponents();
+        window.renderAssessmentComponents();
     }
 
     async function saveAssessmentComponentChanges(index) {
@@ -1402,10 +1501,10 @@
         const newName = componentElement.querySelector('.grading-period-name-input').value.trim();
         const newWeight = parseFloat(componentElement.querySelector('.grading-period-weight-input').value);
 
-        if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid component name or weight.', 'error'); return; }
-        if (activeCourse.assessmentComponents.some((p, i) => i !== index && p.name.toLowerCase() === newName.toLowerCase())) { showToast('Assessment component name already exists.', 'error'); return; }
+        if (!newName || isNaN(newWeight) || newWeight < 0) { window.showToast('Invalid component name or weight.', 'error'); return; }
+        if (activeCourse.assessmentComponents.some((p, i) => i !== index && p.name.toLowerCase() === newName.toLowerCase())) { window.showToast('Assessment component name already exists.', 'error'); return; }
         const totalWeight = activeCourse.assessmentComponents.reduce((sum, p, i) => sum + (i === index ? newWeight : p.weight), 0);
-        if (totalWeight > 100) { showToast('Total component weight exceeds 100%.', 'error'); return; }
+        if (totalWeight > 100) { window.showToast('Total component weight exceeds 100%.', 'error'); return; }
 
         if (newName !== originalAssessmentComponentState.name) {
             students.forEach(s => {
@@ -1420,18 +1519,18 @@
         activeCourse.assessmentComponents[index].weight = newWeight;
         editingAssessmentComponentIndex = -1;
         originalAssessmentComponentState = null;
-        await saveData();
-        showToast('Assessment component changes saved!', 'success');
-        renderAssessmentComponents();
-        renderAll();
+        await window.saveData();
+        window.showToast('Assessment component changes saved!', 'success');
+        window.renderAssessmentComponents();
+        window.renderAll();
     }
 
     function showDeleteAssessmentComponentConfirmation(index) {
         const componentName = activeCourse.assessmentComponents[index].name;
-        showConfirmationModal(
+        window.showConfirmationModal(
             'Confirm Delete Assessment Component',
             `Are you sure you want to delete the assessment component "${componentName}"? All categories and associated scores within this component will be removed. This action cannot be undone.`,
-            () => deleteAssessmentComponent(index)
+            () => window.deleteAssessmentComponent(index)
         );
     }
 
@@ -1447,16 +1546,16 @@
         });
 
         activeCourse.assessmentComponents.splice(index, 1);
-        await saveData();
-        showToast(`Assessment component "${componentName}" removed.`, 'success');
+        await window.saveData();
+        window.showToast(`Assessment component "${componentName}" removed.`, 'success');
 
         if (selectedAssessmentComponent && selectedAssessmentComponent.id === componentIdToDelete) {
             selectedAssessmentComponent = null;
             document.getElementById('select-grading-period').value = '';
         }
-        renderAssessmentComponents();
-        updateCategoryManagementSectionState();
-        renderAll();
+        window.renderAssessmentComponents();
+        window.updateCategoryManagementSectionState();
+        window.renderAll();
     }
 
     function selectGradingPeriod() {
@@ -1477,9 +1576,9 @@
             currentComponentNameSpan.textContent = 'Selected Assessment Component';
         }
         statusDiv.classList.remove('hidden');
-        updateCategoryManagementSectionState();
-        renderCategories();
-        renderAll();
+        window.updateCategoryManagementSectionState();
+        window.renderCategories();
+        window.renderAll();
     }
 
     function updateCategoryManagementSectionState() {
@@ -1492,7 +1591,7 @@
             categoryManagementSection.classList.add('disabled-section');
             categoryManagementOverlay.classList.remove('hidden');
         }
-        updateTotalCategoryWeightDisplay();
+        window.updateTotalCategoryWeightDisplay();
     }
 
     // --- CATEGORY LOGIC (now nested under selectedAssessmentComponent) ---
@@ -1527,16 +1626,16 @@
                             <input type="text" value="${cat.name}" class="category-name-input flex-grow p-2">
                             <input type="number" value="${cat.weight}" class="category-weight-input w-20 p-2 text-center">
                             <span class="text-slate-400">%</span>
-                            <button onclick="saveCategoryChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
-                            <button onclick="cancelEditCategory()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
+                            <button onclick="window.saveCategoryChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
+                            <button onclick="window.cancelEditCategory()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
                         </summary>
                         <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
                             <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
-                            <div id="sub-items-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
+                            <div id="sub-items-${index}" class="space-y-2 mb-4">${window.renderSubItems(index)}</div>
                             <div class="flex items-center gap-2">
                                 <input type="text" id="new-sub-item-name-${index}" placeholder="Sub-item name" class="flex-grow p-2">
                                 <input type="number" id="new-sub-item-max-score-${index}" placeholder="Max Score" class="w-24 p-2">
-                                <button onclick="addSubItem(${index})" class="bg-blue-500 text-white px-3 py-2 rounded-md">Add</button>
+                                <button onclick="window.addSubItem(${index})" class="bg-blue-500 text-white px-3 py-2 rounded-md">Add</button>
                             </div>
                         </div>
                     </details>`;
@@ -1545,17 +1644,17 @@
                     <details class="p-3 rounded-md shadow-sm border card">
                         <summary class="flex items-center gap-4 cursor-pointer font-medium text-lg">
                             <span class="flex-grow">${cat.name} (${cat.weight}%)</span>
-                            <button onclick="startEditCategory(${index})" class="bg-yellow-500 text-white px-3 py-2 rounded-md text-sm">Edit</button>
-                            <button onclick="showDeleteCategoryConfirmation(${index})" class="bg-red-500 text-white px-3 py-2 rounded-md text-sm">Delete</button>
+                            <button onclick="window.startEditCategory(${index})" class="bg-yellow-500 text-white px-3 py-2 rounded-md text-sm">Edit</button>
+                            <button onclick="window.showDeleteCategoryConfirmation(${index})" class="bg-red-500 text-white px-3 py-2 rounded-md text-sm">Delete</button>
                         </summary>
                         <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
                             <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
-                            <div id="sub-items-readonly-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
+                            <div id="sub-items-readonly-${index}" class="space-y-2 mb-4">${window.renderSubItems(index)}</div>
                         </div>
                     </details>`;
             }
         }).join('');
-        updateTotalCategoryWeightDisplay();
+        window.updateTotalCategoryWeightDisplay();
     }
 
     function renderSubItems(catIndex) {
@@ -1566,15 +1665,15 @@
         return cat.subItems.map((sub, subIndex) => {
             if (isEditing) {
                 return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
-                            <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
-                            <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
-                            <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
-                        </div>`;
+                                <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
+                                <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
+                                <button onclick="window.removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
+                            </div>`;
             } else {
                 return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
-                            <span class="flex-grow text-sm">${sub.name}</span>
-                            <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} pts</span>
-                        </div>`;
+                                <span class="flex-grow text-sm">${sub.name}</span>
+                                <span class="text-slate-400 text-sm">${window.formatNumber(sub.maxScore)} pts</span>
+                            </div>`;
             }
         }).join('');
     }
@@ -1586,22 +1685,22 @@
         const name = nameInput.value.trim();
         const weight = parseFloat(weightInput.value);
 
-        if (!name || isNaN(weight) || weight <= 0) { showToast('Please enter a valid name and weight.', 'error'); return; }
-        if (selectedAssessmentComponent.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
+        if (!name || isNaN(weight) || weight <= 0) { window.showToast('Please enter a valid name and weight.', 'error'); return; }
+        if (selectedAssessmentComponent.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) { window.showToast('Category name already exists in this component.', 'error'); return; }
         const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c) => sum + c.weight, 0);
-        if (totalWeight + weight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
+        if (totalWeight + weight > 100) { window.showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
 
         selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name, weight, subItems: [] });
         nameInput.value = '';
         weightInput.value = '';
-        await saveData();
-        renderCategories();
-        renderAll();
+        await window.saveData();
+        window.renderCategories();
+        window.renderAll();
     }
 
     async function handleCategoryCsvImport(event) {
         if (!selectedAssessmentComponent) {
-            showToast("Please select an Assessment Component first to import categories.", "error");
+            window.showToast("Please select an Assessment Component first to import categories.", "error");
             return;
         }
         const file = event.target.files[0];
@@ -1625,24 +1724,24 @@
                 if (existingIndex !== -1) {
                     const currentCategoryWeight = selectedAssessmentComponent.categories[existingIndex].weight;
                     if ((totalWeight - currentCategoryWeight + parsedWeight) > 100) {
-                        showToast(`Cannot update "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
+                        window.showToast(`Cannot update "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
                         skipped++;
                         return;
                     }
                     selectedAssessmentComponent.categories[existingIndex].weight = parsedWeight;
                     updated++;
                 } else if (totalWeight + parsedWeight > 100) {
-                    showToast(`Cannot add "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
+                    window.showToast(`Cannot add "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
                     skipped++;
                 } else {
                     selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name: categoryName, weight: parsedWeight, subItems: [] });
                     added++;
                 }
             });
-            await saveData();
-            renderCategories();
-            showToast(`Category import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
-            renderAll();
+            await window.saveData();
+            window.renderCategories();
+            window.showToast(`Category import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
+            window.renderAll();
         };
         reader.readAsText(file);
         event.target.value = '';
@@ -1650,10 +1749,10 @@
 
     function showDeleteCategoryConfirmation(index) {
         const categoryName = selectedAssessmentComponent.categories[index].name;
-        showConfirmationModal(
+        window.showConfirmationModal(
             'Confirm Delete Category',
             `Are you sure you want to delete the category "${categoryName}"? All associated scores for this category will be removed from all students. This action cannot be undone.`,
-            () => removeCategory(index)
+            () => window.removeCategory(index)
         );
     }
 
@@ -1666,17 +1765,17 @@
                 delete s.scores[activeCourse.id][selectedAssessmentComponent.name][catName];
             }
         });
-        await saveData();
-        renderCategories();
-        showToast(`Category "${catName}" removed.`, 'success');
-        renderAll();
+        await window.saveData();
+        window.renderCategories();
+        window.showToast(`Category "${catName}" removed.`, 'success');
+        window.renderAll();
     }
 
     function startEditCategory(index) {
-        if (editingCategoryIndex !== -1) { showToast('Please save or cancel the current edit first.', 'error'); return; }
+        if (editingCategoryIndex !== -1) { window.showToast('Please save or cancel the current edit first.', 'error'); return; }
         editingCategoryIndex = index;
         originalCategoryState = JSON.parse(JSON.stringify(selectedAssessmentComponent.categories[index]));
-        renderCategories();
+        window.renderCategories();
     }
 
     function cancelEditCategory() {
@@ -1685,7 +1784,7 @@
         }
         editingCategoryIndex = -1;
         originalCategoryState = null;
-        renderCategories();
+        window.renderCategories();
     }
 
     async function saveCategoryChanges(index) {
@@ -1693,10 +1792,10 @@
         const newName = catElement.querySelector('.category-name-input').value.trim();
         const newWeight = parseFloat(catElement.querySelector('.category-weight-input').value);
 
-        if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid name or weight.', 'error'); return; }
-        if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name.toLowerCase() === newName.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
+        if (!newName || isNaN(newWeight) || newWeight < 0) { window.showToast('Invalid name or weight.', 'error'); return; }
+        if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name.toLowerCase() === newName.toLowerCase())) { window.showToast('Category name already exists in this component.', 'error'); return; }
         const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c, i) => sum + (i === index ? newWeight : c.weight), 0);
-        if (totalWeight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
+        if (totalWeight > 100) { window.showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
 
         const newSubItems = [];
         const subItemElements = catElement.querySelectorAll(`#sub-items-${index} > div`);
@@ -1707,7 +1806,7 @@
                 const existingSubItem = originalCategoryState.subItems?.find(sub => sub.name.toLowerCase() === subName.toLowerCase());
                 newSubItems.push({ id: existingSubItem ? existingSubItem.id : crypto.randomUUID(), name: subName, maxScore });
             } else if (subName && (isNaN(maxScore) || maxScore < 0)) {
-                showToast(`Invalid max score for sub-item "${subName}". Must be a number >= 0.`, 'error', 5000);
+                window.showToast(`Invalid max score for sub-item "${subName}". Must be a number >= 0.`, 'error', 5000);
             }
         });
 
@@ -1723,38 +1822,38 @@
         selectedAssessmentComponent.categories[index] = { ...originalCategoryState, name: newName, weight: newWeight, subItems: newSubItems };
         editingCategoryIndex = -1;
         originalCategoryState = null;
-        await saveData();
-        renderCategories();
-        showToast('Category changes saved!', 'success');
-        renderAll();
+        await window.saveData();
+        window.renderCategories();
+        window.showToast('Category changes saved!', 'success');
+        window.renderAll();
     }
 
     async function addSubItem(catIndex) {
         const name = document.getElementById(`new-sub-item-name-${catIndex}`).value.trim();
         const maxScore = parseFloat(document.getElementById(`new-sub-item-max-score-${catIndex}`).value);
-        if (!name || isNaN(maxScore) || maxScore < 0) { showToast('Invalid sub-item name or max score (must be >= 0).', 'error'); return; }
+        if (!name || isNaN(maxScore) || maxScore < 0) { window.showToast('Invalid sub-item name or max score (must be >= 0).', 'error'); return; }
 
         const cat = selectedAssessmentComponent.categories[catIndex];
         if (!cat.subItems) cat.subItems = [];
         if (cat.subItems.some(sub => sub.name.toLowerCase() === name.toLowerCase())) {
-            showToast('Sub-item name already exists in this category.', 'error');
+            window.showToast('Sub-item name already exists in this category.', 'error');
             return;
         }
 
         cat.subItems.push({ id: crypto.randomUUID(), name, maxScore });
 
-        document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
+        document.getElementById(`sub-items-${catIndex}`).innerHTML = window.renderSubItems(catIndex);
         document.getElementById(`new-sub-item-name-${catIndex}`).value = '';
         document.getElementById(`new-sub-item-max-score-${catIndex}`).value = '';
-        await saveData();
-        renderAll();
+        await window.saveData();
+        window.renderAll();
     }
 
     async function removeSubItem(catIndex, subIndex) {
         selectedAssessmentComponent.categories[catIndex].subItems.splice(subIndex, 1);
-        document.getElementById(`sub-items-${catIndex}`).innerHTML = renderSubItems(catIndex);
-        await saveData();
-        renderAll();
+        document.getElementById(`sub-items-${catIndex}`).innerHTML = window.renderSubItems(catIndex);
+        await window.saveData();
+        window.renderAll();
     }
 
 
@@ -1773,55 +1872,59 @@
         const studentId = document.getElementById('new-student-id').value.trim();
         const rollNumber = document.getElementById('new-student-roll-number').value.trim();
 
-        if (students.some(s => s.studentId === studentId)) { showToast('Student ID already exists in the system. Please use a unique ID.', 'error'); return; }
+        if (students.some(s => s.studentId === studentId)) { window.showToast('Student ID already exists in the system. Please use a unique ID.', 'error'); return; }
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
-        if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { showToast('Roll Number already exists for another student in this class.', 'error'); return; }
+        if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { window.showToast('Roll Number already exists for another student in this class.', 'error'); return; }
 
         students.push({ realName, nickname, studentId, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room, scores: {} });
 
         ['new-student-real-name', 'new-student-nickname', 'new-student-id', 'new-student-roll-number'].forEach(id => document.getElementById(id).value = '');
-        checkAddStudentFormValidity();
-        await saveData();
-        renderStudents();
-        showToast(`${realName} has been added.`, 'success');
-        renderAll();
+        window.checkAddStudentFormValidity();
+        await window.saveData();
+        window.renderStudents();
+        window.showToast(`${realName} has been added.`, 'success');
+        window.renderAll();
     }
 
     function showDeleteStudentConfirmation(studentId) {
         const student = students.find(s => s.studentId === studentId);
         if (!student) return;
-        showConfirmationModal(
+        window.showConfirmationModal(
             'Confirm Delete Student',
             `Are you sure you want to delete student "${student.realName}" (ID: ${student.studentId})? All their scores will be removed. This action cannot be undone.`,
-            () => removeStudent(studentId)
+            () => window.removeStudent(studentId)
         );
     }
 
     async function removeStudent(studentId) {
+        const db = window.db;
+        const userId = window.userId;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; // Re-get appId for consistency
+
         if (db && userId) {
             try {
-                const studentRef = doc(db, 'artifacts', appId, 'public', 'students', studentId);
-                await deleteDoc(studentRef);
+                const studentRef = window.doc(db, 'artifacts', appId, 'public', 'data', 'students', studentId);
+                await window.deleteDoc(studentRef);
             } catch (e) {
                 console.error("Error deleting student from Firestore:", e);
-                showToast('ข้อผิดพลาดในการลบนักเรียนจากฐานข้อมูล.', 'error');
+                window.showToast('ข้อผิดพลาดในการลบนักเรียนจากฐานข้อมูล.', 'error');
             }
         }
         students = students.filter(s => s.studentId !== studentId);
-        await saveData();
-        renderStudents();
-        showToast('Student removed.', 'success');
-        renderAll();
+        await window.saveData();
+        window.renderStudents();
+        window.showToast('Student removed.', 'success');
+        window.renderAll();
     }
 
     function startEditStudent(studentId) {
         if (editingStudentId) {
-            showToast('Please save or cancel the current student edit first.', 'error');
+            window.showToast('Please save or cancel the current student edit first.', 'error');
             return;
         }
         editingStudentId = studentId;
         originalStudentState = JSON.parse(JSON.stringify(students.find(s => s.studentId === studentId)));
-        renderStudents();
+        window.renderStudents();
     }
 
     function cancelEditStudent() {
@@ -1831,7 +1934,7 @@
         }
         editingStudentId = null;
         originalStudentState = null;
-        renderStudents();
+        window.renderStudents();
     }
 
     async function saveStudentChanges(studentId) {
@@ -1844,13 +1947,13 @@
         const newRollNumber = studentRow.querySelector('.edit-student-roll-number').value.trim();
 
         if (!newRealName || !newRollNumber) {
-            showToast('Student name and roll number cannot be empty.', 'error');
+            window.showToast('Student name and roll number cannot be empty.', 'error');
             return;
         }
 
         const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
         if (studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === newRollNumber)) {
-            showToast('Roll Number already exists for another student in this class.', 'error');
+            window.showToast('Roll Number already exists for another student in this class.', 'error');
             return;
         }
 
@@ -1860,10 +1963,10 @@
 
         editingStudentId = null;
         originalStudentState = null;
-        await saveData();
-        renderStudents();
-        showToast('Student details updated!', 'success');
-        renderAll();
+        await window.saveData();
+        window.renderStudents();
+        window.showToast('Student details updated!', 'success');
+        window.renderAll();
     }
 
     function renderStudents() {
@@ -1891,8 +1994,8 @@
                             <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="Roll No.">
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">Save</button>
-                            <button onclick="cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">Cancel</button>
+                            <button onclick="window.saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">Save</button>
+                            <button onclick="window.cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">Cancel</button>
                         </div>
                     </div>`;
             } else {
@@ -1903,8 +2006,8 @@
                             <p class="text-sm text-slate-500">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="startEditStudent('${s.studentId}')" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
-                            <button onclick="showDeleteStudentConfirmation('${s.studentId}')" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
+                            <button onclick="window.startEditStudent('${s.studentId}')" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
+                            <button onclick="window.showDeleteStudentConfirmation('${s.studentId}')" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
                         </div>
                     </div>`;
             }
@@ -1913,7 +2016,7 @@
 
     async function handleCsvImport(event) {
         if (!activeCourse) {
-            showToast("Please select a course first to import students.", "error");
+            window.showToast("Please select a course first to import students.", "error");
             return;
         }
         const file = event.target.files[0];
@@ -1938,15 +2041,15 @@
 
                 if (existingIndex !== -1) {
                     if (rollNumberExistsInCurrentClass && students[existingIndex].rollNumber !== rollNumber) {
-                         showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping update for ${realName} (ID: ${studentId}).`, 'error', 5000);
-                         skipped++;
-                         continue;
+                           window.showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping update for ${realName} (ID: ${studentId}).`, 'error', 5000);
+                           skipped++;
+                           continue;
                     }
                     const existingStudent = students[existingIndex];
                     Object.assign(existingStudent, { realName, nickname, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room });
                     updated++;
                 } else if (rollNumberExistsInCurrentClass || studentIdExistsWithDifferentRollInSameClass) {
-                    showToast(`Conflict: Student with Roll Number ${rollNumber} or Student ID ${studentId} already exists in this class with a different entry. Skipping import for ${realName}.`, 'error', 7000);
+                    window.showToast(`Conflict: Student with Roll Number ${rollNumber} or Student ID ${studentId} already exists in this class with a different entry. Skipping import for ${realName}.`, 'error', 7000);
                     skipped++;
                 }
                 else {
@@ -1954,10 +2057,10 @@
                     added++;
                 }
             }
-            await saveData();
-            renderStudents();
-            showToast(`Import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
-            renderAll();
+            await window.saveData();
+            window.renderStudents();
+            window.showToast(`Import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
+            window.renderAll();
         };
         reader.readAsText(file);
         event.target.value = '';
@@ -1966,12 +2069,12 @@
     // --- NEW: EXPORT TO CSV ---
     function exportScoresToCsv() {
         if (!activeCourse || students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room).length === 0) {
-            showToast("No student data to export for this course.", "error");
+            window.showToast("No student data to export for this course.", "error");
             return;
         }
 
         const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room)
-                                         .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10));
+                                             .sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10));
 
         let csvContent = "data:text/csv;charset=utf-8,";
 
@@ -2008,7 +2111,7 @@
                     }
                 });
             });
-            const { finalScore, grade } = calculateFinalScoreAndGrade(student, activeCourse);
+            const { finalScore, grade } = window.calculateFinalScoreAndGrade(student, activeCourse);
             row.push(finalScore, `"${grade}"`);
             csvContent += row.join(",") + "\r\n";
         });
@@ -2020,7 +2123,7 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        showToast("Scores exported successfully!", "success");
+        window.showToast("Scores exported successfully!", "success");
     }
 
     // --- SCORE CALCULATION & RENDERING ---
@@ -2061,7 +2164,7 @@
             }
 
             component.categories.forEach(cat => {
-                const { current, max } = getCategoryScores(student, component.name, cat, activeCourse);
+                const { current, max } = window.getCategoryScores(student, component.name, cat, activeCourse);
                 if (max > 0) {
                     const categoryPercentage = (current / max);
                     totalComponentScore += categoryPercentage * cat.weight;
@@ -2133,11 +2236,11 @@
                 student.scores[activeCourse.id][componentName][catName] = 0;
             }
         } else if (isNaN(score) || score < 0 || score > maxScore) {
-            showToast(`Score must be between 0 and ${formatNumber(maxScore)}.`, 'error');
+            window.showToast(`Score must be between 0 and ${window.formatNumber(maxScore)}.`, 'error');
             const currentInput = document.querySelector(`input[onchange*='${studentId}'][onchange*='${componentName}'][onchange*='${catName}'][onchange*='${subId || 'null'}']`);
             if (currentInput) {
                 if (subId) {
-                    currentInput.value = student.scores[activeCourse.id]?.[componentName]?.[catName]?.[subId] || '';
+                    currentInput.value = student.scores[activeCourse.id]?.[componentName]?.[cat.name]?.[sub.id] || '';
                 } else {
                     currentInput.value = student.scores[activeCourse.id]?.[componentName]?.[cat.name] || '';
                 }
@@ -2155,7 +2258,7 @@
             }
         }
 
-        await saveData();
+        await window.saveData();
 
         const scoreTableBody = document.querySelector('#score-input-table tbody');
         let studentRow = null;
@@ -2180,9 +2283,9 @@
                     if (comp.name === componentName && cat.name === catName) {
                         const categoryTotalCell = studentRow.children[1 + currentCategoryColIndex + (cat.subItems?.length || 0)];
                         if (categoryTotalCell) {
-                            const { current, max } = getCategoryScores(student, componentName, category, activeCourse);
+                            const { current, max } = window.getCategoryScores(student, componentName, category, activeCourse);
                             const percentage = max > 0 ? Math.round((current / max) * 100) : 0;
-                            categoryTotalCell.innerHTML = `${formatNumber(current)}<br>(${percentage}%)`;
+                            categoryTotalCell.innerHTML = `${window.formatNumber(current)}<br>(${percentage}%)`;
                         }
                         foundCategory = true;
                     }
@@ -2192,12 +2295,12 @@
             });
 
 
-            const { finalScore, grade } = calculateFinalScoreAndGrade(student, activeCourse);
+            const { finalScore, grade } = window.calculateFinalScoreAndGrade(student, activeCourse);
             const finalScoreCell = studentRow.querySelector('.final-score-cell');
             const finalGradeCell = studentRow.querySelector('.final-grade-cell');
 
             if (finalScoreCell && finalGradeCell) {
-                finalScoreCell.textContent = formatNumber(finalScore);
+                finalScoreCell.textContent = window.formatNumber(finalScore);
                 finalGradeCell.textContent = grade;
             }
         }
@@ -2256,10 +2359,10 @@
         activeCourse.assessmentComponents.forEach((component, componentIndex) => {
             component.categories.forEach((cat, catIndex) => {
                 if (cat.subItems && cat.subItems.length > 0) {
-                    cat.subItems.forEach(sub => tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${sub.name} (${formatNumber(sub.maxScore)})</th>`);
+                    cat.subItems.forEach(sub => tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${sub.name} (${window.formatNumber(sub.maxScore)})</th>`);
                     tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`;
                 } else {
-                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Score (${formatNumber(100)})</th>`;
+                    tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Score (${window.formatNumber(100)})</th>`;
                     tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`;
                 }
             });
@@ -2267,36 +2370,36 @@
         tableHTML += `</tr></thead><tbody>`;
 
         studentsInClass.sort((a, b) => parseInt(a.rollNumber, 10) - parseInt(b.rollNumber, 10)).forEach(s => {
-            const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
+            const { finalScore, grade } = window.calculateFinalScoreAndGrade(s, activeCourse);
             tableHTML += `<tr class="hover:bg-slate-800"><td class="sticky-col p-2 border border-slate-600 text-left font-medium">
-                        <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                        <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
-                    </td>`;
+                                <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
+                                <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
+                            </td>`;
             activeCourse.assessmentComponents.forEach(component => {
                 component.categories.forEach(cat => {
-                    const catScores = getCategoryScores(s, component.name, cat, activeCourse);
+                    const catScores = window.getCategoryScores(s, component.name, cat, activeCourse);
                     const categoryPercentage = (catScores.max > 0 ? (catScores.current / catScores.max) * 100 : 0);
 
                     if (cat.subItems && cat.subItems.length > 0) {
                         cat.subItems.forEach(sub => {
                             const subScore = s.scores[activeCourse.id]?.[component.name]?.[cat.name]?.[sub.id] || '';
-                            tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${subScore}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', '${sub.id}', this.value)" min="0" max="${sub.maxScore}"></td>`;
+                            tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${subScore}" onchange="window.updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', '${sub.id}', this.value)" min="0" max="${sub.maxScore}"></td>`;
                         });
                         tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium category-total-cell">
-                                ${formatNumber(catScores.current)}<br>(${Math.round(categoryPercentage)}%)
+                                ${window.formatNumber(catScores.current)}<br>(${Math.round(categoryPercentage)}%)
                             </td>`;
                     } else {
                         const score = s.scores[activeCourse.id]?.[component.name]?.[cat.name] || '';
                         const currentScore = parseFloat(score || 0);
                         const singleCategoryPercentage = (100 > 0 ? (currentScore / 100) * 100 : 0);
-                        tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${score}" onchange="updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', null, this.value)" min="0" max="100"></td>`;
+                        tableHTML += `<td class="p-1 border border-slate-600"><input type="number" class="w-full p-1 text-center score-input bg-slate-800" value="${score}" onchange="window.updateSubScore('${s.studentId}', '${component.name}', '${cat.name}', null, this.value)" min="0" max="100"></td>`;
                         tableHTML += `<td class="p-2 border border-slate-600 text-center font-medium category-total-cell">
-                                ${formatNumber(currentScore)}<br>(${Math.round(singleCategoryPercentage)}%)
+                                ${window.formatNumber(currentScore)}<br>(${Math.round(singleCategoryPercentage)}%)
                             </td>`;
                     }
                 });
             });
-            tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold final-score-cell">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold final-grade-cell">${grade}</td></tr>`;
+            tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold final-score-cell">${window.formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold final-grade-cell">${grade}</td></tr>`;
         });
 
         tableHTML += `</tbody></table>`;
@@ -2344,8 +2447,8 @@
         });
         tableHTML += `<th class="p-2 border border-slate-600">Final Score</th><th class="p-2 border border-slate-600">Final Grade</th></tr></thead><tbody>`;
 
-        studentsInClass.sort((a,b) => parseFloat(calculateFinalScoreAndGrade(b, activeCourse).finalScore) - parseFloat(calculateFinalScoreAndGrade(a, activeCourse).finalScore)).forEach(s => {
-            const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
+        studentsInClass.sort((a,b) => parseFloat(window.calculateFinalScoreAndGrade(b, activeCourse).finalScore) - parseFloat(window.calculateFinalScoreAndGrade(a, activeCourse).finalScore)).forEach(s => {
+            const { finalScore, grade } = window.calculateFinalScoreAndGrade(s, activeCourse);
             let rowBgClass = '';
             let detailsButtonText = 'View Details';
             let detailsButtonClass = 'bg-indigo-700 hover:bg-indigo-600';
@@ -2365,10 +2468,10 @@
             }
 
             tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 font-medium">
-                        <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                        <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
-                        <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
-                    </td>`;
+                                <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
+                                <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
+                                <button onclick="window.showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
+                            </td>`;
             activeCourse.assessmentComponents.forEach(component => {
                 let componentCurrentScore = 0;
                 let componentMaxWeight = 0;
@@ -2378,21 +2481,21 @@
                     return;
                 }
                 component.categories.forEach(cat => {
-                    const { current, max } = getCategoryScores(s, component.name, cat, activeCourse);
+                    const { current, max } = window.getCategoryScores(s, component.name, cat, activeCourse);
                     if (max > 0) {
                         componentCurrentScore += (current / max) * cat.weight;
                     }
                     componentMaxWeight += cat.weight;
                 });
                 const componentPercentage = componentMaxWeight > 0 ? (componentCurrentScore / componentMaxWeight) * 100 : 0;
-                tableHTML += `<td class="p-2 border border-slate-600 text-center">${formatNumber(componentPercentage)}%</td>`;
+                tableHTML += `<td class="p-2 border border-slate-600 text-center">${window.formatNumber(componentPercentage)}%</td>`;
             });
-            tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold">${grade}</td></tr>`;
+            tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold">${window.formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold">${grade}</td></tr>`;
         });
         tableHTML += `</tbody></table>`;
         container.innerHTML = tableHTML;
 
-        renderAdvancedDashboard(studentsInClass);
+        window.renderAdvancedDashboard(studentsInClass);
     }
 
     function renderAdvancedDashboard(studentsInClass) {
@@ -2404,10 +2507,10 @@
         let counts = { excellent: 0, average: 0, improvement: 0 };
 
         studentsInClass.forEach(s => {
-            const { finalScore } = calculateFinalScoreAndGrade(s, activeCourse);
+            const { finalScore } = window.calculateFinalScoreAndGrade(s, activeCourse);
             const score = parseFloat(finalScore);
             const li = document.createElement('li');
-            li.textContent = `${s.realName} (${formatNumber(score)}%)`;
+            li.textContent = `${s.realName} (${window.formatNumber(score)}%)`;
             if (score >= 70) {
                 excellentUl.appendChild(li);
                 counts.excellent++;
@@ -2494,7 +2597,7 @@
             let gradeCounts = { 'A+': 0, 'A': 0, 'A-': 0, 'B+': 0, 'B': 0, 'B-': 0, 'C+': 0, 'C': 0, 'C-': 0, 'D': 0, 'F': 0, 'N/A': 0 };
 
             studentsInThisCourse.forEach(s => {
-                const { finalScore, grade } = calculateFinalScoreAndGrade(s, course);
+                const { finalScore, grade } = window.calculateFinalScoreAndGrade(s, course);
                 const score = parseFloat(finalScore);
                 if (grade !== 'N/A' && !isNaN(score)) {
                     totalCourseScore += score;
@@ -2508,8 +2611,8 @@
             });
 
             const averageCourseScore = gradedStudentsCount > 0 ? (totalCourseScore / gradedStudentsCount) : 'N/A';
-            const displayHighestScore = gradedStudentsCount > 0 ? formatNumber(highestScoreInClass) : 'N/A';
-            const displayLowestScore = gradedStudentsCount > 0 ? formatNumber(lowestScoreInClass) : 'N/A';
+            const displayHighestScore = gradedStudentsCount > 0 ? window.formatNumber(highestScoreInClass) : 'N/A';
+            const displayLowestScore = gradedStudentsCount > 0 ? window.formatNumber(lowestScoreInClass) : 'N/A';
             const scoreEntryProgress = courseTotalPossibleEntries > 0 ? (courseFilledEntries / courseTotalPossibleEntries) * 100 : 0;
 
 
@@ -2519,7 +2622,7 @@
                     <p class="text-slate-400 mb-4">Teacher: ${teacherName}</p>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                         <div><p class="text-sm text-slate-400">Students</p><p class="text-2xl font-bold text-white">${studentsInThisCourse.length}</p></div>
-                        <div><p class="text-sm text-slate-400">Avg. Score</p><p class="text-lg font-bold">${formatNumber(averageCourseScore)}%</p></div>
+                        <div><p class="text-sm text-slate-400">Avg. Score</p><p class="text-lg font-bold">${window.formatNumber(averageCourseScore)}%</p></div>
                         <div><p class="text-sm text-blue-300">Highest</p><p class="text-lg font-bold">${displayHighestScore}%</p></div>
                         <div><p class="text-sm text-purple-300">Lowest</p><p class="text-lg font-bold">${displayLowestScore}%</p></div>
                         <div class="col-span-full mt-2">
@@ -2536,7 +2639,7 @@
                                 Excellent Students (${gradeCounts['A+'] + gradeCounts['A'] + gradeCounts['A-'] + gradeCounts['B+'] + gradeCounts['B']}) <span class="summary-arrow">▶</span>
                             </summary>
                             <ul class="mt-2 text-sm text-green-400 list-disc list-inside">
-                                ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) >= 70).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
+                                ${studentsInThisCourse.filter(s => parseFloat(window.calculateFinalScoreAndGrade(s, course).finalScore) >= 70).map(s => `<li>${s.realName} (${window.formatNumber(window.calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
                             </ul>
                         </details>
                         <details class="p-2 bg-yellow-900/50 rounded-lg">
@@ -2544,7 +2647,7 @@
                                 Average Students (${gradeCounts['C+'] + gradeCounts['C'] + gradeCounts['C-'] + gradeCounts['B-']}) <span class="summary-arrow">▶</span>
                             </summary>
                             <ul class="mt-2 text-sm text-yellow-400 list-disc list-inside">
-                                ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) >= 50 && parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 70).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
+                                ${studentsInThisCourse.filter(s => parseFloat(window.calculateFinalScoreAndGrade(s, course).finalScore) >= 50 && parseFloat(window.calculateFinalScoreAndGrade(s, course).finalScore) < 70).map(s => `<li>${s.realName} (${window.formatNumber(window.calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
                             </ul>
                         </details>
                         <details class="p-2 bg-red-900/50 rounded-lg">
@@ -2552,7 +2655,7 @@
                                 Needs Improvement Students (${gradeCounts['D'] + gradeCounts['F'] + gradeCounts['N/A']}) <span class="summary-arrow">▶</span>
                             </summary>
                             <ul class="mt-2 text-sm text-red-400 list-disc list-inside">
-                                ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 50 || isNaN(parseFloat(calculateFinalScoreAndGrade(s, course).finalScore))).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
+                                ${studentsInThisCourse.filter(s => parseFloat(window.calculateFinalScoreAndGrade(s, course).finalScore) < 50 || isNaN(parseFloat(window.calculateFinalScoreAndGrade(s, course).finalScore))).map(s => `<li>${s.realName} (${window.formatNumber(window.calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
                             </ul>
                         </details>
                     </div>
@@ -2587,7 +2690,7 @@
         document.getElementById('summary-section').classList.toggle('hidden', tabName !== 'summary');
         document.getElementById('score-entry-tab').classList.toggle('active', tabName === 'score-entry');
         document.getElementById('summary-tab').classList.toggle('active', tabName === 'summary');
-        renderAll();
+        window.renderAll();
     }
 
     function renderAll() {
@@ -2622,61 +2725,61 @@
             if (totalCatWeightSpan) totalCatWeightSpan.textContent = '0';
             if (catWarningDiv) catWarningDiv.classList.add('hidden');
 
-            renderTeacherInfoSection();
-            updateCategoryManagementSectionState();
+            window.renderTeacherInfoSection();
+            window.updateCategoryManagementSectionState();
 
             return;
         }
 
         console.log("activeCourse is valid. Proceeding with rendering sections.");
 
-        renderCategories();
-        renderStudents();
-        renderTeacherInfoSection();
-        renderAssessmentComponents();
-        updateCategoryManagementSectionState();
+        window.renderCategories();
+        window.renderStudents();
+        window.renderTeacherInfoSection();
+        window.renderAssessmentComponents();
+        window.updateCategoryManagementSectionState();
 
         const activeTab = document.querySelector('.tab-button.active').id;
         if (activeTab === 'summary-tab') {
-            renderSummary();
+            window.renderSummary();
         } else {
-            renderScoresTable();
+            window.renderScoresTable();
         }
     }
 
     // --- EVENT LISTENERS & SETUP ---
     function setupEventListeners() {
-        document.getElementById('select-academic-year').addEventListener('change', updateAcademicYearSelection);
-        document.getElementById('select-semester').addEventListener('change', updateSemesterSelection);
+        document.getElementById('select-academic-year').addEventListener('change', window.updateAcademicYearSelection);
+        document.getElementById('select-semester').addEventListener('change', window.updateSemesterSelection);
 
         document.getElementById('new-grading-period-name').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') addGradingPeriod();
+            if (e.key === 'Enter') window.addGradingPeriod();
         });
         document.getElementById('new-grading-period-weight').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') addGradingPeriod();
+            if (e.key === 'Enter') window.addGradingPeriod();
         });
 
         document.getElementById('new-category-name').addEventListener('keydown', (e) => {
-            if(e.key === 'Enter') addCategory();
+            if(e.key === 'Enter') window.addCategory();
         });
         document.getElementById('new-category-weight').addEventListener('keydown', (e) => {
-            if(e.key === 'Enter') addCategory();
+            if(e.key === 'Enter') window.addCategory();
         });
 
         document.getElementById('category-management-section').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.id.startsWith('new-sub-item-name-')) {
                 const catIndex = parseInt(e.target.id.replace('new-sub-item-name-', ''));
-                addSubItem(catIndex);
+                window.addSubItem(catIndex);
             } else if (e.key === 'Enter' && e.target.id.startsWith('new-sub-item-max-score-')) {
                 const catIndex = parseInt(e.target.id.replace('new-sub-item-max-score-', ''));
-                addSubItem(catIndex);
+                window.addSubItem(catIndex);
             }
         });
 
         document.querySelectorAll('.new-student-input').forEach(input => {
             input.addEventListener('keydown', (e) => {
                 if(e.key === 'Enter' && !document.getElementById('add-student-button').disabled) {
-                    addStudent();
+                    window.addStudent();
                 }
             });
         });
@@ -2684,7 +2787,7 @@
         document.querySelectorAll('.teacher-info-input').forEach(input => {
             input.addEventListener('keydown', (e) => {
                 if(e.key === 'Enter' && !document.getElementById('save-teacher-info-button').disabled) {
-                    saveTeacherInfo();
+                    window.saveTeacherInfo();
                 }
             });
         });
@@ -2704,26 +2807,26 @@
 
         document.getElementById('admin-password-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                checkAdminPassword();
+                window.checkAdminPassword();
             }
         });
 
         document.getElementById('reset-password-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                confirmResetCourse();
+                window.confirmResetCourse();
             }
         });
 
         document.getElementById('settings-logo-url').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                saveSettings();
+                window.saveSettings();
             }
         });
     }
 
     // --- PAGE LOAD ---
     window.onload = async function() {
-        setupEventListeners();
+        window.setupEventListeners();
     };
     </script>
 </body>
