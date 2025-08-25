@@ -852,6 +852,10 @@
             const currentAcademicYearSelection = academicYearSelect.value;
             const currentSemesterSelection = semesterSelect.value;
             const currentRoom = document.getElementById('select-room').value;
+            
+            // Set default values if not already selected
+            const defaultAcademicYear = new Date().getFullYear().toString();
+            const defaultSemester = 'Term 1';
 
             subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
             gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
@@ -866,8 +870,9 @@
             const semesters = ['Term 1', 'Term 2', 'Term 3'];
             semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
 
-            academicYearSelect.value = currentAcademicYearSelection || (activeCourse ? activeCourse.academicYear : '') || currentYear;
-            semesterSelect.value = currentSemesterSelection || (activeCourse ? activeCourse.semester : '') || 'Term 1';
+            // Restore previous selections or set defaults
+            academicYearSelect.value = currentAcademicYearSelection || (activeCourse ? activeCourse.academicYear : '') || defaultAcademicYear;
+            semesterSelect.value = currentSemesterSelection || (activeCourse ? activeCourse.semester : '') || defaultSemester;
             subjectSelect.value = activeCourse?.subject || currentSubject;
             gradeLevelSelect.value = activeCourse?.gradeLevel || currentGrade;
             document.getElementById('select-room').value = activeCourse?.room || currentRoom;
@@ -1003,15 +1008,25 @@
             const realName = document.getElementById('teacher-real-name').value.trim();
             const saveButton = document.getElementById('save-teacher-info-button');
             const hint = document.getElementById('save-teacher-hint');
-
+            
+            // The save button should be enabled as long as a course is selected and the full name is not empty.
             saveButton.disabled = !activeCourse || !realName;
-
-            if (!saveButton.disabled && (!activeCourse.teacher || !activeCourse.teacher.realName)) {
+            
+            if (activeCourse && activeCourse.teacher && activeCourse.teacher.realName && activeCourse.teacher.realName === realName) {
+                // If the displayed info is the same as the current input, disable the button and hide the hint.
+                saveButton.disabled = true;
+                hint.classList.add('hidden');
+            } else if (activeCourse && realName) {
+                // If the info is changed and a course is selected, enable the button and show the hint.
+                saveButton.disabled = false;
                 hint.classList.remove('hidden');
             } else {
+                // If a course is not selected or name is empty, disable the button and hide the hint.
+                saveButton.disabled = true;
                 hint.classList.add('hidden');
             }
         }
+
 
         async function saveTeacherInfo() {
             if (!activeCourse) return;
@@ -2148,56 +2163,6 @@
             container.innerHTML = tableHTML;
 
             renderAdvancedDashboard(studentsInClass);
-        }
-
-        function renderAdvancedDashboard(studentsInClass) {
-            const excellentUl = document.getElementById('group-excellent');
-            const averageUl = document.getElementById('group-average');
-            const improvementUl = document.getElementById('group-improvement');
-            excellentUl.innerHTML = averageUl.innerHTML = improvementUl.innerHTML = '';
-
-            let counts = { excellent: 0, average: 0, improvement: 0 };
-
-            studentsInClass.forEach(s => {
-                const { finalScore } = calculateFinalScoreAndGrade(s, activeCourse);
-                const score = parseFloat(finalScore);
-                const li = document.createElement('li');
-                li.textContent = `${s.realName} (${formatNumber(score)}%)`;
-                if (score >= 70) {
-                    excellentUl.appendChild(li);
-                    counts.excellent++;
-                } else if (score >= 50) {
-                    averageUl.appendChild(li);
-                    counts.average++;
-                } else {
-                    improvementUl.appendChild(li);
-                    counts.improvement++;
-                }
-            });
-
-            const ctx = document.getElementById('student-group-chart').getContext('2d');
-            if (studentGroupChartInstance) studentGroupChartInstance.destroy();
-            studentGroupChartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Excellent', 'Average', 'Needs Improvement'],
-                    datasets: [{
-                        data: [counts.excellent, counts.average, counts.improvement],
-                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#e2e8f0'
-                            }
-                        }
-                    }
-                }
-            });
         }
 
         function renderAdminDashboard() {
