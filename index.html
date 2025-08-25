@@ -494,7 +494,7 @@
                     <li>
                         <p class="font-medium text-white"><strong>1. Select Academic Period:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Choose the **Academic Year** (current year + 10 years ahead) and **Semester** (Term 1, Term 2, Term 3).</li>
+                            <li>Choose the **Academic Year** and **Semester**.</li>
                             <li><span class="text-red-400">This is mandatory.</span> The rest of the app will be disabled until both are selected.</li>
                         </ul>
                     </li>
@@ -502,7 +502,7 @@
                         <p class="font-medium text-white"><strong>2. Select Course:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
                             <li>Select the **Subject**, **Grade Level**, and **Room** for your course.</li>
-                            <li>If it's a new combination, a new course will be created. If it exists, it will be loaded.</li>
+                            <li>If a new combination is selected, a new course will be created automatically. If it already exists, it will be loaded.</li>
                         </ul>
                     </li>
                     <li>
@@ -510,39 +510,38 @@
                         <ul class="list-disc list-inside ml-4 text-sm">
                             <li>Enter your **Full Name** (required) and **Teacher ID**.</li>
                             <li>Click **"Save Info"**. Once saved, the form will hide, and "Edit Info" / "Delete Info" buttons will appear.</li>
-                            <li>You can also set a **School Logo URL** in the Settings modal (top right gear icon).</li>
+                            <li>You can also set a **School Logo URL** in the Settings modal.</li>
                         </ul>
                     </li>
                     <li>
                         <p class="font-medium text-white"><strong>4. Setup Grading Components:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight (e.g., 30%, 70%). The total weight for all components must be 100%.</li>
+                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight. The total weight for all components must be 100%.</li>
                             <li><strong>Select Assessment Component to Manage Categories:</strong> Choose one of your main components to define its sub-categories.</li>
                             <li><strong>Manage Categories within [Selected Component]:</strong> Add **Categories** (e.g., "Quizzes", "Homework") within the selected component. Each category also has a weight. The total weight of categories within a component must be 100%.</li>
                             <li>You can add **Sub-items** (e.g., "Quiz 1", "HW 2") to each category, each with its own max score.</li>
-                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight` (e.g., `Participation,10`).</li>
+                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight`.</li>
                         </ul>
                     </li>
                     <li>
                         <p class="font-medium text-white"><strong>5. Student Management:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
                             <li>Add new students manually by filling in their details.</li>
-                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber` (e.g., `S001,John Doe,Johnny,1`).</li>
+                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber`.</li>
                             <li>You can **Edit** or **Delete** students from the list. Deleting requires confirmation.</li>
                         </ul>
                     </li>
                     <li>
                         <p class="font-medium text-white"><strong>Score Entry & Summary:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Switch between **"Score Entry"** tab to input scores for each student in the detailed table. Press `Enter` to move to the next input field.</li>
-                            <li>Go to **"Summary & Reports"** tab to see overall scores, grades, and performance breakdowns (Excellent, Average, Needs Improvement).</li>
-                            <li>The **Admin Dashboard** (shield icon in header) provides an overview of all courses and teacher progress.</li>
+                            <li>Switch between **"Score Entry"** and **"Summary & Reports"** tabs to input scores and view grades.</li>
+                            <li>The **Admin Dashboard** provides an overview of all courses and teacher progress.</li>
                         </ul>
                     </li>
                     <li>
                         <p class="font-medium text-white"><strong>Reset Course:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>The **"Reset Course"** button (trash icon) will clear all data for the currently selected course. This requires a password for confirmation.</li>
+                            <li>The **"Reset Course"** button will clear all data for the currently selected course. This requires a token for confirmation.</li>
                         </ul>
                     </li>
                 </ol>
@@ -2143,7 +2142,7 @@
                     const componentPercentage = componentMaxWeight > 0 ? (componentCurrentScore / componentMaxWeight) * 100 : 0;
                     tableHTML += `<td class="p-2 border border-slate-600 text-center">${formatNumber(componentPercentage)}%</td>`;
                 });
-                tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold">${grade}</td></tr>`;
+                tableHTML += `<td class="p-2 border border-slate-600 text-center font-bold final-score-cell">${formatNumber(finalScore)}</td><td class="p-2 border border-slate-600 text-center font-bold final-grade-cell">${grade}</td></tr>`;
             });
             tableHTML += `</tbody></table>`;
             container.innerHTML = tableHTML;
