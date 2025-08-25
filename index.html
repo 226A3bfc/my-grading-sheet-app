@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th" class="dark">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>โปรแกรมบันทึกเกรด v2</title>
+    <title>Grading Sheet v2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -105,22 +105,22 @@
         <div class="flex items-center gap-4">
             <img id="school-logo" src="https://placehold.co/64x64/1e293b/e2e8f0?text=Logo" alt="School Logo" class="w-16 h-16 rounded-lg object-cover shadow-md" onerror="this.onerror=null;this.src='https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';">
             <div>
-                <h1 class="text-3xl font-bold text-indigo-400">โปรแกรมบันทึกเกรด</h1>
-                <p class="text-slate-400">เครื่องมือบันทึกเกรดแบบเรียลไทม์</p>
+                <h1 class="text-3xl font-bold text-indigo-400">Grading Sheet</h1>
+                <p class="text-slate-400">A real-time collaborative grading tool.</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
             <button id="how-to-use-button" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2" onclick="showHowToUseModal()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                วิธีใช้งาน
+                How to Use
             </button>
             <button id="reset-course-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center gap-2" onclick="showResetConfirmationModal()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                รีเซ็ตคอร์ส
+                Reset Course
             </button>
             <button id="admin-view-button" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-slate-800 hover:bg-slate-700 transition-colors" onclick="showAdminPasswordModal()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                </button>
+            </button>
             <button id="settings-button" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-slate-800 hover:bg-slate-700 transition-colors" onclick="showSettingsModal()">
                 <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             </button>
@@ -129,18 +129,18 @@
 
     <div class="max-w-7xl mx-auto space-y-8">
         <div class="p-6 rounded-lg card print:hidden">
-            <h2 class="text-xl font-semibold mb-4">1. เลือกช่วงเวลาการศึกษา</h2>
+            <h2 class="text-xl font-semibold mb-4">1. Select Academic Period</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="select-academic-year" class="block text-sm font-medium text-slate-400 mb-1">ปีการศึกษา</label>
+                    <label for="select-academic-year" class="block text-sm font-medium text-slate-400 mb-1">Academic Year</label>
                     <select id="select-academic-year" class="p-2 w-full" onchange="updateAcademicYearSelection()"></select>
                 </div>
                 <div>
-                    <label for="select-semester" class="block text-sm font-medium text-slate-400 mb-1">ภาคเรียน</label>
+                    <label for="select-semester" class="block text-sm font-medium text-slate-400 mb-1">Semester</label>
                     <select id="select-semester" class="p-2 w-full" onchange="updateSemesterSelection()"></select>
                 </div>
             </div>
-            <div id="academic-period-status" class="p-3 rounded-md text-center font-medium mt-4 hidden">กรุณาเลือกทั้งปีการศึกษาและภาคเรียน</div>
+            <div id="academic-period-status" class="p-3 rounded-md text-center font-medium mt-4 hidden">Please select both Academic Year and Semester.</div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 print:hidden">
@@ -148,25 +148,25 @@
                 <summary class="text-xl font-semibold cursor-pointer flex items-center gap-2">
                     <span class="summary-arrow">▶</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    2. เลือกวิชา
+                    2. Select Course
                 </summary>
                 <div id="course-selection-section" class="mt-6 p-4 rounded-md border space-y-3 card disabled-section">
                     <div id="course-selection-overlay" class="disabled-overlay">
-                        <span>กรุณาเลือกปีการศึกษาและภาคเรียนด้านบน</span>
+                        <span>Please select Academic Year and Semester above.</span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                            <label for="select-subject" class="block text-sm font-medium text-slate-400 mb-1">วิชา</label>
+                            <label for="select-subject" class="block text-sm font-medium text-slate-400 mb-1">Subject</label>
                             <select id="select-subject" class="p-2 w-full" onchange="updateCourseSelection()"></select>
                         </div>
                         <div>
-                            <label for="select-grade-level" class="block text-sm font-medium text-slate-400 mb-1">ระดับชั้น</label>
+                            <label for="select-grade-level" class="block text-sm font-medium text-slate-400 mb-1">Grade Level</label>
                             <select id="select-grade-level" class="p-2 w-full" onchange="updateCourseSelection()"></select>
                         </div>
                         <div>
-                            <label for="select-room" class="block text-sm font-medium text-slate-400 mb-1">ห้อง</label>
+                            <label for="select-room" class="block text-sm font-medium text-slate-400 mb-1">Room</label>
                             <select id="select-room" class="p-2 w-full" onchange="updateCourseSelection()">
-                                <option value="">เลือกห้อง</option>
+                                <option value="">Select Room</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="C">C</option>
@@ -183,11 +183,11 @@
                 <summary class="text-xl font-semibold cursor-pointer flex items-center gap-2">
                     <span class="summary-arrow">▶</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    3. ข้อมูลครูผู้สอน
+                    3. Teacher Info
                 </summary>
                 <div id="teacher-info-container" class="mt-6 p-4 rounded-md border space-y-3 card disabled-section">
                     <div id="teacher-info-container-overlay" class="disabled-overlay">
-                        <span>กรุณาเลือกวิชาด้านบน</span>
+                        <span>Please select a Course above.</span>
                     </div>
                     <div id="teacher-info-display" class="hidden">
                         <p class="text-lg font-semibold text-white" id="display-teacher-name"></p>
@@ -195,31 +195,31 @@
                         <div class="flex gap-2 mt-3">
                             <button id="edit-teacher-info-button" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2" onclick="editTeacherInfo()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                แก้ไขข้อมูล
+                                Edit Info
                             </button>
                             <button id="delete-teacher-info-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center justify-center gap-2" onclick="showDeleteTeacherConfirmation()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                                ลบข้อมูล
+                                Delete Info
                             </button>
                         </div>
                     </div>
                     <div id="teacher-info-edit-form">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                                <label for="teacher-real-name" class="block text-sm font-medium text-slate-400 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
-                                <input type="text" id="teacher-real-name" placeholder="ใส่ชื่อ-นามสกุลของคุณ" class="p-2 w-full teacher-info-input" oninput="checkTeacherFormValidity()">
+                                <label for="teacher-real-name" class="block text-sm font-medium text-slate-400 mb-1">Full Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="teacher-real-name" placeholder="Enter your full name" class="p-2 w-full teacher-info-input" oninput="checkTeacherFormValidity()">
                             </div>
                             <div>
-                                <label for="teacher-id" class="block text-sm font-medium text-slate-400 mb-1">รหัสครู</label>
-                                <input type="text" id="teacher-id" placeholder="ใส่รหัสครูของคุณ" class="p-2 w-full teacher-info-input">
+                                <label for="teacher-id" class="block text-sm font-medium text-slate-400 mb-1">Teacher ID</label>
+                                <input type="text" id="teacher-id" placeholder="Enter your ID" class="p-2 w-full teacher-info-input">
                             </div>
                         </div>
                         <button id="save-teacher-info-button" onclick="saveTeacherInfo()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:bg-indigo-800 disabled:text-slate-400 transition-colors flex items-center justify-center gap-2 mt-3" disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                            บันทึกข้อมูล
+                            Save Info
                         </button>
                         <p id="save-teacher-hint" class="text-sm text-yellow-400 mt-2 hidden text-center">
-                            คลิก 'บันทึกข้อมูล' เพื่อปลดล็อกส่วนอื่นๆ
+                            Click 'Save Info' to unlock other sections.
                         </p>
                     </div>
                 </div>
@@ -228,66 +228,66 @@
 
         <div id="main-content-area" class="disabled-section">
             <div id="main-content-overlay" class="disabled-overlay">
-                <span>กรุณาเลือก ปีการศึกษา, ภาคเรียน, และวิชา จากนั้นบันทึกข้อมูลครูผู้สอนเพื่อดำเนินการต่อ</span>
+                <span>Please select Academic Year, Semester, and Course, then save Teacher Info to continue.</span>
             </div>
 
             <details class="p-6 rounded-lg card" open>
                 <summary class="text-xl font-semibold cursor-pointer flex items-center gap-2">
                     <span class="summary-arrow">▶</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                    4. ตั้งค่าองค์ประกอบการให้คะแนน
+                    4. Setup Grading Components
                 </summary>
                 <div class="mt-6">
-                    <h3 class="font-semibold text-lg mb-3">1. จัดการองค์ประกอบการประเมิน (เช่น โครงการ, การนำเสนอ, สอบปลายภาค)</h3>
+                    <h3 class="font-semibold text-lg mb-3">1. Manage Assessment Components (e.g., Projects & Presentations, Long Test)</h3>
                     <div class="p-4 rounded-md border space-y-3 card">
                         <div id="grading-period-list" class="space-y-2"></div>
                         <div class="flex flex-col sm:flex-row gap-4 mt-3 border-t pt-4 border-slate-800">
-                            <input type="text" id="new-grading-period-name" placeholder="ชื่อองค์ประกอบ (เช่น โครงการ)" class="flex-grow p-3">
-                            <input type="number" id="new-grading-period-weight" placeholder="น้ำหนัก (%)" class="w-full sm:w-32 p-3">
+                            <input type="text" id="new-grading-period-name" placeholder="New Component Name (e.g., Projects)" class="flex-grow p-3">
+                            <input type="number" id="new-grading-period-weight" placeholder="Weight (%)" class="w-full sm:w-32 p-3">
                             <button onclick="addGradingPeriod()" class="bg-blue-600 text-white px-5 py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                เพิ่มองค์ประกอบ
+                                Add Component
                             </button>
                         </div>
                         <div class="text-right mt-2">
-                            <p id="total-grading-period-weight-info" class="font-medium">น้ำหนักรวม: <span id="current-total-grading-period-weight">0</span>%</p>
-                            <p id="grading-period-warning" class="text-red-500 font-medium hidden">⚠️ น้ำหนักรวมขององค์ประกอบต้องเป็น 100%</p>
+                            <p id="total-grading-period-weight-info" class="font-medium">Total Component Weight: <span id="current-total-grading-period-weight">0</span>%</p>
+                            <p id="grading-period-warning" class="text-red-500 font-medium hidden">⚠️ Total component weight must be 100%</p>
                         </div>
                     </div>
 
-                    <h3 class="font-semibold text-lg mt-6 mb-3">2. เลือกองค์ประกอบเพื่อจัดการหมวดหมู่</h3>
+                    <h3 class="font-semibold text-lg mt-6 mb-3">2. Select Assessment Component to Manage Categories</h3>
                     <div class="p-4 rounded-md border space-y-3 card">
                         <select id="select-grading-period" class="p-2 w-full" onchange="selectGradingPeriod()">
-                            <option value="">เลือกองค์ประกอบการประเมิน</option>
+                            <option value="">Select an Assessment Component</option>
                         </select>
                         <div id="selected-grading-period-status" class="p-3 rounded-md text-center font-medium hidden"></div>
                     </div>
 
-                    <h3 class="font-semibold text-lg mt-6 mb-3">3. จัดการหมวดหมู่ใน <span id="current-period-name" class="text-indigo-300">องค์ประกอบที่เลือก</span></h3>
+                    <h3 class="font-semibold text-lg mt-6 mb-3">3. Manage Categories within <span id="current-period-name" class="text-indigo-300">Selected Assessment Component</span></h3>
                     <div id="category-management-section" class="disabled-section">
                         <div id="category-management-overlay" class="disabled-overlay">
-                            <span>กรุณาเลือกองค์ประกอบการประเมินด้านบนเพื่อจัดการหมวดหมู่</span>
+                            <span>Please select an Assessment Component above to manage categories.</span>
                         </div>
                         <div id="category-settings" class="space-y-4"></div>
                         <div class="flex flex-col sm:flex-row gap-4 mt-6 border-t pt-4 border-slate-800">
-                            <input type="text" id="new-category-name" placeholder="ชื่อหมวดหมู่ใหม่ (เช่น การบ้าน)" class="flex-grow p-3">
-                            <input type="number" id="new-category-weight" placeholder="น้ำหนัก (%)" class="w-full sm:w-32 p-3">
+                            <input type="text" id="new-category-name" placeholder="New Category Name (e.g., Homework)" class="flex-grow p-3">
+                            <input type="number" id="new-category-weight" placeholder="Weight (%)" class="w-full sm:w-32 p-3">
                             <button onclick="addCategory()" class="bg-blue-600 text-white px-5 py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                เพิ่มหมวดหมู่
+                                Add Category
                             </button>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-4 mt-4">
                             <input type="file" id="category-csv-file-input" accept=".csv" class="hidden" onchange="handleCategoryCsvImport(event)">
                             <button onclick="document.getElementById('category-csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                นำเข้าหมวดหมู่ (CSV)
+                                Import Categories (CSV)
                             </button>
                         </div>
-                        <p class="text-sm text-slate-400 mt-2">รูปแบบ: `categoryName,weight` (เช่น `การมีส่วนร่วม,10`)</p>
+                        <p class="text-sm text-slate-400 mt-2">Format: `categoryName,weight` (e.g., `Participation,10`)</p>
                         <div class="text-right mt-2">
-                            <p id="total-category-weight-info" class="font-medium">น้ำหนักรวมหมวดหมู่: <span id="current-total-category-weight">0</span>%</p>
-                            <p id="category-weight-warning" class="text-red-500 font-medium hidden">⚠️ น้ำหนักรวมของหมวดหมู่ในองค์ประกอบนี้ต้องเป็น 100%</p>
+                            <p id="total-category-weight-info" class="font-medium">Total Category Weight: <span id="current-total-category-weight">0</span>%</p>
+                            <p id="category-weight-warning" class="text-red-500 font-medium hidden">⚠️ Total category weight must be 100% within this component</p>
                         </div>
                     </div>
                 </div>
@@ -297,27 +297,27 @@
                 <summary class="text-xl font-semibold cursor-pointer flex items-center gap-2">
                     <span class="summary-arrow">▶</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    5. จัดการข้อมูลนักเรียน
+                    5. Student Management
                 </summary>
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-4 rounded-md border space-y-3 card">
-                        <h3 class="font-semibold text-lg">เพิ่มนักเรียนใหม่</h3>
+                        <h3 class="font-semibold text-lg">Add New Student</h3>
                         <div class="grid grid-cols-2 gap-3">
-                            <input type="text" id="new-student-real-name" placeholder="ชื่อ-นามสกุล" class="p-2 col-span-2 new-student-input" oninput="checkAddStudentFormValidity()">
-                            <input type="text" id="new-student-nickname" placeholder="ชื่อเล่น" class="p-2 col-span-2 new-student-input">
-                            <input type="text" id="new-student-id" placeholder="รหัสนักเรียน" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
-                            <input type="number" id="new-student-roll-number" placeholder="เลขที่" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
+                            <input type="text" id="new-student-real-name" placeholder="Full Name" class="p-2 col-span-2 new-student-input" oninput="checkAddStudentFormValidity()">
+                            <input type="text" id="new-student-nickname" placeholder="Nickname" class="p-2 col-span-2 new-student-input">
+                            <input type="text" id="new-student-id" placeholder="Student ID" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
+                            <input type="number" id="new-student-roll-number" placeholder="Roll Number" class="p-2 new-student-input" oninput="checkAddStudentFormValidity()">
                         </div>
-                        <button id="add-student-button" onclick="addStudent()" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:bg-green-800 disabled:text-slate-400 transition-colors flex items-center justify-center gap-2" disabled>เพิ่มนักเรียน</button>
+                        <button id="add-student-button" onclick="addStudent()" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:bg-green-800 disabled:text-slate-400 transition-colors flex items-center justify-center gap-2" disabled>Add Student</button>
                     </div>
                     <div class="p-4 rounded-md border flex flex-col items-center justify-center text-center card">
-                        <h3 class="font-semibold text-lg">นำเข้าจากไฟล์ CSV</h3>
-                        <p class="text-sm text-slate-400 my-2">รูปแบบ: `studentId,realName,nickname,rollNumber`</p>
-                        <p class="text-sm text-slate-400 my-2">(ระดับชั้นและห้องจะอิงจากที่เลือกปัจจุบัน)</p>
+                        <h3 class="font-semibold text-lg">Import from CSV</h3>
+                        <p class="text-sm text-slate-400 my-2">Format: `studentId,realName,nickname,rollNumber`</p>
+                        <p class="text-sm text-slate-400 my-2">(Grade & Room are based on current selection)</p>
                         <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
                         <button onclick="document.getElementById('csv-file-input').click()" class="w-full bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors flex items-center justify-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                            เลือกไฟล์ .csv
+                            Choose .csv File
                         </button>
                     </div>
                 </div>
@@ -326,16 +326,16 @@
 
             <div id="printable-area" class="print-bg-white">
                 <div class="flex justify-center border-b border-slate-800 mb-6 print:hidden">
-                    <button id="score-entry-tab" class="tab-button active px-6 py-3 text-lg font-medium rounded-t-lg" onclick="showTab('score-entry')">บันทึกคะแนน ✏️</button>
-                    <button id="summary-tab" class="tab-button px-6 py-3 text-lg font-medium rounded-t-lg" onclick="showTab('summary')">สรุปและรายงาน 🏆</button>
+                    <button id="score-entry-tab" class="tab-button active px-6 py-3 text-lg font-medium rounded-t-lg" onclick="showTab('score-entry')">Score Entry ✏️</button>
+                    <button id="summary-tab" class="tab-button px-6 py-3 text-lg font-medium rounded-t-lg" onclick="showTab('summary')">Summary & Reports 🏆</button>
                 </div>
 
                 <div id="score-entry-section">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-semibold">กรอกคะแนนนักเรียน</h2>
+                        <h2 class="text-2xl font-semibold">Enter Student Scores</h2>
                         <button onclick="window.print()" class="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600 transition-colors print:hidden flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                            พิมพ์ตาราง
+                            Print Table
                         </button>
                     </div>
                     <div id="score-input-table" class="table-container overflow-x-auto"></div>
@@ -344,33 +344,33 @@
 
                 <div id="summary-section" class="hidden">
                     <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
-                        <h2 class="text-2xl font-semibold">สรุปและวิเคราะห์คะแนน</h2>
+                        <h2 class="text-2xl font-semibold">Score Summary & Analysis</h2>
                         <div class="flex items-center gap-2">
                             <button onclick="exportScoresToCsv()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors print:hidden flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                ส่งออกเป็น CSV
+                                Export CSV
                             </button>
                             <button onclick="window.print()" class="bg-slate-500 text-white px-4 py-2 rounded-md hover:bg-slate-600 transition-colors print:hidden flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                                พิมพ์รายงาน
+                                Print Summary
                             </button>
                         </div>
                     </div>
                     <div id="advanced-dashboard" class="mb-8 p-6 rounded-lg shadow-inner border card print:hidden">
-                        <h3 class="text-xl font-semibold mb-4">ภาพรวมผลการเรียนนักเรียน</h3>
+                        <h3 class="text-xl font-semibold mb-4">Student Performance Overview</h3>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div class="relative h-80"><canvas id="student-group-chart"></canvas></div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div class="p-3 bg-green-900/50 rounded-lg">
-                                    <h5 class="font-bold text-green-300 text-center">ยอดเยี่ยม (>=70%)</h5>
+                                    <h5 class="font-bold text-green-300 text-center">Excellent (>=70%)</h5>
                                     <ul id="group-excellent" class="mt-2 text-sm text-green-400 list-disc list-inside"></ul>
                                 </div>
                                 <div class="p-3 bg-yellow-900/50 rounded-lg">
-                                    <h5 class="font-bold text-yellow-300 text-center">ปานกลาง (50-69%)</h5>
+                                    <h5 class="font-bold text-yellow-300 text-center">Average (50-69%)</h5>
                                     <ul id="group-average" class="mt-2 text-sm text-yellow-400 list-disc list-inside"></ul>
                                 </div>
                                 <div class="p-3 bg-red-900/50 rounded-lg">
-                                    <h5 class="font-bold text-red-300 text-center">ต้องปรับปรุง (&lt;50%)</h5>
+                                    <h5 class="font-bold text-red-300 text-center">Needs Improvement (<50%)</h5>
                                     <ul id="group-improvement" class="mt-2 text-sm text-red-400 list-disc list-inside"></ul>
                                 </div>
                             </div>
@@ -385,10 +385,10 @@
 
     <div id="alert-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
-            <h3 id="alert-title" class="text-xl font-semibold mb-4">การแจ้งเตือน</h3>
+            <h3 id="alert-title" class="text-xl font-semibold mb-4">Notification</h3>
             <p id="alert-message" class="mb-6 text-slate-300"></p>
             <div class="flex justify-end">
-                <button onclick="hideAlert()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">ตกลง</button>
+                <button onclick="hideAlert()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">OK</button>
             </div>
         </div>
     </div>
@@ -397,52 +397,52 @@
         <div class="p-6 rounded-lg shadow-xl max-w-md w-full card">
             <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l-.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                ตั้งค่า
+                Settings
             </h3>
             <div class="space-y-4">
                 <div>
-                    <label for="settings-logo-url" class="block text-sm font-medium text-slate-400">URL โลโก้โรงเรียน</label>
-                    <input type="url" id="settings-logo-url" placeholder="วาง URL รูปภาพที่นี่" class="mt-1 p-2 w-full">
+                    <label for="settings-logo-url" class="block text-sm font-medium text-slate-400">School Logo URL</label>
+                    <input type="url" id="settings-logo-url" placeholder="Paste image URL here" class="mt-1 p-2 w-full">
                 </div>
                 <div>
-                    <label for="settings-admin-token" class="block text-sm font-medium text-slate-400">Token ผู้ดูแลระบบ (Token ใหม่)</label>
-                    <input type="text" id="settings-admin-token" placeholder="ใส่ Token สำหรับเข้าถึง Admin Dashboard" class="mt-1 p-2 w-full">
+                    <label for="settings-admin-token" class="block text-sm font-medium text-slate-400">Admin Token</label>
+                    <input type="text" id="settings-admin-token" placeholder="Enter Token for Admin Dashboard" class="mt-1 p-2 w-full">
                 </div>
             </div>
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="hideSettingsModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">ยกเลิก</button>
-                <button id="save-settings-button" onclick="saveSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">บันทึก</button>
+                <button onclick="hideSettingsModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
+                <button id="save-settings-button" onclick="saveSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Save</button>
             </div>
         </div>
     </div>
 
     <div id="admin-password-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
-            <h3 class="text-xl font-semibold mb-4">การเข้าถึงผู้ดูแลระบบ</h3>
-            <p class="text-slate-400 mb-4">กรุณาใส่ Token ผู้ดูแลระบบเพื่อเข้าสู่ Dashboard</p>
+            <h3 class="text-xl font-semibold mb-4">Admin Access</h3>
+            <p class="text-slate-400 mb-4">Please enter the Admin Token to view the dashboard.</p>
             <div>
                 <label for="admin-password-input" class="block text-sm font-medium text-slate-400">Token</label>
                 <input type="password" id="admin-password-input" class="mt-1 p-2 w-full">
             </div>
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="hideAdminPasswordModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">ยกเลิก</button>
-                <button onclick="checkAdminPassword()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">เข้าสู่ระบบ</button>
+                <button onclick="hideAdminPasswordModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
+                <button onclick="checkAdminPassword()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Enter</button>
             </div>
         </div>
     </div>
 
     <div id="reset-confirmation-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
-            <h3 class="text-xl font-semibold mb-4 text-red-400">ยืนยันการรีเซ็ต</h3>
-            <p class="text-slate-300 mb-4">การดำเนินการนี้จะล้างข้อมูลหมวดหมู่และข้อมูลครูผู้สอนทั้งหมดของวิชาที่เลือก และลบข้อมูลคะแนนของนักเรียนทั้งหมดสำหรับวิชานี้</p>
-            <p class="text-slate-300 mb-4 font-bold">กรุณาใส่ Token การรีเซ็ตเพื่อยืนยัน:</p>
+            <h3 class="text-xl font-semibold mb-4 text-red-400">Confirm Reset</h3>
+            <p class="text-slate-300 mb-4">This will clear all grading components and teacher information for the currently selected course, and remove all associated scores from students for this course.</p>
+            <p class="text-slate-300 mb-4 font-bold">Please enter the Reset Token to confirm:</p>
             <div>
                 <label for="reset-password-input" class="block text-sm font-medium text-slate-400">Token</label>
-                <input type="password" id="reset-password-input" class="mt-1 p-2 w-full" placeholder="ใส่ Token สำหรับการรีเซ็ต">
+                <input type="password" id="reset-password-input" class="mt-1 p-2 w-full" placeholder="Enter Reset Token">
             </div>
             <div class="flex justify-end gap-2 mt-6">
-                <button onclick="hideResetConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">ยกเลิก</button>
-                <button onclick="confirmResetCourse()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">ยืนยันการรีเซ็ต</button>
+                <button onclick="hideResetConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
+                <button onclick="confirmResetCourse()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm Reset</button>
             </div>
         </div>
     </div>
@@ -450,7 +450,7 @@
     <div id="admin-dashboard-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
         <div class="p-6 rounded-lg shadow-xl max-w-4xl w-full h-[90vh] flex flex-col card">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">แดชบอร์ดผู้ดูแลระบบ: ภาพรวมทุกวิชา</h3>
+                <h3 class="text-2xl font-bold">Admin Dashboard: All Courses Overview</h3>
                 <button onclick="hideAdminDashboardModal()" class="text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
             </div>
             <div id="admin-dashboard-content" class="flex-grow overflow-y-auto space-y-6">
@@ -463,18 +463,18 @@
             <h3 id="score-breakdown-modal-title" class="text-xl font-semibold mb-4"></h3>
             <div id="score-breakdown-content" class="space-y-3 mb-6"></div>
             <div class="flex justify-end">
-                <button onclick="hideScoreBreakdownModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">ปิด</button>
+                <button onclick="hideScoreBreakdownModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">Close</button>
             </div>
         </div>
     </div>
 
     <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
         <div class="p-6 rounded-lg shadow-xl max-w-sm w-full card">
-            <h3 id="confirmation-title" class="text-xl font-semibold mb-4 text-red-400">ยืนยันการดำเนินการ</h3>
+            <h3 id="confirmation-title" class="text-xl font-semibold mb-4 text-red-400">Confirm Action</h3>
             <p id="confirmation-message" class="mb-6 text-slate-300"></p>
             <div class="flex justify-end gap-2">
-                <button onclick="hideConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">ยกเลิก</button>
-                <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">ยืนยัน</button>
+                <button onclick="hideConfirmationModal()" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-md hover:bg-slate-600">Cancel</button>
+                <button id="confirm-action-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Confirm</button>
             </div>
         </div>
     </div>
@@ -482,75 +482,75 @@
     <div id="how-to-use-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
         <div class="p-6 rounded-lg shadow-xl max-w-2xl w-full h-[90vh] flex flex-col card">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">วิธีใช้งานโปรแกรมบันทึกเกรด</h3>
+                <h3 class="text-2xl font-bold">How to Use Grading Sheet</h3>
                 <button onclick="hideHowToUseModal()" class="text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
             </div>
             <div class="flex-grow overflow-y-auto text-slate-300 space-y-4">
-                <p>ยินดีต้อนรับสู่โปรแกรมบันทึกเกรด! ทำตามขั้นตอนเหล่านี้เพื่อตั้งค่าวัดผลการเรียน จัดการข้อมูลนักเรียน กรอกคะแนน และดูรายงานสรุป</p>
+                <p>Welcome to the Grading Sheet application! Follow these steps to set up your courses, manage students, enter scores, and view reports.</p>
 
-                <h4 class="text-xl font-semibold text-indigo-400">คำแนะนำทีละขั้นตอน:</h4>
+                <h4 class="text-xl font-semibold text-indigo-400">Step-by-Step Guide:</h4>
 
                 <ol class="list-decimal list-inside space-y-3">
                     <li>
-                        <p class="font-medium text-white"><strong>1. เลือกช่วงเวลาการศึกษา:</strong></p>
+                        <p class="font-medium text-white"><strong>1. Select Academic Period:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>เลือก **ปีการศึกษา** และ **ภาคเรียน** (เทอม 1, เทอม 2, เทอม 3)</li>
-                            <li><span class="text-red-400">ขั้นตอนนี้จำเป็นต้องทำก่อน.</span> ส่วนอื่นๆ ของแอปจะถูกปิดการใช้งานจนกว่าจะเลือกครบถ้วน</li>
+                            <li>Choose the **Academic Year** (current year + 10 years ahead) and **Semester** (Term 1, Term 2, Term 3).</li>
+                            <li><span class="text-red-400">This is mandatory.</span> The rest of the app will be disabled until both are selected.</li>
                         </ul>
                     </li>
                     <li>
-                        <p class="font-medium text-white"><strong>2. เลือกวิชา:</strong></p>
+                        <p class="font-medium text-white"><strong>2. Select Course:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>เลือก **วิชา**, **ระดับชั้น**, และ **ห้อง** สำหรับคอร์สของคุณ</li>
-                            <li>หากเป็นการรวมกันของข้อมูลที่ไม่เคยมีมาก่อน ระบบจะสร้างคอร์สใหม่ให้ หากมีอยู่แล้ว ระบบจะโหลดข้อมูลที่มีอยู่</li>
+                            <li>Select the **Subject**, **Grade Level**, and **Room** for your course.</li>
+                            <li>If it's a new combination, a new course will be created. If it exists, it will be loaded.</li>
                         </ul>
                     </li>
                     <li>
-                        <p class="font-medium text-white"><strong>3. ข้อมูลครูผู้สอน:</strong></p>
+                        <p class="font-medium text-white"><strong>3. Teacher Info:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>ใส่ **ชื่อ-นามสกุล** (จำเป็น) และ **รหัสครู**</li>
-                            <li>คลิก **"บันทึกข้อมูล"** เมื่อบันทึกแล้วแบบฟอร์มจะซ่อนลงไป และจะมีปุ่ม "แก้ไข" / "ลบ" ปรากฏขึ้นมา</li>
-                            <li>คุณยังสามารถตั้ง **URL โลโก้โรงเรียน** ได้ในหน้าต่างการตั้งค่า (ไอคอนฟันเฟืองมุมบนขวา)</li>
+                            <li>Enter your **Full Name** (required) and **Teacher ID**.</li>
+                            <li>Click **"Save Info"**. Once saved, the form will hide, and "Edit Info" / "Delete Info" buttons will appear.</li>
+                            <li>You can also set a **School Logo URL** in the Settings modal (top right gear icon).</li>
                         </ul>
                     </li>
                     <li>
-                        <p class="font-medium text-white"><strong>4. ตั้งค่าองค์ประกอบการให้คะแนน:</strong></p>
+                        <p class="font-medium text-white"><strong>4. Setup Grading Components:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li><strong>จัดการองค์ประกอบการประเมิน:</strong> เพิ่มองค์ประกอบหลัก (เช่น "สอบกลางภาค", "โครงงาน") พร้อมน้ำหนักรวม (เช่น 30%, 70%) น้ำหนักรวมของทุกองค์ประกอบต้องเป็น 100%</li>
-                            <li><strong>เลือกองค์ประกอบเพื่อจัดการหมวดหมู่:</strong> เลือกหนึ่งในองค์ประกอบหลักของคุณเพื่อกำหนดหมวดหมู่ย่อย</li>
-                            <li><strong>จัดการหมวดหมู่ใน [องค์ประกอบที่เลือก]:</strong> เพิ่ม **หมวดหมู่** (เช่น "แบบทดสอบ", "การบ้าน") ภายในองค์ประกอบที่เลือก แต่ละหมวดหมู่ก็มีน้ำหนักของตัวเองด้วย น้ำหนักรวมของหมวดหมู่ในองค์ประกอบต้องเป็น 100%</li>
-                            <li>คุณสามารถเพิ่ม **รายการย่อย** (เช่น "แบบทดสอบที่ 1", "การบ้าน 2") ให้แต่ละหมวดหมู่ โดยแต่ละรายการมีคะแนนเต็มของตัวเอง</li>
-                            <li>ใช้ปุ่ม **"นำเข้าหมวดหมู่ (CSV)"** เพื่อเพิ่มหลายหมวดหมู่พร้อมกัน รูปแบบ: `ชื่อหมวดหมู่,น้ำหนัก` (เช่น `การมีส่วนร่วม,10`)</li>
+                            <li><strong>Manage Assessment Components:</strong> Add your main assessment components (e.g., "Midterm Exam", "Final Project") with their overall weight (e.g., 30%, 70%). The total weight for all components must be 100%.</li>
+                            <li><strong>Select Assessment Component to Manage Categories:</strong> Choose one of your main components to define its sub-categories.</li>
+                            <li><strong>Manage Categories within [Selected Component]:</strong> Add **Categories** (e.g., "Quizzes", "Homework") within the selected component. Each category also has a weight. The total weight of categories within a component must be 100%.</li>
+                            <li>You can add **Sub-items** (e.g., "Quiz 1", "HW 2") to each category, each with its own max score.</li>
+                            <li>Use the **"Import Categories (CSV)"** button to quickly add multiple categories. Format: `categoryName,weight` (e.g., `Participation,10`).</li>
                         </ul>
                     </li>
                     <li>
-                        <p class="font-medium text-white"><strong>5. จัดการข้อมูลนักเรียน:</strong></p>
+                        <p class="font-medium text-white"><strong>5. Student Management:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>เพิ่มนักเรียนใหม่ด้วยตนเองโดยการกรอกรายละเอียด</li>
-                            <li>ใช้ **"นำเข้าจากไฟล์ CSV"** เพื่อเพิ่มนักเรียนหลายคน รูปแบบ: `studentId,realName,nickname,rollNumber` (เช่น `S001,สมชาย ใจดี,ชาย,1`)</li>
-                            <li>คุณสามารถ **แก้ไข** หรือ **ลบ** นักเรียนจากรายชื่อได้ การลบต้องได้รับการยืนยัน</li>
+                            <li>Add new students manually by filling in their details.</li>
+                            <li>Use **"Import from CSV"** to add multiple students. Format: `studentId,realName,nickname,rollNumber` (e.g., `S001,John Doe,Johnny,1`).</li>
+                            <li>You can **Edit** or **Delete** students from the list. Deleting requires confirmation.</li>
                         </ul>
                     </li>
                     <li>
-                        <p class="font-medium text-white"><strong>การกรอกคะแนน & รายงานสรุป:</strong></p>
+                        <p class="font-medium text-white"><strong>Score Entry & Summary:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>สลับไปที่แท็บ **"บันทึกคะแนน"** เพื่อกรอกคะแนนสำหรับนักเรียนแต่ละคนในตาราง กด `Enter` เพื่อเลื่อนไปยังช่องถัดไป</li>
-                            <li>ไปที่แท็บ **"สรุปและรายงาน"** เพื่อดูคะแนนรวม, เกรด, และภาพรวมผลการเรียน (ยอดเยี่ยม, ปานกลาง, ต้องปรับปรุง)</li>
-                            <li>**แดชบอร์ดผู้ดูแลระบบ** (ไอคอนโล่มุมบนขวา) มีภาพรวมของทุกวิชาและสถานะการทำงานของครู</li>
+                            <li>Switch between **"Score Entry"** tab to input scores for each student in the detailed table. Press `Enter` to move to the next input field.</li>
+                            <li>Go to **"Summary & Reports"** tab to see overall scores, grades, and performance breakdowns (Excellent, Average, Needs Improvement).</li>
+                            <li>The **Admin Dashboard** (shield icon in header) provides an overview of all courses and teacher progress.</li>
                         </ul>
                     </li>
                     <li>
-                        <p class="font-medium text-white"><strong>รีเซ็ตคอร์ส:</strong></p>
+                        <p class="font-medium text-white"><strong>Reset Course:</strong></p>
                         <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>ปุ่ม **"รีเซ็ตคอร์ส"** (ไอคอนถังขยะ) จะลบข้อมูลทั้งหมดสำหรับคอร์สที่เลือกอยู่ ซึ่งต้องใส่ Token เพื่อยืนยัน</li>
+                            <li>The **"Reset Course"** button (trash icon) will clear all data for the currently selected course. This requires a password for confirmation.</li>
                         </ul>
                     </li>
                 </ol>
 
-                <p>ข้อมูลทั้งหมดจะถูกบันทึกไปยังฐานข้อมูลแบบเรียลไทม์! ขอให้สนุกกับการใช้งานโปรแกรมบันทึกเกรด!</p>
+                <p>All your data is saved in real-time to the cloud! Enjoy using the Grading Sheet!</p>
             </div>
             <div class="flex justify-end mt-4">
-                <button onclick="hideHowToUseModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">รับทราบ!</button>
+                <button onclick="hideHowToUseModal()" class="bg-indigo-600 text-white px-5 py-2 rounded-md hover:bg-indigo-700">Got it!</button>
             </div>
         </div>
     </div>
@@ -563,8 +563,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
         import { getFirestore, collection, setDoc, onSnapshot, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-        // โค้ดส่วนนี้ควรได้รับการจัดการอย่างปลอดภัย ไม่ควรเปิดเผยต่อสาธารณะ
-        // ในโปรเจกต์จริง ควรใช้ Environment Variables หรือ Firebase Functions
+        // This is a public key and can be exposed safely.
+        // The real security is handled by Firestore Security Rules.
         const firebaseConfig = {
             apiKey: "AIzaSyA8L7xv3Sk_a0p20kNmWs8KG_79zU11kss",
             authDomain: "appht-8e3dd.firebaseapp.com",
@@ -575,8 +575,10 @@
             measurementId: "G-42LTYDJ4WL"
         };
         
-        // ** Token การเข้าถึงสำหรับ Admin และการรีเซ็ต **
-        // ในการใช้งานจริง ควรเก็บไว้ในที่ปลอดภัยและเปลี่ยนเป็นรหัสที่ซับซ้อน
+        // ** Access Tokens for Admin and Reset **
+        // IMPORTANT: In a real-world application, these should be stored securely on a server,
+        // not hardcoded in the client-side code. For a simple public project, this is
+        // a minimal security measure. Change these to your own secret tokens.
         const ADMIN_ACCESS_TOKEN = "ADMIN_1234"; 
         const RESET_COURSE_TOKEN = "RESET_5678";
 
@@ -632,7 +634,7 @@
                 console.log("Data saved to Firestore successfully!");
             } catch (e) {
                 console.error("Error saving data to Firestore:", e);
-                showToast('บันทึกข้อมูลล้มเหลว.', 'error');
+                showToast('Failed to save data.', 'error');
             }
         }
 
@@ -654,6 +656,7 @@
                                 selectedAssessmentComponent = null;
                             }
                         } else {
+                            activeCourse = null;
                             selectedAssessmentComponent = null;
                         }
                     } else {
@@ -666,7 +669,7 @@
                     console.log("Courses data updated from Firestore.");
                 }, (error) => {
                     console.error("Error listening to courses:", error);
-                    showToast('ไม่สามารถโหลดข้อมูลคอร์สได้.', 'error');
+                    showToast('Failed to load course data.', 'error');
                 });
 
                 // Listen for real-time changes to students
@@ -676,13 +679,13 @@
                     console.log("Students data updated from Firestore.");
                 }, (error) => {
                     console.error("Error listening to students:", error);
-                    showToast('ไม่สามารถโหลดข้อมูลนักเรียนได้.', 'error');
+                    showToast('Failed to load student data.', 'error');
                 });
 
                 console.log("Firestore listeners setup.");
             } catch (e) {
                 console.error("Error setting up Firestore listeners:", e);
-                showToast('ไม่สามารถตั้งค่าการเชื่อมต่อฐานข้อมูลได้.', 'error');
+                showToast('Could not set up database connection.', 'error');
                 courses = [];
                 students = [];
                 activeCourse = null;
@@ -734,7 +737,7 @@
 
         function showResetConfirmationModal() {
             if (!activeCourse) {
-                showAlert("จำเป็นต้องดำเนินการ", "กรุณาเลือกวิชาก่อนทำการรีเซ็ตข้อมูล");
+                showAlert("Action Required", "Please select a course before attempting to reset its data.");
                 return;
             }
             document.getElementById('reset-password-input').value = '';
@@ -750,7 +753,7 @@
                 resetCourseData();
                 hideResetConfirmationModal();
             } else {
-                showAlert("ข้อผิดพลาด", "Token ไม่ถูกต้อง");
+                showAlert("Error", "Incorrect Token.");
                 document.getElementById('reset-password-input').value = '';
             }
         }
@@ -778,7 +781,7 @@
             const student = students.find(s => s.studentId === studentId);
             if (!student || !activeCourse) return;
 
-            document.getElementById('score-breakdown-modal-title').textContent = `รายละเอียดคะแนนสำหรับ ${student.realName}`;
+            document.getElementById('score-breakdown-modal-title').textContent = `Score Details for ${student.realName}`;
             const contentDiv = document.getElementById('score-breakdown-content');
             contentDiv.innerHTML = activeCourse.assessmentComponents.map(component => {
                 let componentHtml = `<div class="p-2 border rounded-md bg-slate-700 border-slate-500 mb-2">
@@ -788,7 +791,7 @@
                     component.categories.forEach(cat => {
                         const { current, max } = getCategoryScores(student, component.name, cat, activeCourse);
                         const percentage = max > 0 ? (current / max) * 100 : 0;
-                        componentHtml += `<li>${cat.name} (${cat.weight}% ขององค์ประกอบ): ${formatNumber(current)}/${formatNumber(max)} (${formatNumber(percentage)}%)`;
+                        componentHtml += `<li>${cat.name} (${cat.weight}% of Component): ${formatNumber(current)}/${formatNumber(max)} (${formatNumber(percentage)}%)`;
                         if (cat.subItems && cat.subItems.length > 0) {
                             componentHtml += `<ul class="list-circle list-inside ml-4 text-xs">`;
                             cat.subItems.forEach(sub => {
@@ -801,7 +804,7 @@
                     });
                     componentHtml += `</ul>`;
                 } else {
-                    componentHtml += `<p class="text-slate-400 text-xs ml-4">ยังไม่ได้กำหนดหมวดหมู่สำหรับองค์ประกอบนี้</p>`;
+                    componentHtml += `<p class="text-slate-400 text-xs ml-4">No categories defined for this component.</p>`;
                 }
                 return componentHtml + `</div>`;
             }).join('');
@@ -817,18 +820,17 @@
                 renderAdminDashboard();
                 document.getElementById('admin-dashboard-modal').classList.remove('hidden');
             } else {
-                showAlert("การเข้าถึงถูกปฏิเสธ", "Token ไม่ถูกต้อง");
+                showAlert("Access Denied", "Incorrect Token.");
                 document.getElementById('admin-password-input').value = '';
             }
         }
 
         async function saveSettings() {
             if (!activeCourse) {
-                showToast("กรุณาเลือกวิชาก่อน", "error");
+                showToast("Please select a course first.", "error");
                 return;
             }
             const logoUrl = document.getElementById('settings-logo-url').value.trim();
-            // Ensure activeCourse.teacher exists before assigning logoUrl
             if (!activeCourse.teacher) {
                 activeCourse.teacher = {};
             }
@@ -836,7 +838,7 @@
             document.getElementById('school-logo').src = logoUrl || 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
             await saveData();
             hideSettingsModal();
-            showToast("บันทึกการตั้งค่าเรียบร้อยแล้ว!");
+            showToast("Settings saved successfully!");
         }
 
         // --- INITIALIZATION ---
@@ -852,18 +854,18 @@
             const currentSemesterSelection = semesterSelect.value;
             const currentRoom = document.getElementById('select-room').value;
 
-            subjectSelect.innerHTML = '<option value="">เลือกวิชา</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
-            gradeLevelSelect.innerHTML = '<option value="">เลือกระดับชั้น</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
+            subjectSelect.innerHTML = '<option value="">Select Subject</option>' + subjectsList.map(s => `<option value="${s}">${s}</option>`).join('');
+            gradeLevelSelect.innerHTML = '<option value="">Select Grade</option>' + gradeLevelsList.map(g => `<option value="${g}">${g}</option>`).join('');
 
             const currentYear = new Date().getFullYear();
             const academicYears = [];
             for (let i = 0; i <= 10; i++) {
                 academicYears.push(currentYear + i);
             }
-            academicYearSelect.innerHTML = '<option value="">เลือกปีการศึกษา</option>' + academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
+            academicYearSelect.innerHTML = '<option value="">Select Academic Year</option>' + academicYears.map(y => `<option value="${y}">${y}</option>`).join('');
 
             const semesters = ['Term 1', 'Term 2', 'Term 3'];
-            semesterSelect.innerHTML = '<option value="">เลือกภาคเรียน</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
+            semesterSelect.innerHTML = '<option value="">Select Semester</option>' + semesters.map(s => `<option value="${s}">${s}</option>`).join('');
 
             academicYearSelect.value = currentAcademicYearSelection || (activeCourse ? activeCourse.academicYear : '') || currentYear;
             semesterSelect.value = currentSemesterSelection || (activeCourse ? activeCourse.semester : '') || 'Term 1';
@@ -891,7 +893,7 @@
                 courseSelectionOverlay.classList.add('hidden');
             } else {
                 academicPeriodStatusDiv.classList.remove('hidden');
-                academicPeriodStatusDiv.textContent = 'กรุณาเลือกทั้งปีการศึกษาและภาคเรียน';
+                academicPeriodStatusDiv.textContent = 'Please select both Academic Year and Semester.';
                 academicPeriodStatusDiv.className = 'p-3 rounded-md text-center font-medium mt-4 bg-yellow-900/50 text-yellow-300';
                 courseSelectionSection.classList.add('disabled-section');
                 courseSelectionOverlay.classList.remove('hidden');
@@ -911,7 +913,7 @@
             } else {
                 teacherInfoContainer.classList.add('disabled-section');
                 teacherInfoContainerOverlay.classList.remove('hidden');
-                teacherInfoContainerOverlay.querySelector('span').textContent = 'กรุณาเลือกวิชาด้านบน';
+                teacherInfoContainerOverlay.querySelector('span').textContent = 'Please select a Course above.';
             }
 
             if (isReadyForMainContent) {
@@ -920,11 +922,11 @@
             } else {
                 mainContent.classList.add('disabled-section');
                 mainContentOverlay.classList.remove('hidden');
-                let overlayMessage = 'กรุณากรอกข้อมูลให้ครบ: ';
+                let overlayMessage = 'Please complete: ';
                 let missingSteps = [];
-                if (!isAcademicPeriodSelected) missingSteps.push('ปีการศึกษา & ภาคเรียน');
-                if (!isCourseSelected) missingSteps.push('เลือกวิชา');
-                if (!isTeacherInfoSaved) missingSteps.push('ข้อมูลครูผู้สอน (และกดบันทึกข้อมูล)');
+                if (!isAcademicPeriodSelected) missingSteps.push('Academic Year & Semester');
+                if (!isCourseSelected) missingSteps.push('Course Selection');
+                if (!isTeacherInfoSaved) missingSteps.push('Teacher Info (and click Save Info)');
                 mainContentOverlay.querySelector('span').textContent = overlayMessage + missingSteps.join(', ') + '.';
             }
             renderAll();
@@ -954,7 +956,7 @@
             if (!academicYear || !semester) {
                 activeCourse = null;
                 document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-                statusDiv.textContent = 'กรุณาเลือกปีการศึกษาและภาคเรียนก่อน';
+                statusDiv.textContent = 'Please select Academic Year and Semester first.';
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
                 statusDiv.classList.remove('hidden');
                 updateMainContentState();
@@ -968,10 +970,10 @@
                     course = { id: courseId, subject, gradeLevel: grade, room, academicYear, semester, assessmentComponents: [], teacher: {} };
                     courses.push(course);
                     await saveData();
-                    statusDiv.textContent = `สร้างวิชาใหม่: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
+                    statusDiv.textContent = `New course created: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                     statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
                 } else {
-                    statusDiv.textContent = `โหลดวิชา: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
+                    statusDiv.textContent = `Loaded course: ${subject} (${grade}/${room}) - ${academicYear} ${semester}`;
                     statusDiv.className = 'p-3 rounded-md text-center font-medium bg-green-900/50 text-green-300';
                 }
                 activeCourse = course;
@@ -988,7 +990,7 @@
                 activeCourse = null;
                 localStorage.removeItem('gradingSheetActiveCourseId');
                 document.getElementById('school-logo').src = 'https://placehold.co/64x64/1e293b/e2e8f0?text=Logo';
-                statusDiv.textContent = 'กรุณาเลือกข้อมูลวิชาให้ครบ';
+                statusDiv.textContent = 'Please complete all Course selections.';
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
                 renderTeacherInfoSection();
             }
@@ -1017,7 +1019,7 @@
             activeCourse.teacher.realName = document.getElementById('teacher-real-name').value.trim();
             activeCourse.teacher.id = document.getElementById('teacher-id').value.trim();
             await saveData();
-            showToast('บันทึกข้อมูลครูเรียบร้อยแล้ว!', 'success');
+            showToast('Teacher information saved!', 'success');
             renderTeacherInfoSection();
             updateMainContentState();
         }
@@ -1033,7 +1035,7 @@
                 displayDiv.classList.remove('hidden');
                 editFormDiv.classList.add('hidden');
                 document.getElementById('display-teacher-name').textContent = activeCourse.teacher.realName;
-                document.getElementById('display-teacher-id').textContent = `รหัส: ${activeCourse.teacher.id || 'N/A'}`;
+                document.getElementById('display-teacher-id').textContent = `ID: ${activeCourse.teacher.id || 'N/A'}`;
                 saveTeacherHint.classList.add('hidden');
             } else {
                 displayDiv.classList.add('hidden');
@@ -1062,8 +1064,8 @@
 
         function showDeleteTeacherConfirmation() {
             showConfirmationModal(
-                'ยืนยันการลบข้อมูลครู',
-                'คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลครูสำหรับวิชานี้? การดำเนินการนี้ไม่สามารถย้อนกลับได้',
+                'Confirm Delete Teacher Info',
+                'Are you sure you want to delete teacher information for this course? This action cannot be undone.',
                 deleteTeacherInfo
             );
         }
@@ -1072,7 +1074,7 @@
             if (!activeCourse) return;
             activeCourse.teacher = {};
             await saveData();
-            showToast('ข้อมูลครูถูกลบเรียบร้อยแล้ว!', 'success');
+            showToast('Teacher information deleted!', 'success');
             renderTeacherInfoSection();
             updateMainContentState();
         }
@@ -1094,7 +1096,7 @@
 
             await setDoc(doc(db, "courses", activeCourse.id), activeCourse, { merge: true });
             
-            showToast(`ข้อมูลทั้งหมดสำหรับวิชา "${courseIdentifier}" ได้ถูกรีเซ็ตแล้ว!`, 'success');
+            showToast(`All data for course "${courseIdentifier}" has been reset!`, 'success');
 
             activeCourse = null;
             selectedAssessmentComponent = null;
@@ -1136,7 +1138,7 @@
             const selectDropdown = document.getElementById('select-grading-period');
             if (!activeCourse) {
                 container.innerHTML = '';
-                selectDropdown.innerHTML = '<option value="">เลือกองค์ประกอบการประเมิน</option>';
+                selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>';
                 return;
             }
 
@@ -1148,21 +1150,21 @@
                             <input type="text" value="${component.name}" class="grading-period-name-input flex-grow p-2">
                             <input type="number" value="${component.weight}" class="grading-period-weight-input w-20 p-2 text-center">
                             <span class="text-slate-400">%</span>
-                            <button onclick="saveAssessmentComponentChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">บันทึก</button>
-                            <button onclick="cancelEditAssessmentComponent()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">ยกเลิก</button>
+                            <button onclick="saveAssessmentComponentChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
+                            <button onclick="cancelEditAssessmentComponent()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
                         </div>`;
                 } else {
                     return `
                         <div class="flex items-center gap-2 p-2 rounded-md border card">
                             <span class="flex-grow font-medium">${component.name} (${component.weight}%)</span>
-                            <button onclick="startEditAssessmentComponent(${index})" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">แก้ไข</button>
-                            <button onclick="showDeleteAssessmentComponentConfirmation(${index})" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">ลบ</button>
+                            <button onclick="startEditAssessmentComponent(${index})" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
+                            <button onclick="showDeleteAssessmentComponentConfirmation(${index})" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
                         </div>`;
                 }
             }).join('');
 
             const currentSelectedComponentId = selectedAssessmentComponent ? selectedAssessmentComponent.id : '';
-            selectDropdown.innerHTML = '<option value="">เลือกองค์ประกอบการประเมิน</option>' + activeCourse.assessmentComponents.map(component =>
+            selectDropdown.innerHTML = '<option value="">Select an Assessment Component</option>' + activeCourse.assessmentComponents.map(component =>
                 `<option value="${component.id}" ${component.id === currentSelectedComponentId ? 'selected' : ''}>${component.name}</option>`
             ).join('');
 
@@ -1177,10 +1179,10 @@
             const name = nameInput.value.trim();
             const weight = parseFloat(weightInput.value);
 
-            if (!name || isNaN(weight) || weight <= 0) { showToast('กรุณาใส่ชื่อองค์ประกอบและน้ำหนักที่ถูกต้อง.', 'error'); return; }
-            if (activeCourse.assessmentComponents.some(p => p.name.toLowerCase() === name.toLowerCase())) { showToast('ชื่อองค์ประกอบการประเมินนี้มีอยู่แล้ว.', 'error'); return; }
+            if (!name || isNaN(weight) || weight <= 0) { showToast('Please enter a valid component name and weight.', 'error'); return; }
+            if (activeCourse.assessmentComponents.some(p => p.name.toLowerCase() === name.toLowerCase())) { showToast('Assessment component name already exists.', 'error'); return; }
             const totalWeight = activeCourse.assessmentComponents.reduce((sum, p) => sum + p.weight, 0);
-            if (totalWeight + weight > 100) { showToast('น้ำหนักรวมขององค์ประกอบไม่สามารถเกิน 100% ได้.', 'error'); return; }
+            if (totalWeight + weight > 100) { showToast('Total component weight cannot exceed 100%.', 'error'); return; }
 
             activeCourse.assessmentComponents.push({ id: crypto.randomUUID(), name, weight, categories: [] });
             nameInput.value = '';
@@ -1192,7 +1194,7 @@
         }
 
         function startEditAssessmentComponent(index) {
-            if (editingAssessmentComponentIndex !== -1) { showToast('กรุณาบันทึกหรือยกเลิกการแก้ไของค์ประกอบปัจจุบันก่อน.', 'error'); return; }
+            if (editingAssessmentComponentIndex !== -1) { showToast('Please save or cancel the current component edit first.', 'error'); return; }
             editingAssessmentComponentIndex = index;
             originalAssessmentComponentState = JSON.parse(JSON.stringify(activeCourse.assessmentComponents[index]));
             renderAssessmentComponents();
@@ -1212,10 +1214,10 @@
             const newName = componentElement.querySelector('.grading-period-name-input').value.trim();
             const newWeight = parseFloat(componentElement.querySelector('.grading-period-weight-input').value);
 
-            if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('ชื่อองค์ประกอบหรือน้ำหนักไม่ถูกต้อง.', 'error'); return; }
-            if (activeCourse.assessmentComponents.some((p, i) => i !== index && p.name.toLowerCase() === newName.toLowerCase())) { showToast('ชื่อองค์ประกอบการประเมินนี้มีอยู่แล้ว.', 'error'); return; }
+            if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid component name or weight.', 'error'); return; }
+            if (activeCourse.assessmentComponents.some((p, i) => i !== index && p.name.toLowerCase() === newName.toLowerCase())) { showToast('Assessment component name already exists.', 'error'); return; }
             const totalWeight = activeCourse.assessmentComponents.reduce((sum, p, i) => sum + (i === index ? newWeight : p.weight), 0);
-            if (totalWeight > 100) { showToast('น้ำหนักรวมขององค์ประกอบเกิน 100%.', 'error'); return; }
+            if (totalWeight > 100) { showToast('Total component weight exceeds 100%.', 'error'); return; }
 
             if (newName !== originalAssessmentComponentState.name) {
                 const studentUpdatePromises = students.map(async s => {
@@ -1233,7 +1235,7 @@
             editingAssessmentComponentIndex = -1;
             originalAssessmentComponentState = null;
             await saveData();
-            showToast('บันทึกการเปลี่ยนแปลงองค์ประกอบการประเมินแล้ว!', 'success');
+            showToast('Assessment component changes saved!', 'success');
             renderAssessmentComponents();
             renderAll();
         }
@@ -1241,8 +1243,8 @@
         function showDeleteAssessmentComponentConfirmation(index) {
             const componentName = activeCourse.assessmentComponents[index].name;
             showConfirmationModal(
-                'ยืนยันการลบองค์ประกอบการประเมิน',
-                `คุณแน่ใจหรือไม่ว่าต้องการลบองค์ประกอบ "${componentName}"? หมวดหมู่และคะแนนที่เกี่ยวข้องทั้งหมดในองค์ประกอบนี้จะถูกลบออก การดำเนินการนี้ไม่สามารถย้อนกลับได้`,
+                'Confirm Delete Assessment Component',
+                `Are you sure you want to delete the assessment component "${componentName}"? All categories and associated scores within this component will be removed. This action cannot be undone.`,
                 () => deleteAssessmentComponent(index)
             );
         }
@@ -1262,7 +1264,7 @@
 
             activeCourse.assessmentComponents.splice(index, 1);
             await saveData();
-            showToast(`องค์ประกอบ "${componentName}" ถูกลบแล้ว.`, 'success');
+            showToast(`Assessment component "${componentName}" removed.`, 'success');
 
             if (selectedAssessmentComponent && selectedAssessmentComponent.id === componentIdToDelete) {
                 selectedAssessmentComponent = null;
@@ -1281,15 +1283,15 @@
 
             if (componentId) {
                 selectedAssessmentComponent = activeCourse.assessmentComponents.find(p => p.id === componentId);
-                statusDiv.textContent = `กำลังจัดการหมวดหมู่สำหรับ: ${selectedAssessmentComponent.name}`;
+                statusDiv.textContent = `Managing categories for: ${selectedAssessmentComponent.name}`;
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-blue-900/50 text-blue-300';
                 currentComponentNameSpan.textContent = selectedAssessmentComponent.name;
                 localStorage.setItem('gradingSheetSelectedAssessmentComponentId', selectedAssessmentComponent.id);
             } else {
                 selectedAssessmentComponent = null;
-                statusDiv.textContent = 'ไม่ได้เลือกองค์ประกอบการประเมิน';
+                statusDiv.textContent = 'No Assessment Component selected.';
                 statusDiv.className = 'p-3 rounded-md text-center font-medium bg-yellow-900/50 text-yellow-300';
-                currentComponentNameSpan.textContent = 'องค์ประกอบที่เลือก';
+                currentComponentNameSpan.textContent = 'Selected Assessment Component';
                 localStorage.removeItem('gradingSheetSelectedAssessmentComponentId');
             }
             statusDiv.classList.remove('hidden');
@@ -1343,16 +1345,16 @@
                                 <input type="text" value="${cat.name}" class="category-name-input flex-grow p-2">
                                 <input type="number" value="${cat.weight}" class="category-weight-input w-20 p-2 text-center">
                                 <span class="text-slate-400">%</span>
-                                <button onclick="saveCategoryChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">บันทึก</button>
-                                <button onclick="cancelEditCategory()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">ยกเลิก</button>
+                                <button onclick="saveCategoryChanges(${index})" class="bg-green-600 text-white px-3 py-2 rounded-md text-sm">Save</button>
+                                <button onclick="cancelEditCategory()" class="bg-slate-400 text-white px-3 py-2 rounded-md text-sm">Cancel</button>
                             </summary>
                             <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
-                                <h4 class="text-md font-semibold mb-2">รายการย่อย:</h4>
+                                <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
                                 <div id="sub-items-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
                                 <div class="flex items-center gap-2">
-                                    <input type="text" id="new-sub-item-name-${index}" placeholder="ชื่อรายการย่อย" class="flex-grow p-2">
-                                    <input type="number" id="new-sub-item-max-score-${index}" placeholder="คะแนนเต็ม" class="w-24 p-2">
-                                    <button onclick="addSubItem(${index})" class="bg-blue-500 text-white px-3 py-2 rounded-md">เพิ่ม</button>
+                                    <input type="text" id="new-sub-item-name-${index}" placeholder="Sub-item name" class="flex-grow p-2">
+                                    <input type="number" id="new-sub-item-max-score-${index}" placeholder="Max Score" class="w-24 p-2">
+                                    <button onclick="addSubItem(${index})" class="bg-blue-500 text-white px-3 py-2 rounded-md">Add</button>
                                 </div>
                             </div>
                         </details>`;
@@ -1361,11 +1363,11 @@
                         <details class="p-3 rounded-md shadow-sm border card">
                             <summary class="flex items-center gap-4 cursor-pointer font-medium text-lg">
                                 <span class="flex-grow">${cat.name} (${cat.weight}%)</span>
-                                <button onclick="startEditCategory(${index})" class="bg-yellow-500 text-white px-3 py-2 rounded-md text-sm">แก้ไข</button>
-                                <button onclick="showDeleteCategoryConfirmation(${index})" class="bg-red-500 text-white px-3 py-2 rounded-md text-sm">ลบ</button>
+                                <button onclick="startEditCategory(${index})" class="bg-yellow-500 text-white px-3 py-2 rounded-md text-sm">Edit</button>
+                                <button onclick="showDeleteCategoryConfirmation(${index})" class="bg-red-500 text-white px-3 py-2 rounded-md text-sm">Delete</button>
                             </summary>
                             <div class="ml-8 mt-4 border-l-2 pl-4 border-slate-800">
-                                <h4 class="text-md font-semibold mb-2">รายการย่อย:</h4>
+                                <h4 class="text-md font-semibold mb-2">Sub-items:</h4>
                                 <div id="sub-items-readonly-${index}" class="space-y-2 mb-4">${renderSubItems(index)}</div>
                             </div>
                         </details>`;
@@ -1377,19 +1379,19 @@
         function renderSubItems(catIndex) {
             const cat = selectedAssessmentComponent.categories[catIndex];
             const isEditing = editingCategoryIndex === catIndex;
-            if (!cat.subItems || cat.subItems.length === 0) return '<p class="text-slate-400 text-sm">ไม่มีรายการย่อยสำหรับหมวดหมู่นี้</p>';
+            if (!cat.subItems || cat.subItems.length === 0) return '<p class="text-slate-400 text-sm">No sub-items for this category.</p>';
 
             return cat.subItems.map((sub, subIndex) => {
                 if (isEditing) {
                     return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
                                     <input type="text" value="${sub.name}" class="sub-item-name-input flex-grow p-1 text-sm">
                                     <input type="number" value="${sub.maxScore}" class="sub-item-max-score-input w-20 p-1 text-center text-sm">
-                                    <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">ลบ</button>
+                                    <button onclick="removeSubItem(${catIndex}, ${subIndex})" class="bg-red-400 text-white px-2 py-1 rounded-md text-sm">Del</button>
                                 </div>`;
                 } else {
                     return `<div class="flex items-center gap-2 bg-slate-800 p-2 rounded-md">
                                     <span class="flex-grow text-sm">${sub.name}</span>
-                                    <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} คะแนน</span>
+                                    <span class="text-slate-400 text-sm">${formatNumber(sub.maxScore)} pts</span>
                                 </div>`;
                 }
             }).join('');
@@ -1402,10 +1404,10 @@
             const name = nameInput.value.trim();
             const weight = parseFloat(weightInput.value);
 
-            if (!name || isNaN(weight) || weight <= 0) { showToast('กรุณาใส่ชื่อและน้ำหนักที่ถูกต้อง', 'error'); return; }
-            if (selectedAssessmentComponent.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) { showToast('ชื่อหมวดหมู่มีอยู่แล้วในองค์ประกอบนี้', 'error'); return; }
+            if (!name || isNaN(weight) || weight <= 0) { showToast('Please enter a valid name and weight.', 'error'); return; }
+            if (selectedAssessmentComponent.categories.some(c => c.name.toLowerCase() === name.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
             const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c) => sum + c.weight, 0);
-            if (totalWeight + weight > 100) { showToast('น้ำหนักรวมของหมวดหมู่สำหรับองค์ประกอบนี้ไม่สามารถเกิน 100% ได้', 'error'); return; }
+            if (totalWeight + weight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
 
             selectedAssessmentComponent.categories.push({ id: crypto.randomUUID(), name, weight, subItems: [] });
             nameInput.value = '';
@@ -1417,7 +1419,7 @@
 
         async function handleCategoryCsvImport(event) {
             if (!selectedAssessmentComponent) {
-                showToast("กรุณาเลือกองค์ประกอบการประเมินก่อนนำเข้าหมวดหมู่", "error");
+                showToast("Please select an Assessment Component first to import categories.", "error");
                 return;
             }
             const file = event.target.files[0];
@@ -1441,14 +1443,14 @@
                     if (existingIndex !== -1) {
                         const currentCategoryWeight = selectedAssessmentComponent.categories[existingIndex].weight;
                         if ((totalWeight - currentCategoryWeight + parsedWeight) > 100) {
-                            showToast(`ไม่สามารถอัปเดต "${categoryName}": น้ำหนักรวมสำหรับองค์ประกอบนี้จะเกิน 100%.`, 'error', 5000);
+                            showToast(`Cannot update "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
                             skipped++;
                             continue;
                         }
                         selectedAssessmentComponent.categories[existingIndex].weight = parsedWeight;
                         updated++;
                     } else if (totalWeight + parsedWeight > 100) {
-                        showToast(`ไม่สามารถเพิ่ม "${categoryName}": น้ำหนักรวมสำหรับองค์ประกอบนี้จะเกิน 100%.`, 'error', 5000);
+                        showToast(`Cannot add "${categoryName}": Total weight for this component would exceed 100%.`, 'error', 5000);
                         skipped++;
                         continue;
                     } else {
@@ -1458,7 +1460,7 @@
                 }
                 await saveData();
                 renderCategories();
-                showToast(`นำเข้าหมวดหมู่เสร็จสมบูรณ์! เพิ่ม: ${added}, อัปเดต: ${updated}, ข้าม: ${skipped}.`, 'success');
+                showToast(`Category import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
                 renderAll();
             };
             reader.readAsText(file);
@@ -1468,8 +1470,8 @@
         function showDeleteCategoryConfirmation(index) {
             const categoryName = selectedAssessmentComponent.categories[index].name;
             showConfirmationModal(
-                'ยืนยันการลบหมวดหมู่',
-                `คุณแน่ใจหรือไม่ว่าต้องการลบหมวดหมู่ "${categoryName}"? คะแนนที่เกี่ยวข้องทั้งหมดสำหรับหมวดหมู่นี้จะถูกลบออกจากนักเรียนทุกคน การดำเนินการนี้ไม่สามารถย้อนกลับได้`,
+                'Confirm Delete Category',
+                `Are you sure you want to delete the category "${categoryName}"? All associated scores for this category will be removed from all students. This action cannot be undone.`,
                 () => deleteCategory(index)
             );
         }
@@ -1489,12 +1491,12 @@
 
             await saveData();
             renderCategories();
-            showToast(`หมวดหมู่ "${catName}" ถูกลบแล้ว`, 'success');
+            showToast(`Category "${catName}" removed.`, 'success');
             renderAll();
         }
 
         function startEditCategory(index) {
-            if (editingCategoryIndex !== -1) { showToast('กรุณาบันทึกหรือยกเลิกการแก้ไขปัจจุบันก่อน', 'error'); return; }
+            if (editingCategoryIndex !== -1) { showToast('Please save or cancel the current edit first.', 'error'); return; }
             editingCategoryIndex = index;
             originalCategoryState = JSON.parse(JSON.stringify(selectedAssessmentComponent.categories[index]));
             renderCategories();
@@ -1514,10 +1516,10 @@
             const newName = catElement.querySelector('.category-name-input').value.trim();
             const newWeight = parseFloat(catElement.querySelector('.category-weight-input').value);
 
-            if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('ชื่อหรือน้ำหนักไม่ถูกต้อง', 'error'); return; }
-            if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name.toLowerCase() === newName.toLowerCase())) { showToast('ชื่อหมวดหมู่มีอยู่แล้วในองค์ประกอบนี้', 'error'); return; }
+            if (!newName || isNaN(newWeight) || newWeight < 0) { showToast('Invalid name or weight.', 'error'); return; }
+            if (selectedAssessmentComponent.categories.some((c, i) => i !== index && c.name.toLowerCase() === newName.toLowerCase())) { showToast('Category name already exists in this component.', 'error'); return; }
             const totalWeight = selectedAssessmentComponent.categories.reduce((sum, c, i) => sum + (i === index ? newWeight : c.weight), 0);
-            if (totalWeight > 100) { showToast('น้ำหนักรวมของหมวดหมู่สำหรับองค์ประกอบนี้ไม่สามารถเกิน 100% ได้', 'error'); return; }
+            if (totalWeight > 100) { showToast('Total category weight for this component cannot exceed 100%.', 'error'); return; }
 
             const newSubItems = [];
             const subItemElements = catElement.querySelectorAll(`#sub-items-${index} > div`);
@@ -1529,7 +1531,7 @@
                     const existingSubItem = originalCategoryState.subItems?.find(sub => sub.name.toLowerCase() === subName.toLowerCase());
                     newSubItems.push({ id: existingSubItem ? existingSubItem.id : crypto.randomUUID(), name: subName, maxScore });
                 } else if (subName && (isNaN(maxScore) || maxScore < 0)) {
-                    showToast(`คะแนนเต็มสำหรับรายการย่อย "${subName}" ไม่ถูกต้อง. ต้องเป็นตัวเลข >= 0.`, 'error', 5000);
+                    showToast(`Invalid max score for sub-item "${subName}". Must be a number >= 0.`, 'error', 5000);
                     hasInvalidSubItem = true;
                 }
             });
@@ -1551,19 +1553,19 @@
             originalCategoryState = null;
             await saveData();
             renderCategories();
-            showToast('บันทึกการเปลี่ยนแปลงหมวดหมู่แล้ว!', 'success');
+            showToast('Category changes saved!', 'success');
             renderAll();
         }
 
         async function addSubItem(catIndex) {
             const name = document.getElementById(`new-sub-item-name-${catIndex}`).value.trim();
             const maxScore = parseFloat(document.getElementById(`new-sub-item-max-score-${catIndex}`).value);
-            if (!name || isNaN(maxScore) || maxScore < 0) { showToast('ชื่อรายการย่อยหรือคะแนนเต็มไม่ถูกต้อง (ต้องเป็น >= 0).', 'error'); return; }
+            if (!name || isNaN(maxScore) || maxScore < 0) { showToast('Invalid sub-item name or max score (must be >= 0).', 'error'); return; }
 
             const cat = selectedAssessmentComponent.categories[catIndex];
             if (!cat.subItems) cat.subItems = [];
             if (cat.subItems.some(sub => sub.name.toLowerCase() === name.toLowerCase())) {
-                showToast('ชื่อรายการย่อยนี้มีอยู่แล้วในหมวดหมู่', 'error');
+                showToast('Sub-item name already exists in this category.', 'error');
                 return;
             }
 
@@ -1599,9 +1601,9 @@
             const studentId = document.getElementById('new-student-id').value.trim();
             const rollNumber = document.getElementById('new-student-roll-number').value.trim();
 
-            if (students.some(s => s.studentId === studentId)) { showAlert('ข้อผิดพลาด', 'รหัสนักเรียนมีอยู่แล้วในระบบ กรุณาใช้รหัสที่ไม่ซ้ำกัน'); return; }
+            if (students.some(s => s.studentId === studentId)) { showAlert('Error', 'Student ID already exists in the system. Please use a unique ID.'); return; }
             const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
-            if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { showAlert('ข้อผิดพลาด', 'เลขที่มีอยู่แล้วสำหรับนักเรียนคนอื่นในห้องนี้'); return; }
+            if (studentsInCurrentClass.some(s => s.rollNumber === rollNumber)) { showAlert('Error', 'Roll Number already exists for another student in this class.'); return; }
 
             students.push({ realName, nickname, studentId, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room, scores: {} });
 
@@ -1609,7 +1611,7 @@
             checkAddStudentFormValidity();
             await saveData();
             renderStudents();
-            showToast(`${realName} ถูกเพิ่มแล้ว`, 'success');
+            showToast(`${realName} has been added.`, 'success');
             renderAll();
         }
 
@@ -1617,8 +1619,8 @@
             const student = students.find(s => s.studentId === studentId);
             if (!student) return;
             showConfirmationModal(
-                'ยืนยันการลบนักเรียน',
-                `คุณแน่ใจหรือไม่ว่าต้องการลบนักเรียน "${student.realName}" (รหัส: ${student.studentId})? คะแนนทั้งหมดของนักเรียนนี้จะถูกลบออก การดำเนินการนี้ไม่สามารถย้อนกลับได้`,
+                'Confirm Delete Student',
+                `Are you sure you want to delete student "${student.realName}" (ID: ${student.studentId})? All their scores will be removed. This action cannot be undone.`,
                 () => removeStudent(studentId)
             );
         }
@@ -1628,16 +1630,16 @@
             try {
                 await deleteDoc(doc(db, "students", studentId));
                 console.log(`Student ${studentId} deleted from Firestore.`);
-                showToast('นักเรียนถูกลบแล้ว', 'success');
+                showToast('Student removed.', 'success');
             } catch (e) {
                 console.error(`Error deleting student ${studentId} from Firestore:`, e);
-                showToast('ไม่สามารถลบนักเรียนออกจากฐานข้อมูลได้', 'error');
+                showToast('Failed to delete student from database.', 'error');
             }
         }
 
         function startEditStudent(studentId) {
             if (editingStudentId) {
-                showToast('กรุณาบันทึกหรือยกเลิกการแก้ไขนักเรียนปัจจุบันก่อน', 'error');
+                showToast('Please save or cancel the current student edit first.', 'error');
                 return;
             }
             editingStudentId = studentId;
@@ -1665,13 +1667,13 @@
             const newRollNumber = studentRow.querySelector('.edit-student-roll-number').value.trim();
 
             if (!newRealName || !newRollNumber) {
-                showToast('ชื่อและเลขที่ของนักเรียนต้องไม่ว่าง', 'error');
+                showToast('Student name and roll number cannot be empty.', 'error');
                 return;
             }
 
             const studentsInCurrentClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
             if (studentsInCurrentClass.some(s => s.studentId !== studentId && s.rollNumber === newRollNumber)) {
-                showToast('เลขที่นี้มีอยู่แล้วสำหรับนักเรียนคนอื่นในห้องนี้', 'error');
+                showToast('Roll Number already exists for another student in this class.', 'error');
                 return;
             }
 
@@ -1683,7 +1685,7 @@
             originalStudentState = null;
             await saveData();
             renderStudents();
-            showToast('อัปเดตข้อมูลนักเรียนเรียบร้อยแล้ว!', 'success');
+            showToast('Student details updated!', 'success');
             renderAll();
         }
 
@@ -1693,7 +1695,7 @@
             const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
 
             if (studentsInClass.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 text-center p-4">ยังไม่มีนักเรียนในห้องนี้</p>';
+                container.innerHTML = '<p class="text-slate-400 text-center p-4">No students in this class yet.</p>';
                 return;
             }
 
@@ -1706,14 +1708,14 @@
                     return `
                         <div id="student-${s.studentId}" class="p-2 rounded-md border-2 border-indigo-500 card space-y-2">
                             <div class="grid grid-cols-2 gap-3">
-                                <input type="text" value="${s.realName}" class="edit-student-real-name p-1 col-span-2" placeholder="ชื่อ-นามสกุล">
-                                <input type="text" value="${s.nickname || ''}" class="edit-student-nickname p-1 col-span-2" placeholder="ชื่อเล่น">
-                                <input type="text" value="${s.studentId}" class="edit-student-id p-1" placeholder="รหัสนักเรียน" disabled>
-                                <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="เลขที่">
+                                <input type="text" value="${s.realName}" class="edit-student-real-name p-1 col-span-2" placeholder="Full Name">
+                                <input type="text" value="${s.nickname || ''}" class="edit-student-nickname p-1 col-span-2" placeholder="Nickname">
+                                <input type="text" value="${s.studentId}" class="edit-student-id p-1" placeholder="Student ID" disabled>
+                                <input type="number" value="${s.rollNumber}" class="edit-student-roll-number p-1" placeholder="Roll No.">
                             </div>
                             <div class="flex items-center gap-2">
-                                <button onclick="saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">บันทึก</button>
-                                <button onclick="cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">ยกเลิก</button>
+                                <button onclick="saveStudentChanges('${s.studentId}')" class="w-full bg-green-600 text-white px-3 py-1 rounded-md text-sm">Save</button>
+                                <button onclick="cancelEditStudent()" class="w-full bg-slate-500 text-white px-3 py-1 rounded-md text-sm">Cancel</button>
                             </div>
                         </div>`;
                 } else {
@@ -1721,11 +1723,11 @@
                         <div id="student-${s.studentId}" class="flex items-center gap-2 p-2 rounded-md border card hover:bg-slate-800">
                             <div class="flex-grow">
                                 <p class="font-medium">${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></p>
-                                <p class="text-sm text-slate-500">รหัส: ${s.studentId} | ระดับชั้น: ${s.gradeLevel}/${s.room}</p>
+                                <p class="text-sm text-slate-500">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="startEditStudent('${s.studentId}')" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">แก้ไข</button>
-                                <button onclick="showDeleteStudentConfirmation('${s.studentId}')" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">ลบ</button>
+                                <button onclick="startEditStudent('${s.studentId}')" class="bg-yellow-600 text-white px-3 py-1 rounded-md text-sm">Edit</button>
+                                <button onclick="showDeleteStudentConfirmation('${s.studentId}')" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm">Delete</button>
                             </div>
                         </div>`;
                 }
@@ -1734,7 +1736,7 @@
 
         async function handleCsvImport(event) {
             if (!activeCourse) {
-                showToast("กรุณาเลือกวิชาก่อนนำเข้านักเรียน", "error");
+                showToast("Please select a course first to import students.", "error");
                 return;
             }
             const file = event.target.files[0];
@@ -1759,7 +1761,7 @@
 
                     if (existingIndex !== -1) {
                         if (rollNumberExistsInCurrentClass && students[existingIndex].rollNumber !== rollNumber) {
-                                showToast(`นักเรียนที่มีเลขที่ ${rollNumber} มีอยู่แล้วในห้องนี้, ข้ามการอัปเดตสำหรับ ${realName} (รหัส: ${studentId})`, 'error', 5000);
+                                showToast(`Student with Roll Number ${rollNumber} already exists in this class, skipping update for ${realName} (ID: ${studentId}).`, 'error', 5000);
                                 skipped++;
                                 continue;
                         }
@@ -1767,7 +1769,7 @@
                         Object.assign(existingStudent, { realName, nickname, rollNumber, gradeLevel: activeCourse.gradeLevel, room: activeCourse.room });
                         updated++;
                     } else if (rollNumberExistsInCurrentClass || studentIdExistsWithDifferentRollInSameClass) {
-                        showToast(`ข้อมูลขัดแย้ง: นักเรียนที่มีเลขที่ ${rollNumber} หรือรหัส ${studentId} มีอยู่ในห้องนี้แล้ว`, 'error', 7000);
+                        showToast(`Conflict: Student with Roll Number ${rollNumber} or Student ID ${studentId} already exists in this class with a different entry. Skipping import for ${realName}.`, 'error', 7000);
                         skipped++;
                         continue;
                     }
@@ -1778,7 +1780,7 @@
                 }
                 await saveData();
                 renderStudents();
-                showToast(`นำเข้าข้อมูลเรียบร้อย! เพิ่ม: ${added}, อัปเดต: ${updated}, ข้าม: ${skipped}.`, 'success');
+                showToast(`Import complete! Added: ${added}, Updated: ${updated}, Skipped: ${skipped}.`, 'success');
                 renderAll();
             };
             reader.readAsText(file);
@@ -1888,7 +1890,7 @@
                     student.scores[activeCourse.id][componentName][catName] = 0;
                 }
             } else if (isNaN(score) || score < 0 || score > maxScore) {
-                showToast(`คะแนนต้องอยู่ระหว่าง 0 และ ${formatNumber(maxScore)}.`, 'error');
+                showToast(`Score must be between 0 and ${formatNumber(maxScore)}.`, 'error');
                 const currentInput = document.querySelector(`input[onchange*='${studentId}'][onchange*='${componentName}'][onchange*='${catName}'][onchange*='${subId || 'null'}']`);
                 if (currentInput) {
                     if (subId) {
@@ -1918,7 +1920,7 @@
                 for (let i = 0; i < scoreTableBody.children.length; i++) {
                     const row = scoreTableBody.children[i];
                     const studentIdDiv = row.querySelector('td:first-child div.text-xs');
-                    if (studentIdDiv && studentIdDiv.textContent.includes(`รหัส: ${studentId}`)) {
+                    if (studentIdDiv && studentIdDiv.textContent.includes(`ID: ${studentId}`)) {
                         studentRow = row;
                         break;
                     }
@@ -1962,7 +1964,7 @@
             const container = document.getElementById('score-input-table');
             const info = document.getElementById('score-entry-info');
             if (!activeCourse || !activeCourse.assessmentComponents || activeCourse.assessmentComponents.length === 0) {
-                info.textContent = 'กรุณาเพิ่มองค์ประกอบการประเมินและหมวดหมู่เพื่อเริ่มต้น';
+                info.textContent = 'Please add Assessment Components and Categories to begin.';
                 info.classList.remove('hidden');
                 container.innerHTML = '';
                 return;
@@ -1971,7 +1973,7 @@
             const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
 
             if (studentsInClass.length === 0) {
-                info.textContent = 'กรุณาเพิ่มนักเรียนเพื่อเริ่มต้น';
+                info.textContent = 'Please add students to begin.';
                 info.classList.remove('hidden');
                 container.innerHTML = '';
                 return;
@@ -1979,7 +1981,7 @@
 
             const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0);
             if (!hasCategories) {
-                info.textContent = 'กรุณาเพิ่มหมวดหมู่ในองค์ประกอบการประเมินเพื่อเริ่มต้น';
+                info.textContent = 'Please add Categories within your Assessment Components to begin.';
                 info.classList.remove('hidden');
                 container.innerHTML = '';
                 return;
@@ -1988,7 +1990,7 @@
             info.classList.add('hidden');
 
             let tableHTML = `<table class="min-w-full border-collapse"><thead><tr class="sticky-header">`;
-            tableHTML += `<th rowspan="3" class="sticky-col p-2 border border-slate-600 text-left">นักเรียน</th>`;
+            tableHTML += `<th rowspan="3" class="sticky-col p-2 border border-slate-600 text-left">Student</th>`;
 
             activeCourse.assessmentComponents.forEach((component, componentIndex) => {
                 const totalCategoriesInComponent = component.categories.reduce((sum, cat) => sum + (cat.subItems && cat.subItems.length > 0 ? cat.subItems.length + 1 : 2), 0);
@@ -1996,7 +1998,7 @@
                     tableHTML += `<th colspan="${totalCategoriesInComponent}" class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${component.name} (${component.weight}%)</th>`;
                 }
             });
-            tableHTML += `<th rowspan="3" class="p-2 border border-slate-600">คะแนนสุดท้าย</th><th rowspan="3" class="p-2 border border-slate-600">เกรดสุดท้าย</th></tr>`;
+            tableHTML += `<th rowspan="3" class="p-2 border border-slate-600">Final Score</th><th rowspan="3" class="p-2 border border-slate-600">Final Grade</th></tr>`;
 
             tableHTML += `<tr class="sticky-header">`;
             activeCourse.assessmentComponents.forEach((component, componentIndex) => {
@@ -2012,10 +2014,10 @@
                 component.categories.forEach((cat, catIndex) => {
                     if (cat.subItems && cat.subItems.length > 0) {
                         cat.subItems.forEach(sub => tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">${sub.name} (${formatNumber(sub.maxScore)})</th>`);
-                        tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">รวม</th>`;
+                        tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`;
                     } else {
-                        tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">คะแนน (${formatNumber(100)})</th>`;
-                        tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">รวม</th>`;
+                        tableHTML += `<th class="p-2 border border-slate-600 text-center font-normal" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Score (${formatNumber(100)})</th>`;
+                        tableHTML += `<th class="p-2 border border-slate-600 text-center font-medium category-total-header" style="background-color: ${tableHeaderColors[componentIndex % tableHeaderColors.length]}">Cat. Total</th>`;
                     }
                 });
             });
@@ -2025,7 +2027,7 @@
                 const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
                 tableHTML += `<tr class="hover:bg-slate-800"><td class="sticky-col p-2 border border-slate-600 text-left font-medium">
                                         <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                                        <div class="text-xs text-slate-400 font-normal">รหัส: ${s.studentId} | ระดับชั้น: ${s.gradeLevel}/${s.room}</div>
+                                        <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId} | Grade: ${s.gradeLevel}/${s.room}</div>
                                     </td>`;
                 activeCourse.assessmentComponents.forEach(component => {
                     component.categories.forEach(cat => {
@@ -2063,7 +2065,7 @@
             const container = document.getElementById('summary-table');
             const info = document.getElementById('summary-info');
             if (!activeCourse || !activeCourse.assessmentComponents || activeCourse.assessmentComponents.length === 0) {
-                info.textContent = 'กรุณากรอกคะแนนเพื่อดูรายงานสรุป';
+                info.textContent = 'Enter scores to see the summary.';
                 info.classList.remove('hidden');
                 container.innerHTML = '';
                 document.getElementById('advanced-dashboard').classList.add('hidden');
@@ -2073,7 +2075,7 @@
             const studentsInClass = students.filter(s => s.gradeLevel === activeCourse.gradeLevel && s.room === activeCourse.room);
 
             if (studentsInClass.length === 0) {
-                info.textContent = 'กรุณากรอกคะแนนเพื่อดูรายงานสรุป';
+                info.textContent = 'Enter scores to see the summary.';
                 info.classList.remove('hidden');
                 container.innerHTML = '';
                 document.getElementById('advanced-dashboard').classList.add('hidden');
@@ -2082,7 +2084,7 @@
 
             const hasCategories = activeCourse.assessmentComponents.some(component => component.categories && component.categories.length > 0);
             if (!hasCategories) {
-                info.textContent = 'กรุณาเพิ่มหมวดหมู่ในองค์ประกอบการประเมินเพื่อดูรายงานสรุป';
+                info.textContent = 'Please add Categories within your Assessment Components to see the summary.';
                 info.classList.remove('hidden');
                 container.innerHTML = '';
                 document.getElementById('advanced-dashboard').classList.add('hidden');
@@ -2093,35 +2095,35 @@
             document.getElementById('advanced-dashboard').classList.remove('hidden');
 
             let tableHTML = `<table class="min-w-full"><thead><tr>
-                        <th class="p-2 border border-slate-600 text-left">นักเรียน</th>`;
+                        <th class="p-2 border border-slate-600 text-left">Student</th>`;
             activeCourse.assessmentComponents.forEach((component, i) => {
                 tableHTML += `<th class="p-2 border border-slate-600 text-center" style="background-color: ${tableHeaderColors[i % tableHeaderColors.length]}">${component.name} (%)</th>`;
             });
-            tableHTML += `<th class="p-2 border border-slate-600">คะแนนสุดท้าย</th><th class="p-2 border border-slate-600">เกรดสุดท้าย</th></tr></thead><tbody>`;
+            tableHTML += `<th class="p-2 border border-slate-600">Final Score</th><th class="p-2 border border-slate-600">Final Grade</th></tr></thead><tbody>`;
 
             studentsInClass.sort((a,b) => parseFloat(calculateFinalScoreAndGrade(b, activeCourse).finalScore) - parseFloat(calculateFinalScoreAndGrade(a, activeCourse).finalScore)).forEach(s => {
                 const { finalScore, grade } = calculateFinalScoreAndGrade(s, activeCourse);
                 let rowBgClass = '';
-                let detailsButtonText = 'ดูรายละเอียด';
+                let detailsButtonText = 'View Details';
                 let detailsButtonClass = 'bg-indigo-700 hover:bg-indigo-600';
 
                 if (parseFloat(finalScore) >= 70) {
                     rowBgClass = 'bg-green-900/20';
-                    detailsButtonText = 'รายละเอียด (ยอดเยี่ยม)';
+                    detailsButtonText = 'Details (Excellent)';
                     detailsButtonClass = 'bg-green-800 hover:bg-green-700';
                 } else if (parseFloat(finalScore) >= 50) {
                     rowBgClass = 'bg-yellow-900/20';
-                    detailsButtonText = 'รายละเอียด (ปานกลาง)';
+                    detailsButtonText = 'Details (Average)';
                     detailsButtonClass = 'bg-yellow-800 hover:bg-yellow-700';
                 } else {
                     rowBgClass = 'bg-red-900/20';
-                    detailsButtonText = 'รายละเอียด (ต้องปรับปรุง)';
+                    detailsButtonText = 'Details (Needs Improvement)';
                     detailsButtonClass = 'bg-red-800 hover:bg-red-700';
                 }
 
                 tableHTML += `<tr class="${rowBgClass}"><td class="p-2 border border-slate-600 font-medium">
                                         <div>${s.rollNumber}. ${s.realName} <span class="text-slate-400 text-sm">(${s.nickname || '-'})</span></div>
-                                        <div class="text-xs text-slate-400 font-normal">รหัส: ${s.studentId}</div>
+                                        <div class="text-xs text-slate-400 font-normal">ID: ${s.studentId}</div>
                                         <button onclick="showScoreBreakdownModal('${s.studentId}')" class="mt-1 text-xs ${detailsButtonClass} px-2 py-1 rounded transition-colors">${detailsButtonText}</button>
                                     </td>`;
                 activeCourse.assessmentComponents.forEach(component => {
@@ -2179,7 +2181,7 @@
             studentGroupChartInstance = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['ยอดเยี่ยม', 'ปานกลาง', 'ต้องปรับปรุง'],
+                    labels: ['Excellent', 'Average', 'Needs Improvement'],
                     datasets: [{
                         data: [counts.excellent, counts.average, counts.improvement],
                         backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
@@ -2204,7 +2206,7 @@
             dashboardContent.innerHTML = '';
 
             if (courses.length === 0) {
-                dashboardContent.innerHTML = '<p class="text-slate-400 text-center text-lg mt-8">ไม่มีข้อมูลวิชา</p>';
+                dashboardContent.innerHTML = '<p class="text-slate-400 text-center text-lg mt-8">No course data available.</p>';
                 return;
             }
 
@@ -2270,24 +2272,24 @@
                 dashboardContent.innerHTML += `
                     <div class="p-6 rounded-lg border card">
                         <h4 class="text-xl font-semibold mb-2 text-blue-300">${courseName}</h4>
-                        <p class="text-slate-400 mb-4">ครูผู้สอน: ${teacherName}</p>
+                        <p class="text-slate-400 mb-4">Teacher: ${teacherName}</p>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                            <div><p class="text-sm text-slate-400">นักเรียน</p><p class="text-2xl font-bold text-white">${studentsInThisCourse.length}</p></div>
-                            <div><p class="text-sm text-slate-400">คะแนนเฉลี่ย</p><p class="text-lg font-bold">${formatNumber(averageCourseScore)}%</p></div>
-                            <div><p class="text-sm text-blue-300">สูงสุด</p><p class="text-lg font-bold">${displayHighestScore}%</p></div>
-                            <div><p class="text-sm text-purple-300">ต่ำสุด</p><p class="text-lg font-bold">${displayLowestScore}%</p></div>
+                            <div><p class="text-sm text-slate-400">Students</p><p class="text-2xl font-bold text-white">${studentsInThisCourse.length}</p></div>
+                            <div><p class="text-sm text-slate-400">Avg. Score</p><p class="text-lg font-bold">${formatNumber(averageCourseScore)}%</p></div>
+                            <div><p class="text-sm text-blue-300">Highest</p><p class="text-lg font-bold">${displayHighestScore}%</p></div>
+                            <div><p class="text-sm text-purple-300">Lowest</p><p class="text-lg font-bold">${displayLowestScore}%</p></div>
                             <div class="col-span-full mt-2">
-                                <p class="text-sm text-slate-400">ความคืบหน้าการกรอกคะแนน</p>
+                                <p class="text-sm text-slate-400">Score Entry Progress</p>
                                 <div class="w-full bg-slate-700 rounded-full h-3">
                                     <div class="bg-indigo-500 h-3 rounded-full" style="width: ${scoreEntryProgress}%"></div>
                                 </div>
-                                <p class="text-right text-xs text-slate-400 mt-1">${Math.round(scoreEntryProgress)}% สมบูรณ์</p>
+                                <p class="text-right text-xs text-slate-400 mt-1">${Math.round(scoreEntryProgress)}% Complete</p>
                             </div>
                         </div>
                         <div class="mt-4 space-y-2">
                             <details class="p-2 bg-green-900/50 rounded-lg">
                                 <summary class="font-bold text-green-300 cursor-pointer flex justify-between items-center">
-                                    นักเรียนยอดเยี่ยม (${gradeCounts['A+'] + gradeCounts['A'] + gradeCounts['A-'] + gradeCounts['B+'] + gradeCounts['B']}) <span class="summary-arrow">▶</span>
+                                    Excellent Students (${gradeCounts['A+'] + gradeCounts['A'] + gradeCounts['A-'] + gradeCounts['B+'] + gradeCounts['B']}) <span class="summary-arrow">▶</span>
                                 </summary>
                                 <ul class="mt-2 text-sm text-green-400 list-disc list-inside">
                                     ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) >= 70).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
@@ -2295,7 +2297,7 @@
                             </details>
                             <details class="p-2 bg-yellow-900/50 rounded-lg">
                                 <summary class="font-bold text-yellow-300 cursor-pointer flex justify-between items-center">
-                                    นักเรียนปานกลาง (${gradeCounts['C+'] + gradeCounts['C'] + gradeCounts['C-'] + gradeCounts['B-']}) <span class="summary-arrow">▶</span>
+                                    Average Students (${gradeCounts['C+'] + gradeCounts['C'] + gradeCounts['C-'] + gradeCounts['B-']}) <span class="summary-arrow">▶</span>
                                 </summary>
                                 <ul class="mt-2 text-sm text-yellow-400 list-disc list-inside">
                                     ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) >= 50 && parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 70).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
@@ -2303,7 +2305,7 @@
                             </details>
                             <details class="p-2 bg-red-900/50 rounded-lg">
                                 <summary class="font-bold text-red-300 cursor-pointer flex justify-between items-center">
-                                    นักเรียนที่ต้องปรับปรุง (${gradeCounts['D'] + gradeCounts['F'] + gradeCounts['N/A']}) <span class="summary-arrow">▶</span>
+                                    Needs Improvement Students (${gradeCounts['D'] + gradeCounts['F'] + gradeCounts['N/A']}) <span class="summary-arrow">▶</span>
                                 </summary>
                                 <ul class="mt-2 text-sm text-red-400 list-disc list-inside">
                                     ${studentsInThisCourse.filter(s => parseFloat(calculateFinalScoreAndGrade(s, course).finalScore) < 50 || isNaN(parseFloat(calculateFinalScoreAndGrade(s, course).finalScore))).map(s => `<li>${s.realName} (${formatNumber(calculateFinalScoreAndGrade(s, course).finalScore)}%)</li>`).join('')}
@@ -2317,18 +2319,18 @@
 
             dashboardContent.insertAdjacentHTML('afterbegin', `
                 <div class="mb-8 p-6 rounded-lg border card">
-                    <h4 class="text-xl font-semibold mb-4 text-indigo-300">ภาพรวมทั้งโรงเรียน</h4>
+                    <h4 class="text-xl font-semibold mb-4 text-indigo-300">Overall School Overview</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                        <div><p class="text-sm text-slate-400">จำนวนวิชา</p><p class="text-2xl font-bold text-white">${courses.length}</p></div>
-                        <div><p class="text-sm text-slate-400">จำนวนนักเรียน</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
-                        <div><p class="text-sm text-slate-400">ครูผู้สอนที่ใช้งาน</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
+                        <div><p class="text-sm text-slate-400">Total Courses</p><p class="text-2xl font-bold text-white">${courses.length}</p></div>
+                        <div><p class="text-sm text-slate-400">Total Students</p><p class="text-2xl font-bold text-white">${students.length}</p></div>
+                        <div><p class="text-sm text-slate-400">Active Teachers</p><p class="text-2xl font-bold text-white">${new Set(courses.map(c => c.teacher.realName).filter(name => name)).size}</p></div>
                     </div>
                     <div class="mt-6">
-                        <h5 class="font-semibold text-lg mb-2">ความคืบหน้าการกรอกคะแนนรวม</h5>
+                        <h5 class="font-semibold text-lg mb-2">Overall Score Entry Progress</h5>
                         <div class="w-full bg-slate-700 rounded-full h-4">
                             <div class="bg-indigo-500 h-4 rounded-full" style="width: ${overallScoreEntryProgress}%"></div>
                         </div>
-                        <p class="text-right text-sm text-slate-400 mt-1">${Math.round(overallScoreEntryProgress)}% สมบูรณ์</p>
+                        <p class="text-right text-sm text-slate-400 mt-1">${Math.round(overallScoreEntryProgress)}% Complete</p>
                     </div>
                 </div>
             `);
@@ -2347,9 +2349,9 @@
         function renderAll() {
             if (!activeCourse) {
                 document.getElementById('grading-period-list').innerHTML = '';
-                document.getElementById('select-grading-period').innerHTML = '<option value="">เลือกองค์ประกอบการประเมิน</option>';
+                document.getElementById('select-grading-period').innerHTML = '<option value="">Select an Assessment Component</option>';
                 document.getElementById('selected-grading-period-status').classList.add('hidden');
-                document.getElementById('current-period-name').textContent = 'องค์ประกอบที่เลือก';
+                document.getElementById('current-period-name').textContent = 'Selected Assessment Component';
                 selectedAssessmentComponent = null;
 
                 document.getElementById('category-settings').innerHTML = '';
@@ -2357,8 +2359,8 @@
                 document.getElementById('score-input-table').innerHTML = '';
                 document.getElementById('summary-table').innerHTML = '';
 
-                document.getElementById('score-entry-info').textContent = 'กรุณาเลือก ปีการศึกษา, ภาคเรียน, วิชา, และบันทึกข้อมูลครูผู้สอนเพื่อเริ่มต้น';
-                document.getElementById('summary-info').textContent = 'ไม่มีข้อมูลให้แสดง';
+                document.getElementById('score-entry-info').textContent = 'Please select Academic Year, Semester, Course, and save Teacher Info to begin.';
+                document.getElementById('summary-info').textContent = 'No data to display.';
                 document.getElementById('score-entry-info').classList.remove('hidden');
                 document.getElementById('summary-info').classList.remove('hidden');
 
