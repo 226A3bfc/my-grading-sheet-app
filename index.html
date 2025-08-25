@@ -1010,19 +1010,13 @@
             const hint = document.getElementById('save-teacher-hint');
             
             // The save button should be enabled as long as a course is selected and the full name is not empty.
-            saveButton.disabled = !activeCourse || !realName;
+            // Also, don't enable it if the current input is the same as the saved data.
+            const isNameChanged = activeCourse && (!activeCourse.teacher || activeCourse.teacher.realName !== realName);
+            saveButton.disabled = !activeCourse || !realName || !isNameChanged;
             
-            if (activeCourse && activeCourse.teacher && activeCourse.teacher.realName && activeCourse.teacher.realName === realName) {
-                // If the displayed info is the same as the current input, disable the button and hide the hint.
-                saveButton.disabled = true;
-                hint.classList.add('hidden');
-            } else if (activeCourse && realName) {
-                // If the info is changed and a course is selected, enable the button and show the hint.
-                saveButton.disabled = false;
+            if (activeCourse && realName && isNameChanged) {
                 hint.classList.remove('hidden');
             } else {
-                // If a course is not selected or name is empty, disable the button and hide the hint.
-                saveButton.disabled = true;
                 hint.classList.add('hidden');
             }
         }
